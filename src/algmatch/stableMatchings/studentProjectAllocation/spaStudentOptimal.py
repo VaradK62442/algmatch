@@ -14,7 +14,7 @@ class SPAStudentOptimal:
         assert not (filename is not None and dictionary is not None), "Only one of filename or dictionary must be provided"
 
         if filename is not None:    
-            assert os.path.isfile(filename), "File does not exist"
+            assert os.path.isfile(filename), f"File {filename} does not exist"
             self._reader = SPAPreferenceInstance(filename=filename)
 
         if dictionary is not None:
