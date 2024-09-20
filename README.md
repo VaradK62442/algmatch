@@ -1,6 +1,6 @@
-# SMAs
+# Algmatch
 
-A package containing various stable matching algorithms, such as 
+A package containing various matching algorithms with one- or two-sided preferences, such as 
 
 - stable marriage
 
