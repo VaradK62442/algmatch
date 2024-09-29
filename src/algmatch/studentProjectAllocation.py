@@ -5,6 +5,7 @@ Class to provide interface for the Student Project Allocation stable matching al
 import os
 
 from stableMatchings.studentProjectAllocation.spaStudentOptimal import SPAStudentOptimal
+from stableMatchings.studentProjectAllocation.spaLecturerOptimal import SPALecturerOptimal
 
 
 class StudentProjectAllocation:
@@ -19,8 +20,7 @@ class StudentProjectAllocation:
         if filename is not None:
             filename = os.path.join(os.path.dirname(__file__), filename)
 
-        if studentSided:
-            self.spa = SPAStudentOptimal(filename, dictionary)
+        self.spa = SPAStudentOptimal(filename=filename, dictionary=dictionary) if studentSided else SPALecturerOptimal(filename=filename, dictionary=dictionary)
 
 
     def get_stable_matching(self) -> dict:
