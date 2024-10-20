@@ -31,3 +31,6 @@ class StudentProjectAllocation:
         """
         self.spa.run()
         return self.spa.stable_matching
+
+spa = StudentProjectAllocation(filename = "example.txt")
+print(spa.get_stable_matching())
