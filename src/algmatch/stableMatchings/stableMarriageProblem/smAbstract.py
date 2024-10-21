@@ -63,7 +63,7 @@ class SMAbstract:
         self._check_stability()
 
         for man in self.men:
-            if self.M[student]["assigned"] is not None:
+            if self.M[man]["assigned"] is not None:
                 self.stable_matching[man] = self.M[man]["assigned"]
             else:
                 self.stable_matching[man] = ""
