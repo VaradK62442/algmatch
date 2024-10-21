@@ -1,5 +1,5 @@
 """
-Student Project Allocation - Abstract class
+Stable Marriage Problem - Abstract class
 """
 
 import os
@@ -41,9 +41,12 @@ class SMAbstract:
         
             for woman in preferred_women:
                 existing_fiance = self.M[woman]["assigned"]
-                rank_fiance = self.women[woman]["rank"][existing_fiance]
-                if man in self.women[woman]["list"][:rank_fiance]:
+                if existing_fiance == None:
                     self.blocking_pair = True
+                else:
+                    rank_fiance = self.women[woman]["rank"][existing_fiance]
+                    if man in self.women[woman]["list"][:rank_fiance]:
+                        self.blocking_pair = True
                 
                 if self.blocking_pair:
                     # print(man, woman)
@@ -52,7 +55,6 @@ class SMAbstract:
             if self.blocking_pair:
                 # print(man, woman)
                 break
-
 
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
