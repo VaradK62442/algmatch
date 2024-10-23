@@ -31,7 +31,7 @@ class StableMarriageProblem:
 
     def get_stable_matching(self) -> dict:
         """
-        :return: dict, the stable matching.
+        :return: dict, the stable matching for this instance
         """
         self.sm.run()
         return self.sm.stable_matching

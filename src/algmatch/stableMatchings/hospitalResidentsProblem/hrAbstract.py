@@ -34,7 +34,7 @@ class HRAbstract:
         
         resident_rank = self.hospitals[hospital]["rank"][resident]
         for existing_resident in self.M[hospital]["assigned"]:
-            existing_rank = self.projects[hospital]["rank"][existing_resident]
+            existing_rank = self.hospitals[hospital]["rank"][existing_resident]
             if resident_rank < existing_rank:
                 return True
             
@@ -50,7 +50,7 @@ class HRAbstract:
             if self.M[resident]["assigned"] is not None:
                 matched_hospital = self.M[resident]["assigned"]
                 rank_matched_hospital = self.residents[resident]["rank"][matched_hospital]
-                A_ri = self.students[resident]["list"]
+                A_ri = self.residents[resident]["list"]
                 preferred_hospitals = [hj for hj in A_ri[:rank_matched_hospital]] # every project that s_i prefers to her matched project                                
         
             for hospital in preferred_hospitals:
