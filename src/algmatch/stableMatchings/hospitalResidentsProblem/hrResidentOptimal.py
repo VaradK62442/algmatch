@@ -43,8 +43,6 @@ class HRResidentOptimal(HRAbstract):
 
     def _while_loop(self):
         while len(self.unassigned_residents) != 0:
-            #print("\n\n")
-            #print(self.M)
             r = self.unassigned_residents.pop()
             h = self.residents[r]["list"][0]
 

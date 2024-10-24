@@ -2,7 +2,7 @@
 
 ## File
 
-Please follow the following format for passing in a text file to instantiate a preference list for the Stable Marriage Problem stable matching algorithm. 
+Please use the following format for passing in a text file to specify the preference lists for a Stable Marriage Problem instance.
 
 Let `i` be the number of men and `j` the number of women.
 
@@ -32,7 +32,7 @@ An example file could look like this:
 4 2 1 4 3
 ```
 
-which is a case of 4 men and 4 women, where:
+which is a case with 4 men and 4 women, where:
 
 - man 1 prefers women 2 to 4 to 1 to 3,
 - women 3 prefers man 1 to 4 to 3 to 2,
@@ -80,7 +80,7 @@ An example dictionary could look like this:
 }
 ```
 
-which is the same case of 4 men and 4 women, where:
+which is the same case with 4 men and 4 women, where:
 
 - man 1 prefers women 2 to 4 to 1 to 3,
 - women 3 prefers man 1 to 4 to 3 to 2,
