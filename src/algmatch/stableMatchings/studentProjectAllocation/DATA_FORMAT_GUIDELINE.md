@@ -38,7 +38,7 @@ An example file could look like
 2 2 2 4 3
 ```
 
-with 4 students, 4 projects and 2 lectueres, where
+with 4 students, 4 projects and 2 lecturers, where
 
 - student 1 prefers project 1 to project 2
 - student 2 prefers project 2 to project 3
@@ -134,7 +134,7 @@ An example dictionary could look like
 }
 ```
 
-with 4 students, 4 projects and 2 lectueres, where
+with 4 students, 4 projects and 2 lecturers, where
 
 - student 1 prefers project 1 to project 2
 - student 2 prefers project 2 to project 3
