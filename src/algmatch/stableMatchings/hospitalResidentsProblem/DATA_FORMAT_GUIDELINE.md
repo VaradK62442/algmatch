@@ -49,7 +49,7 @@ Let `i` be the number of residents, `j` the number of hospital.
         ...
         <resident number i>: <preference list over hospital numbers>
     },
-    'hospital': {
+    'hospitals': {
         <hospital number 1>: {
             'capacity': <capacity>,
             'preferences': <preference list over resident numbers>

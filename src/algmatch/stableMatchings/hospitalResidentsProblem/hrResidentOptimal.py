@@ -37,9 +37,6 @@ class HRResidentOptimal(HRAbstract):
         rank_comparator = lambda x: -self.hospitals[hospital]["rank"][x]
         worst_resident = min(existing_residents, key = rank_comparator)
         return worst_resident
- 
-    # Algorithm source:
-    # https://eprints.gla.ac.uk/115765/1/115765.pdf
 
     def _while_loop(self):
         while len(self.unassigned_residents) != 0:
