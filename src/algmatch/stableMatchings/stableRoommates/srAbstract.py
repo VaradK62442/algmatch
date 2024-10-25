@@ -1,0 +1,3 @@
+"""
+Stable Roomates - Abstract class
+"""
