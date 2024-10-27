@@ -1,5 +1,5 @@
 """
-Class to read in a dictionary of preferences for the Student Project Allocation stable matching algorithm.
+Class to read in a dictionary of preferences for the Stable Marriage Problem stable matching algorithm.
 """
 
 from abstractClasses.abstractReader import AbstractReader
