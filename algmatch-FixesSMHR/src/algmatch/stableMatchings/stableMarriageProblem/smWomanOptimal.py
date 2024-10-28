@@ -22,7 +22,7 @@ class SMWomanOptimal(SMAbstract):
         self.men[man]['list'].remove(woman)
         self.women[woman]['list'].remove(man)
         if len(self.women[woman]['list']) ==  0:
-            self.unassigned_men.discard(woman)
+            self.unassigned_women.discard(woman)
 
     def _engage(self, man, woman):
         self.M[man]["assigned"] = woman
