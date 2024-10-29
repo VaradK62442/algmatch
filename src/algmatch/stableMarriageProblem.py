@@ -29,11 +29,12 @@ class StableMarriageProblem:
             self.sm = SMWomanOptimal(filename=filename, dictionary=dictionary)
 
 
-    def get_stable_matching(self) -> dict:
+    def get_stable_matching(self) -> dict | None:
         """
         Get the stable matching for the Stable Marriage Problem algorithm.
 
         :return: dict, the stable matching for this instance
         """
         self.sm.run()
-        return self.sm.stable_matching
+        if not self.sm.blocking_pair: return self.sm.stable_matching
+        return None

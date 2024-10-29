@@ -29,11 +29,12 @@ class HospitalResidentsProblem:
             self.hr = HRHospitalOptimal(filename=filename, dictionary=dictionary)
 
 
-    def get_stable_matching(self) -> dict:
+    def get_stable_matching(self) -> dict | None:
         """
         Get the stable matching for the Hospital/Residents Problem algorithm.
 
         :return: dict, the stable matching for this instance
         """
         self.hr.run()
-        return self.hr.stable_matching
+        if self.hr.blocking_pair: return self.hr.stable_matching
+        return None

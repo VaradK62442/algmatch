@@ -33,11 +33,12 @@ class StudentProjectAllocation:
             self.spa = SPALecturerOptimal(filename=filename, dictionary=dictionary)
 
 
-    def get_stable_matching(self) -> dict:
+    def get_stable_matching(self) -> dict | None:
         """
         Get the stable matching for the Student Project Allocation algorithm.
 
         :return: dict, the stable matching.
         """
         self.spa.run()
-        return self.spa.stable_matching
+        if not self.spa.blocking_pair: return self.spa.stable_matching
+        return None
