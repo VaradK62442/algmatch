@@ -8,8 +8,8 @@ Class to provide interface for the Student Project Allocation stable matching al
 
 import os
 
-from stableMatchings.studentProjectAllocation.spaStudentOptimal import SPAStudentOptimal
-from stableMatchings.studentProjectAllocation.spaLecturerOptimal import SPALecturerOptimal
+from algmatch.stableMatchings.studentProjectAllocation.spaStudentOptimal import SPAStudentOptimal
+from algmatch.stableMatchings.studentProjectAllocation.spaLecturerOptimal import SPALecturerOptimal
 
 
 class StudentProjectAllocation:
@@ -21,9 +21,7 @@ class StudentProjectAllocation:
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
         :param optimisedSide: str, optional, default="student", whether the algorithm is "student" (default) or "lecturer" sided.        
         """
-        if filename is not None:
-            filename = os.path.join(os.path.dirname(__file__), filename)
-
+        if filename is not None: filename = os.path.join(os.getcwd(), filename)
         assert optimisedSide in ["student", "lecturer"], "optimisedSide must be either 'student' or 'lecturer'"
 
         self.spa = SPAStudentOptimal(filename=filename, dictionary=dictionary) if optimisedSide == "student" else SPALecturerOptimal(filename=filename, dictionary=dictionary)
