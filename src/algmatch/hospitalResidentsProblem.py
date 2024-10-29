@@ -15,14 +15,13 @@ class HospitalResidentsProblem:
 
         :param filename: str, optional, default=None, the path to the file to read in the preferences from.
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
-        :param optimisedSide: str, optional, default="resident"
+        :param optimisedSide: str, optional, default="resident", whether the algorithm is "resident" (default) or "hospital" sided.
         """
-        if filename is not None:
-            filename = os.path.join(os.path.dirname(__file__), filename)
+        if filename is not None: filename = os.path.join(os.getcwd(), filename)
 
         assert type(optimisedSide) == str, "Param optimisedSide must be of type str"
         optimisedSide = optimisedSide.lower()
-        assert optimisedSide == "residents" or optimisedSide == "hospitals", "Optimised side must either be 'residents' or 'hospitals'"
+        assert optimisedSide in ("residents", "hospitals"), "Optimised side must either be 'residents' or 'hospitals'"
 
         if optimisedSide == "residents":
             self.hr = HRResidentOptimal(filename=filename, dictionary=dictionary)
@@ -32,6 +31,8 @@ class HospitalResidentsProblem:
 
     def get_stable_matching(self) -> dict:
         """
+        Get the stable matching for the Hospital/Residents Problem algorithm.
+
         :return: dict, the stable matching for this instance
         """
         self.hr.run()

@@ -15,14 +15,14 @@ class StableMarriageProblem:
 
         :param filename: str, optional, default=None, the path to the file to read in the preferences from.
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
-        :param optimisedSide: str, optional, default="men"
+        :param optimisedSide: str, optional, default="men", whether the algorithm is "men" (default) or "woman" sided.
         """
-        if filename is not None:
-            filename = os.path.join(os.path.dirname(__file__), filename)
+        if filename is not None: filename = os.path.join(os.getcwd(), filename)
 
         assert type(optimisedSide) == str, "Param optimisedSide must be of type str"
         optimisedSide = optimisedSide.lower()
-        assert optimisedSide == "men" or optimisedSide == "women", "Optimised side must either be 'men' or 'women'"
+        assert optimisedSide in ("men", "woman"), "Optimised side must either be 'men' or 'women'"
+        
         if optimisedSide == "men":
             self.sm = SMManOptimal(filename=filename, dictionary=dictionary)
         else:
@@ -31,6 +31,8 @@ class StableMarriageProblem:
 
     def get_stable_matching(self) -> dict:
         """
+        Get the stable matching for the Stable Marriage Problem algorithm.
+
         :return: dict, the stable matching for this instance
         """
         self.sm.run()
