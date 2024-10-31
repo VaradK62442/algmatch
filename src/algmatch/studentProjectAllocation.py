@@ -8,8 +8,8 @@ Class to provide interface for the Student Project Allocation stable matching al
 
 import os
 
-from stableMatchings.studentProjectAllocation.spaStudentOptimal import SPAStudentOptimal
-from stableMatchings.studentProjectAllocation.spaLecturerOptimal import SPALecturerOptimal
+from algmatch.stableMatchings.studentProjectAllocation.spaStudentOptimal import SPAStudentOptimal
+from algmatch.stableMatchings.studentProjectAllocation.spaLecturerOptimal import SPALecturerOptimal
 
 
 class StudentProjectAllocation:
@@ -21,19 +21,24 @@ class StudentProjectAllocation:
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
         :param optimisedSide: str, optional, default="student", whether the algorithm is "student" (default) or "lecturer" sided.        
         """
-        if filename is not None:
-            filename = os.path.join(os.path.dirname(__file__), filename)
+        if filename is not None: filename = os.path.join(os.getcwd(), filename)
+        
+        assert type(optimisedSide) == str, "Param optimisedSide must be of type str"
+        optimisedSide = optimisedSide.lower()
+        assert optimisedSide in ("student", "lecturer"), "optimisedSide must be either 'student' or 'lecturer'"
 
-        assert optimisedSide in ["student", "lecturer"], "optimisedSide must be either 'student' or 'lecturer'"
+        if optimisedSide == "student":
+            self.spa = SPAStudentOptimal(filename=filename, dictionary=dictionary) 
+        else:
+            self.spa = SPALecturerOptimal(filename=filename, dictionary=dictionary)
 
-        self.spa = SPAStudentOptimal(filename=filename, dictionary=dictionary) if optimisedSide == "student" else SPALecturerOptimal(filename=filename, dictionary=dictionary)
 
-
-    def get_stable_matching(self) -> dict:
+    def get_stable_matching(self) -> dict | None:
         """
         Get the stable matching for the Student Project Allocation algorithm.
 
         :return: dict, the stable matching.
         """
         self.spa.run()
-        return self.spa.stable_matching
+        if not self.spa.blocking_pair: return self.spa.stable_matching
+        return None

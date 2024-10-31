@@ -2,9 +2,7 @@
 Algorithm to produce M_z, the woman-optimal, man-pessimal stable matching, where such a thing exists.
 """
 
-import os
 from stableMatchings.stableMarriageProblem.smAbstract import SMAbstract
-
 
 class SMWomanOptimal(SMAbstract):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
@@ -15,13 +13,16 @@ class SMWomanOptimal(SMAbstract):
         for man in self.men:
             self.M[man] = {"assigned": None}
 
-        for woman in self.women:
-            self.unassigned_women.add(woman)
+        for woman, prefs in self.women.items():
+            if len(prefs["list"]) > 0:
+                self.unassigned_women.add(woman)
             self.M[woman] = {"assigned": None}
 
     def _delete_pair(self, man, woman):         
         self.men[man]['list'].remove(woman)
         self.women[woman]['list'].remove(man)
+        if len(self.women[woman]['list']) ==  0:
+            self.unassigned_women.discard(woman)
 
     def _engage(self, man, woman):
         self.M[man]["assigned"] = woman
@@ -29,7 +30,8 @@ class SMWomanOptimal(SMAbstract):
 
     def _free_up(self, woman):
         self.M[woman]["assigned"] = None
-        self.unassigned_women.add(woman)
+        if len(self.women[woman]["list"]) > 0:
+            self.unassigned_women.add(woman)
  
     def _while_loop(self):
         while len(self.unassigned_women) != 0:

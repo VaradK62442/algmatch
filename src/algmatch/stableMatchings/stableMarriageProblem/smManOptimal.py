@@ -2,8 +2,6 @@
 Algorithm to produce M_0, the man-optimal, woman-pessimal stable matching, where such a thing exists.
 """
 
-from copy import deepcopy
-
 from stableMatchings.stableMarriageProblem.smAbstract import SMAbstract
 
 class SMManOptimal(SMAbstract):
@@ -12,8 +10,9 @@ class SMManOptimal(SMAbstract):
 
         self.unassigned_men = set()
 
-        for man in self.men:
-            self.unassigned_men.add(man)
+        for man, prefs in self.men.items():
+            if len(prefs["list"]) > 0:
+                self.unassigned_men.add(man)
             self.M[man] = {"assigned": None}
 
         for woman in self.women:
@@ -22,6 +21,8 @@ class SMManOptimal(SMAbstract):
     def _delete_pair(self, man, woman):         
         self.men[man]['list'].remove(woman)
         self.women[woman]['list'].remove(man)
+        if len(self.men[man]['list']) ==  0:
+            self.unassigned_men.discard(man)
 
     def _engage(self, man, woman):
         self.M[man]["assigned"] = woman
@@ -29,7 +30,8 @@ class SMManOptimal(SMAbstract):
 
     def _free_up(self, man):
         self.M[man]["assigned"] = None
-        self.unassigned_men.add(man)
+        if len(self.men[man]["list"]) > 0:
+            self.unassigned_men.add(man)
  
     def _while_loop(self):
         while len(self.unassigned_men) != 0:

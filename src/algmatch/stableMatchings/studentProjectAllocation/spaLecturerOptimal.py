@@ -2,9 +2,7 @@
 Student Project Allocation - Lecturer Optimal
 """
 
-import os
-
-from stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
+from algmatch.stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
 
 
 class SPALecturerOptimal(SPAAbstract):

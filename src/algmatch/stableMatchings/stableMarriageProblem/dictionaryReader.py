@@ -20,14 +20,29 @@ class DictionaryReader(AbstractReader):
                     for k, v in value.items():
                         man = f"m{k}"
                         preferences = [f"w{i}" for i in v]
-                        rank = {woman: idx for idx, woman in enumerate(preferences)}
 
-                        self.men[man] = {"list": preferences, "rank": rank}
+                        self.men[man] = {"list": preferences, "rank": {}}
 
                 case "women":
                     for k, v in value.items():
                         woman = f"w{k}"
                         preferences = [f"m{i}" for i in v]
-                        rank = {man: idx for idx, man in enumerate(preferences)}
 
-                        self.women[woman] = {"list": preferences, "rank": rank}
+                        self.women[woman] = {"list": preferences, "rank": {}}
+
+        #remove unacceptable pairs
+        for m, m_prefs in self.men.items():
+            acceptable_m_prefs = []
+            for w in m_prefs["list"]:
+                if m in self.women[w]["list"]:
+                    acceptable_m_prefs.append(w)
+            self.men[m]["list"] = acceptable_m_prefs
+            self.men[m]["rank"] = {woman: idx for idx, woman in enumerate(acceptable_m_prefs)}
+
+        for w, w_prefs in self.women.items():
+            acceptable_w_prefs = []
+            for m in w_prefs["list"]:
+                if w in self.men[m]["list"]:
+                    acceptable_w_prefs.append(m)
+            self.women[w]["list"] = acceptable_w_prefs
+            self.women[w]["rank"] = {man: idx for idx, man in enumerate(acceptable_w_prefs)}

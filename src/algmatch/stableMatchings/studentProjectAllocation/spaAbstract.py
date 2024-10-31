@@ -4,7 +4,7 @@ Student Project Allocation - Abstract class
 
 import os
 
-from stableMatchings.studentProjectAllocation.spaPreferenceInstance import SPAPreferenceInstance
+from algmatch.stableMatchings.studentProjectAllocation.spaPreferenceInstance import SPAPreferenceInstance
 
 
 class SPAAbstract:

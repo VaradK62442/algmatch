@@ -2,10 +2,9 @@
 Student Project Allocation - Student Optimal version
 """
 
-import os
 from copy import deepcopy
 
-from stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
+from algmatch.stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
 
 class SPAStudentOptimal(SPAAbstract):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:

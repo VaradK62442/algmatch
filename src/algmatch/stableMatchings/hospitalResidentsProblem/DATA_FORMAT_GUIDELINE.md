@@ -75,12 +75,12 @@ An example file could look like this:
         2: [2,1],
         3: [1]
     },
-    'hospital': {
-        <hospital number 1>: {
+    'hospitals': {
+        1: {
             'capacity': 2,
             'preferences': [3,2,1]
         },
-        <hospital number 2>: {
+        2: {
             'capacity': 1,
             'preferences': [1,2]
         }

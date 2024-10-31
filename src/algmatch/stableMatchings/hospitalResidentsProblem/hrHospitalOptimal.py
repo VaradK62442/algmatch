@@ -14,8 +14,9 @@ class HRHospitalOptimal(HRAbstract):
         for resident in self.residents:
             self.M[resident] = {"assigned": None}
 
-        for hospital in self.hospitals:
-            self.undersub_hospitals.add(hospital)
+        for hospital, prefs in self.hospitals.items():
+            if len(prefs["list"]) > 0:
+                self.undersub_hospitals.add(hospital)
             self.M[hospital] = {"assigned": set()}
 
     def _assign_pair(self, resident, hospital):
@@ -25,6 +26,8 @@ class HRHospitalOptimal(HRAbstract):
     def _delete_pair(self, resident, hospital):         
         self.residents[resident]['list'].remove(hospital)
         self.hospitals[hospital]['list'].remove(resident)
+        if len(self.hospitals[hospital]['list']) ==  0:
+            self.unassigned_hospitals.discard(hospital)
 
     def _break_assignment(self, resident, hospital):
         self.M[resident]["assigned"] = None
