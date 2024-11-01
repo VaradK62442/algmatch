@@ -2,9 +2,9 @@
 Store preference lists for Stable Marriage stable matching algorithm.
 """
 
-from abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
-from stableMatchings.stableMarriageProblem.fileReader import FileReader
-from stableMatchings.stableMarriageProblem.dictionaryReader import DictionaryReader
+from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
+from algmatch.stableMatchings.stableMarriageProblem.fileReader import FileReader
+from algmatch.stableMatchings.stableMarriageProblem.dictionaryReader import DictionaryReader
 
 
 class SMPreferenceInstance(AbstractPreferenceInstance):

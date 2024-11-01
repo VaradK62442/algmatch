@@ -3,7 +3,7 @@ Algorithm to produce the resident-optimal, hospital-pessimal stable matching.
 """
 
 from copy import deepcopy
-from stableMatchings.hospitalResidentsProblem.hrAbstract import HRAbstract
+from algmatch.stableMatchings.hospitalResidentsProblem.hrAbstract import HRAbstract
 
 class HRHospitalOptimal(HRAbstract):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
