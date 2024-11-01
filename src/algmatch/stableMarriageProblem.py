@@ -21,7 +21,7 @@ class StableMarriageProblem:
 
         assert type(optimisedSide) == str, "Param optimisedSide must be of type str"
         optimisedSide = optimisedSide.lower()
-        assert optimisedSide in ("men", "woman"), "Optimised side must either be 'men' or 'women'"
+        assert optimisedSide in ("men", "women"), "Optimised side must either be 'men' or 'women'"
         
         if optimisedSide == "men":
             self.sm = SMManOptimal(filename=filename, dictionary=dictionary)
