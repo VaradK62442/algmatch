@@ -78,7 +78,8 @@ class HRAbstract:
         self._check_stability()
 
         for resident in self.residents:
-            if hospital := self.M[resident]["assigned"] is not None:
+            hospital = self.M[resident]["assigned"]
+            if hospital is not None:
                 self.stable_matching["resident_sided"][resident] = hospital
                 self.stable_matching["hospital_sided"][hospital].append(resident)
 
