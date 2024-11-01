@@ -24,7 +24,10 @@ class SPAAbstract:
         self.lecturers = self._reader.lecturers
 
         self.M = {} # provisional matching
-        self.stable_matching = {}
+        self.stable_matching = {
+            "student_sided": {student: "" for student in self.students},
+            "lecturer_sided": {lecturer: [] for lecturer in self.lecturers}
+        }
         self.blocking_pair = False
 
 
@@ -112,7 +115,10 @@ class SPAAbstract:
         self._check_stability()
 
         for student in self.students:
-            self.stable_matching[student] = self.M[student]["assigned"] if self.M[student]["assigned"] is not None else ""
+            if project := self.M[student]["assigned"] is not None:
+                lecturer = self.projects[project]["lecturer"]
+                self.stable_matching["student_sided"][student] = project
+                self.stable_matching["lecturer_sided"][lecturer].append(student)
 
         if not self.blocking_pair: return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"

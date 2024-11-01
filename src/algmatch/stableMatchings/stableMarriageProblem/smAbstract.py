@@ -23,7 +23,10 @@ class SMAbstract:
         self.women = self._reader.women
 
         self.M = {} # provisional matching
-        self.stable_matching = {}
+        self.stable_matching = {
+            "man_sided": {m: "" for m in self.men},
+            "woman_sided": {w: "" for w in self.women}
+        }
         self.blocking_pair = False
 
     # =======================================================================    
@@ -65,11 +68,9 @@ class SMAbstract:
         self._check_stability()
 
         for man in self.men:
-            if self.M[man]["assigned"] is not None:
-                self.stable_matching[man] = self.M[man]["assigned"]
-            else:
-                self.stable_matching[man] = ""
+            if woman := self.M[man]["assigned"] is not None:
+                self.stable_matching["man_sided"][man] = woman
+                self.stable_matching["woman_sided"][woman] = man
 
-        if not self.blocking_pair:
-            return f"stable matching: {self.stable_matching}"
+        if not self.blocking_pair: return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"

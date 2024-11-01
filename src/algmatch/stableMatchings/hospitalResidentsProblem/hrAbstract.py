@@ -23,7 +23,10 @@ class HRAbstract:
         self.hospitals = self._reader.hospitals
 
         self.M = {} # provisional matching
-        self.stable_matching = {}
+        self.stable_matching = {
+            "resident_sided": {resident: "" for resident in self.residents},
+            "hospital_sided": {hospital: [] for hospital in self.hospitals}
+        }
         self.blocking_pair = False
 
     def _blocking_pair_condition(self, resident, hospital):
@@ -75,11 +78,9 @@ class HRAbstract:
         self._check_stability()
 
         for resident in self.residents:
-            if self.M[resident]["assigned"] is not None:
-                self.stable_matching[resident] = self.M[resident]["assigned"]
-            else:
-                self.stable_matching[resident] = ""
+            if hospital := self.M[resident]["assigned"] is not None:
+                self.stable_matching["resident_sided"][resident] = hospital
+                self.stable_matching["hospital_sided"][hospital].append(resident)
 
-        if not self.blocking_pair:
-            return f"stable matching: {self.stable_matching}"
+        if not self.blocking_pair: return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"
