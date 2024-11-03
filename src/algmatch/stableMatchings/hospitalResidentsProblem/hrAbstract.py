@@ -24,8 +24,8 @@ class HRAbstract:
         self.hospitals = self._reader.hospitals
 
         # we need original copies of the preference lists to check the stability of solutions
-        self.original_residents = deepcopy(self.men)
-        self.original_hospitals = deepcopy(self.women)
+        self.original_residents = deepcopy(self.residents)
+        self.original_hospitals = deepcopy(self.hospitals)
 
         self.M = {} # provisional matching
         self.stable_matching = {
