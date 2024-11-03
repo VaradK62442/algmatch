@@ -23,11 +23,12 @@ class SMI:
         self.men = {} # man dictionary
         self.women = {} # woman dictionary
 
-        
-    def generate_instance_no_ties(self):
+        # lists of numbers that will be shuffled to get preferences
         self.available_men = [i+1 for i in range(self.no_men)]
         self.available_women = [i+1 for i in range(self.no_women)]
 
+        
+    def generate_instance_no_ties(self):
         # ====== MEN ======= 
         self.men = {i+1 : {"list": []} for i in range(self.no_men)}
         for man in self.men:
