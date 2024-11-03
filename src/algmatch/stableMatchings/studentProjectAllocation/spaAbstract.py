@@ -115,7 +115,8 @@ class SPAAbstract:
         self._check_stability()
 
         for student in self.students:
-            if project := self.M[student]["assigned"] is not None:
+            project = self.M[student]["assigned"]
+            if project is not None:
                 lecturer = self.projects[project]["lecturer"]
                 self.stable_matching["student_sided"][student] = project
                 self.stable_matching["lecturer_sided"][lecturer].append(student)
