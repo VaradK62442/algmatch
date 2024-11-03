@@ -46,13 +46,13 @@ Let `i` be the number of men, and `j` the number of women.
 
 ```txt
 {
-    'man': {
+    'men': {
         <man number 1>: <preference list of women numbers>,
         <man number 2>: <preference list of women numbers>,
         ...
         <man number i>: <preference list of women numbers>
     },
-    'woman': {
+    'women': {
         <woman number 1>: <preference list of men numbers>,
         <woman number 2>: <preference list of men numbers>,
         ...
