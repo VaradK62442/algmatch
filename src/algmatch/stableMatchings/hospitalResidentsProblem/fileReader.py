@@ -2,7 +2,7 @@
 Class to read in a file of preferences for the Hospitals/Residents Problem stable matching algorithm.
 """
 
-from abstractClasses.abstractReader import AbstractReader
+from algmatch.abstractClasses.abstractReader import AbstractReader
 
 class FileReader(AbstractReader):
     def __init__(self, filename: str) -> None:
