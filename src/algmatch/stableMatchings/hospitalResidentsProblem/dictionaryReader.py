@@ -2,7 +2,7 @@
 Class to read in a dictionary of preferences for the Hospital/Residents Problem stable matching algorithm.
 """
 
-from abstractClasses.abstractReader import AbstractReader
+from algmatch.abstractClasses.abstractReader import AbstractReader
 
 
 class DictionaryReader(AbstractReader):

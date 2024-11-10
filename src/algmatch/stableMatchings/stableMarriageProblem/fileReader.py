@@ -2,7 +2,7 @@
 Class to read in a file of preferences for the Stable Marriage Problem stable matching algorithm.
 """
 
-from abstractClasses.abstractReader import AbstractReader
+from algmatch.abstractClasses.abstractReader import AbstractReader
 
 
 class FileReader(AbstractReader):

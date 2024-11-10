@@ -5,7 +5,7 @@ Hospital/Residents Problem - Abstract class
 from copy import deepcopy
 import os
 
-from stableMatchings.hospitalResidentsProblem.hrPreferenceInstance import HRPreferenceInstance
+from algmatch.stableMatchings.hospitalResidentsProblem.hrPreferenceInstance import HRPreferenceInstance
 
 
 class HRAbstract:

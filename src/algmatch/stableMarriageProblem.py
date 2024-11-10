@@ -4,8 +4,8 @@ Class to provide interface for the Stable Marriage Problem algorithm.
 
 import os
 
-from stableMatchings.stableMarriageProblem.smManOptimal import SMManOptimal
-from stableMatchings.stableMarriageProblem.smWomanOptimal import SMWomanOptimal
+from algmatch.stableMatchings.stableMarriageProblem.smManOptimal import SMManOptimal
+from algmatch.stableMatchings.stableMarriageProblem.smWomanOptimal import SMWomanOptimal
 
 
 class StableMarriageProblem:

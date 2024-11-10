@@ -4,8 +4,8 @@ Class to provide interface for the Hospital/Residents Problem algorithm.
 
 import os
 
-from stableMatchings.hospitalResidentsProblem.hrResidentOptimal import HRResidentOptimal
-from stableMatchings.hospitalResidentsProblem.hrHospitalOptimal import HRHospitalOptimal
+from algmatch.stableMatchings.hospitalResidentsProblem.hrResidentOptimal import HRResidentOptimal
+from algmatch.stableMatchings.hospitalResidentsProblem.hrHospitalOptimal import HRHospitalOptimal
 
 
 class HospitalResidentsProblem:

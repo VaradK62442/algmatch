@@ -5,7 +5,7 @@ Stable Marriage Problem - Abstract class
 from copy import deepcopy
 import os
 
-from stableMatchings.stableMarriageProblem.smPreferenceInstance import SMPreferenceInstance
+from algmatch.stableMatchings.stableMarriageProblem.smPreferenceInstance import SMPreferenceInstance
 
 
 class SMAbstract:

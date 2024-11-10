@@ -2,7 +2,7 @@
 Algorithm to produce M_0, the man-optimal, woman-pessimal stable matching, where such a thing exists.
 """
 
-from stableMatchings.stableMarriageProblem.smAbstract import SMAbstract
+from algmatch.stableMatchings.stableMarriageProblem.smAbstract import SMAbstract
 
 class SMManOptimal(SMAbstract):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:

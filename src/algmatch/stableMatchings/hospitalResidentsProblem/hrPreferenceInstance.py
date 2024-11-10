@@ -2,9 +2,9 @@
 Store preference lists for Hospital/Residents Problem stbale matching algorithm.
 """
 
-from abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
-from stableMatchings.hospitalResidentsProblem.fileReader import FileReader
-from stableMatchings.hospitalResidentsProblem.dictionaryReader import DictionaryReader
+from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
+from algmatch.stableMatchings.hospitalResidentsProblem.fileReader import FileReader
+from algmatch.stableMatchings.hospitalResidentsProblem.dictionaryReader import DictionaryReader
 
 
 class HRPreferenceInstance(AbstractPreferenceInstance):
