@@ -33,7 +33,7 @@ class SMAbstract:
     # Is M stable? Check for blocking pair
     # self.blocking_pair is set to True if blocking pair exists
     # =======================================================================
-    def _check_stability(self):        
+    def _check_stability(self) -> bool:        
         for man in self.men:
             preferred_women = self.men[man]["list"]
             if self.M[man]["assigned"] is not None:
@@ -52,12 +52,9 @@ class SMAbstract:
                         self.blocking_pair = True
                 
                 if self.blocking_pair:
-                    # print(man, woman)
-                    break
-            
-            if self.blocking_pair:
-                # print(man, woman)
-                break
+                    return True
+                
+        return False
 
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")

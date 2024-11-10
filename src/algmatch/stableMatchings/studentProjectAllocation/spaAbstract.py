@@ -29,6 +29,7 @@ class SPAAbstract:
             "lecturer_sided": {lecturer: [] for lecturer in self.lecturers}
         }
         self.blocking_pair = False
+        self.blocking_conditions = (self._blockingpair_1bi, self._blockingpair_1bii, self._blockingpair_1biii)
 
 
     # =======================================================================    
@@ -79,7 +80,7 @@ class SPAAbstract:
     # Is M stable? Check for blocking pair
     # self.blocking_pair is set to True if blocking pair exists
     # =======================================================================
-    def _check_stability(self):        
+    def _check_stability(self) -> bool:        
         for student in self.students:
             preferred_projects = self.students[student]["list"]
             if self.M[student]["assigned"] is not None:
@@ -90,20 +91,12 @@ class SPAAbstract:
         
             for project in preferred_projects:
                 lecturer = self.projects[project]["lecturer"]
-                if not self.blocking_pair:
-                    self.blocking_pair = self._blockingpair_1bi(student, project, lecturer)
-                if not self.blocking_pair:
-                    self.blocking_pair = self._blockingpair_1bii(student, project, lecturer)
-                if not self.blocking_pair:
-                    self.blocking_pair = self._blockingpair_1biii(student, project, lecturer)
-                
-                if self.blocking_pair:
-                #    print(student, project, lecturer)
-                   break
-            
-            if self.blocking_pair:
-                # print(student, project, lecturer)
-                break
+                for condition in self.blocking_conditions:
+                    self.blocking_pair = condition(student, project, lecturer)
+                    if self.blocking_pair:
+                        return True
+                    
+        return False
 
 
     def _while_loop(self):

@@ -47,7 +47,7 @@ class HRAbstract:
     # Is M stable? Check for blocking pair
     # self.blocking_pair is set to True if blocking pair exists
     # =======================================================================
-    def _check_stability(self):        
+    def _check_stability(self) -> bool:        
         for resident in self.residents:
             preferred_hospitals = self.residents[resident]["list"]
             if self.M[resident]["assigned"] is not None:
@@ -57,17 +57,11 @@ class HRAbstract:
                 preferred_hospitals = [hj for hj in A_ri[:rank_matched_hospital]] # every project that s_i prefers to her matched project                                
         
             for hospital in preferred_hospitals:
-                if not self.blocking_pair:
-                    self.blocking_pair = self._blocking_pair_condition(resident, hospital)
-                
+                self.blocking_pair = self._blocking_pair_condition(resident, hospital)
                 if self.blocking_pair:
-                #    print(student, project, lecturer)
-                   break
-            
-            if self.blocking_pair:
-                # print(student, project, lecturer)
-                break
-
+                    return True
+                
+        return False
 
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
