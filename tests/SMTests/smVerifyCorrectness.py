@@ -10,7 +10,7 @@ sys.path.append(module)
 
 from algmatch.stableMarriageProblem import StableMarriageProblem
 
-from instanceGenerator import SMI as InstanceGenerator
+from instanceGenerator import SMInstanceGenerator as InstanceGenerator
 from enumerateSMs import ESMS
 
 

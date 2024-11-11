@@ -9,7 +9,7 @@ sys.path.append(module)
 
 from algmatch.hospitalResidentsProblem import HospitalResidentsProblem
 
-from instanceGenerator import HR as InstanceGenerator
+from instanceGenerator import HRInstanceGenerator as InstanceGenerator
 from enumerateSMs import ESMS
 
 

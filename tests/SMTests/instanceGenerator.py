@@ -1,6 +1,6 @@
 import random
 
-class SMI:
+class SMInstanceGenerator:
     def __init__(self, men, women, lower_bound, upper_bound):
         if men <= 0 or type(men) != int:
             raise ValueError("number of men must be a postive integer")
