@@ -54,6 +54,7 @@ class HRResidentOptimal(HRAbstract):
             if occupancy > capacity:
                 r_worst = self._get_worst_existing_resident(h)
                 self._break_assignment(r_worst,h)
+                occupancy -= 1
 
             if occupancy == capacity:
                 r_worst = self._get_worst_existing_resident(h)

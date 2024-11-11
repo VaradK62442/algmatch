@@ -11,6 +11,10 @@ class ESMS(HRAbstract):
         self.full_hospitals = set()
         self.all_stable_matchings = []
 
+        # This lets us order residents in the stable matching by number.
+        # We cannot use 'sorted' without this key because that uses lexial order.
+        self.resident_order_comparator = lambda r: int(r[1:])
+
     def hospital_is_full(self, h):
         return self.hospitals[h]["capacity"] == len(self.M[h]["assigned"])
     
@@ -22,8 +26,7 @@ class ESMS(HRAbstract):
             else:
                 stable_matching["resident_sided"][resident] = self.M[resident]["assigned"]
         for hospital in self.hospitals:
-            stable_matching["hospital_sided"][hospital] = list(self.M[hospital]["assigned"])
-            stable_matching["hospital_sided"][hospital].sort()
+            stable_matching["hospital_sided"][hospital] = sorted(self.M[hospital]["assigned"], key=self.resident_order_comparator)
         self.all_stable_matchings.append(stable_matching)
 
     # ------------------------------------------------------------------------
