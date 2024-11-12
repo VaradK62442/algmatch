@@ -3,11 +3,6 @@ import sys
 import time
 from tqdm import tqdm
 
-module = os.path.join(os.getcwd(),'src')
-sys.path.append(module)
-module = os.path.join(os.getcwd(),'src','algmatch')
-sys.path.append(module)
-
 from algmatch.stableMarriageProblem import StableMarriageProblem
 
 from instanceGenerator import SMInstanceGenerator as InstanceGenerator
