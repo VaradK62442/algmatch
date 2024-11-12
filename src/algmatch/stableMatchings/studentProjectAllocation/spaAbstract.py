@@ -28,7 +28,6 @@ class SPAAbstract:
             "student_sided": {student: "" for student in self.students},
             "lecturer_sided": {lecturer: [] for lecturer in self.lecturers}
         }
-        self.blocking_pair = False
         self.blocking_conditions = (self._blockingpair_1bi, self._blockingpair_1bii, self._blockingpair_1biii)
 
 
@@ -92,11 +91,10 @@ class SPAAbstract:
             for project in preferred_projects:
                 lecturer = self.projects[project]["lecturer"]
                 for condition in self.blocking_conditions:
-                    self.blocking_pair = condition(student, project, lecturer)
-                    if self.blocking_pair:
-                        return True
+                    if condition(student, project, lecturer):
+                        return False
                     
-        return False
+        return True
 
 
     def _while_loop(self):
@@ -105,7 +103,6 @@ class SPAAbstract:
 
     def run(self) -> None:
         self._while_loop()
-        self._check_stability()
 
         for student in self.students:
             project = self.M[student]["assigned"]
@@ -114,5 +111,5 @@ class SPAAbstract:
                 self.stable_matching["student_sided"][student] = project
                 self.stable_matching["lecturer_sided"][lecturer].append(student)
 
-        if not self.blocking_pair: return f"stable matching: {self.stable_matching}"
+        if self._check_stability(): return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"
