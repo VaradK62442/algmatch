@@ -1,6 +1,3 @@
-import os
-import sys
-
 from algmatch.stableMatchings.hospitalResidentsProblem.hrAbstract import HRAbstract
 
 class ESMS(HRAbstract):
@@ -21,7 +18,7 @@ class ESMS(HRAbstract):
     def save_matching(self):
         stable_matching = {"resident_sided":{},"hospital_sided":{}}
         for resident in self.residents:
-            if self.M[resident]["assigned"] == None:
+            if self.M[resident]["assigned"] is None:
                 stable_matching["resident_sided"][resident] = ''
             else:
                 stable_matching["resident_sided"][resident] = self.M[resident]["assigned"]
