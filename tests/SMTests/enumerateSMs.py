@@ -1,6 +1,3 @@
-import os
-import sys
-
 from algmatch.stableMatchings.stableMarriageProblem.smAbstract import SMAbstract
 
 class ESMS(SMAbstract):
@@ -15,12 +12,12 @@ class ESMS(SMAbstract):
     def save_matching(self):
         stable_matching = {"man_sided":{},"woman_sided":{}}
         for man in self.men:
-            if self.M[man]["assigned"] == None:
+            if self.M[man]["assigned"] is None:
                 stable_matching["man_sided"][man] = ''
             else:
                 stable_matching["man_sided"][man] = self.M[man]["assigned"]
         for woman in self.women:
-            if self.M[woman]["assigned"] == None:
+            if self.M[woman]["assigned"] is None:
                 stable_matching["woman_sided"][woman] = ''
             else:
                 stable_matching["woman_sided"][woman] = self.M[woman]["assigned"]

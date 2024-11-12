@@ -2,11 +2,11 @@ import random
 
 class HRInstanceGenerator:
     def __init__(self, residents, hospitals, lower_bound, upper_bound):
-        if residents <= 0 or type(residents) != int:
+        if residents <= 0 or type(residents) is not int:
             raise ValueError("number of residents must be a postive integer")
-        if hospitals <= 0 or type(hospitals) != int:
+        if hospitals <= 0 or type(hospitals) is not int:
             raise ValueError("number of men must be a postive integer")
-        if type(lower_bound) != int or type(upper_bound) != int:
+        if type(lower_bound) is not int or type(upper_bound) is not int:
             raise ValueError("Bound must be integers.")
         if lower_bound < 0:
             raise ValueError("Lower bound is negative.")
@@ -47,7 +47,7 @@ class HRInstanceGenerator:
             self.hospitals[hos]["list"] = self.available_residents[:]
 
     def write_instance_no_ties(self, filename):  # writes to txt file
-        if type(filename) != str:
+        if type(filename) is not str:
             raise ValueError("Filename is not a string.")
 
         with open(filename, 'w') as I:

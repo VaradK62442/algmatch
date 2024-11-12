@@ -2,11 +2,11 @@ import random
 
 class SMInstanceGenerator:
     def __init__(self, men, women, lower_bound, upper_bound):
-        if men <= 0 or type(men) != int:
+        if men <= 0 or type(men) is not int:
             raise ValueError("number of men must be a postive integer")
-        if women <= 0 or type(women) != int:
+        if women <= 0 or type(women) is not int:
             raise ValueError("number of men must be a postive integer")
-        if type(lower_bound) != int or type(upper_bound) != int:
+        if type(lower_bound) is not int or type(upper_bound) is not int:
             raise ValueError("Bound must be integers.")
         if lower_bound < 0:
             raise ValueError("Lower bound is negative.")
@@ -46,7 +46,7 @@ class SMInstanceGenerator:
             self.women[woman]["list"] = self.available_men[:length]
 
     def write_instance_no_ties(self, filename):  # writes to txt file
-        if type(filename) != str:
+        if type(filename) is not str:
             raise ValueError("Filename is not a string.")
 
         with open(filename, 'w') as I:

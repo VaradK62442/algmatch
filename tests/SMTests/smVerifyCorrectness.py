@@ -1,6 +1,4 @@
 import os
-import sys
-import time
 from tqdm import tqdm
 
 from algmatch.stableMarriageProblem import StableMarriageProblem
