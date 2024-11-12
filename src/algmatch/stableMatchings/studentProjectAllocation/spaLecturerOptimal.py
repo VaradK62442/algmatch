@@ -1,5 +1,5 @@
 """
-Student Project Allocation - Lecturer Optimal
+Student Project Allocation - Lecturer Optimal version
 """
 
 from algmatch.stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
