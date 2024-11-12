@@ -27,13 +27,12 @@ class SMAbstract:
             "man_sided": {m: "" for m in self.men},
             "woman_sided": {w: "" for w in self.women}
         }
-        self.blocking_pair = False
 
     # =======================================================================    
     # Is M stable? Check for blocking pair
     # self.blocking_pair is set to True if blocking pair exists
     # =======================================================================
-    def _check_stability(self):        
+    def _check_stability(self) -> bool:        
         for man in self.men:
             preferred_women = self.men[man]["list"]
             if self.M[man]["assigned"] is not None:
@@ -45,19 +44,13 @@ class SMAbstract:
             for woman in preferred_women:
                 existing_fiance = self.M[woman]["assigned"]
                 if existing_fiance == None:
-                    self.blocking_pair = True
+                    return False
                 else:
                     rank_fiance = self.women[woman]["rank"][existing_fiance]
                     if man in self.women[woman]["list"][:rank_fiance]:
-                        self.blocking_pair = True
+                        return False
                 
-                if self.blocking_pair:
-                    # print(man, woman)
-                    break
-            
-            if self.blocking_pair:
-                # print(man, woman)
-                break
+        return True
 
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
@@ -65,7 +58,6 @@ class SMAbstract:
 
     def run(self) -> None:
         self._while_loop()
-        self._check_stability()
 
         for man in self.men:
             woman = self.M[man]["assigned"]
@@ -73,5 +65,5 @@ class SMAbstract:
                 self.stable_matching["man_sided"][man] = woman
                 self.stable_matching["woman_sided"][woman] = man
 
-        if not self.blocking_pair: return f"stable matching: {self.stable_matching}"
+        if self._check_stability(): return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"
