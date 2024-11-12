@@ -32,7 +32,6 @@ class HRAbstract:
             "resident_sided": {resident: "" for resident in self.residents},
             "hospital_sided": {hospital: [] for hospital in self.hospitals}
         }
-        self.blocking_pair = False
 
     def _blocking_pair_condition(self, resident, hospital):
         # blocking pairs exist w.r.t the original preference lists; we must use original_
@@ -50,7 +49,6 @@ class HRAbstract:
             
         return False
 
-
     def _check_stability(self):
         # stability must be checked with regards to the original lists prior to deletions       
         for resident in self.original_residents:
@@ -62,23 +60,16 @@ class HRAbstract:
                 preferred_hospitals = [hj for hj in A_ri[:rank_matched_hospital]]                             
         
             for hospital in preferred_hospitals:
-                if not self.blocking_pair:
-                    self.blocking_pair = self._blocking_pair_condition(resident, hospital)
+                if self._blocking_pair_condition(resident, hospital):
+                    return False
                 
-                if self.blocking_pair:
-                   break
-            
-            if self.blocking_pair:
-                break
-
+        return True
 
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
-    
 
     def run(self) -> None:
         self._while_loop()
-        self._check_stability()
 
         for resident in self.residents:
             hospital = self.M[resident]["assigned"]
@@ -86,5 +77,5 @@ class HRAbstract:
                 self.stable_matching["resident_sided"][resident] = hospital
                 self.stable_matching["hospital_sided"][hospital].append(resident)
 
-        if not self.blocking_pair: return f"stable matching: {self.stable_matching}"
+        if self._check_stability(): return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"
