@@ -35,6 +35,7 @@ class SMManOptimal(SMAbstract):
  
     def _while_loop(self):
         while len(self.unassigned_men) != 0:
+
             m = self.unassigned_men.pop()
             w = self.men[m]["list"][0]
             p = self.M[w]["assigned"]
@@ -44,5 +45,5 @@ class SMManOptimal(SMAbstract):
             self._engage(m,w)
 
             rank_m = self.women[w]["rank"][m]
-            for reject in self.women[w]["list"][rank_m:]:
+            for reject in self.women[w]["list"][rank_m+1:]:
                 self._delete_pair(reject,w)
