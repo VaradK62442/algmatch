@@ -32,6 +32,7 @@ class HRAbstract:
             "resident_sided": {resident: "" for resident in self.residents},
             "hospital_sided": {hospital: [] for hospital in self.hospitals}
         }
+        self.is_stable = False
 
     def _blocking_pair_condition(self, resident, hospital):
         # blocking pairs exist w.r.t the original preference lists; we must use original_
@@ -77,5 +78,7 @@ class HRAbstract:
                 self.stable_matching["resident_sided"][resident] = hospital
                 self.stable_matching["hospital_sided"][hospital].append(resident)
 
-        if self._check_stability(): return f"stable matching: {self.stable_matching}"
+        self.is_stable = self._check_stability()
+
+        if self.is_stable: return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"

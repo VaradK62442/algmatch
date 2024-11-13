@@ -31,6 +31,7 @@ class SMAbstract:
             "man_sided": {m: "" for m in self.men},
             "woman_sided": {w: "" for w in self.women}
         }
+        self.is_stable = False
 
     # =======================================================================    
     # Is M stable? Check for blocking pair
@@ -59,7 +60,6 @@ class SMAbstract:
 
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
-    
 
     def run(self) -> None:
         self._while_loop()
@@ -70,5 +70,7 @@ class SMAbstract:
                 self.stable_matching["man_sided"][man] = woman
                 self.stable_matching["woman_sided"][woman] = man
 
-        if self._check_stability(): return f"stable matching: {self.stable_matching}"
+        self.is_stable = self._check_stability()
+
+        if self.is_stable: return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"

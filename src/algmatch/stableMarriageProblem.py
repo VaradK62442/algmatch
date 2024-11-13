@@ -36,5 +36,5 @@ class StableMarriageProblem:
         :return: dict, the stable matching for this instance
         """
         self.sm.run()
-        if not self.sm.blocking_pair: return self.sm.stable_matching
+        if self.sm.is_stable: return self.sm.stable_matching
         return None

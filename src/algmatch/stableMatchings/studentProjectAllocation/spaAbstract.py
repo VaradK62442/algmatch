@@ -29,7 +29,7 @@ class SPAAbstract:
             "lecturer_sided": {lecturer: [] for lecturer in self.lecturers}
         }
         self.blocking_conditions = (self._blockingpair_1bi, self._blockingpair_1bii, self._blockingpair_1biii)
-
+        self.is_stable = False
 
     # =======================================================================    
     # blocking pair types
@@ -111,5 +111,7 @@ class SPAAbstract:
                 self.stable_matching["student_sided"][student] = project
                 self.stable_matching["lecturer_sided"][lecturer].append(student)
 
-        if self._check_stability(): return f"stable matching: {self.stable_matching}"
+        self.is_stable = self._check_stability()
+
+        if self.is_stable: return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"
