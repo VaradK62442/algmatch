@@ -11,7 +11,3 @@ class AbstractReader:
         Sets appropriate values for the preference instance based on the data read in.
         """
         raise NotImplementedError("Method not implemented")
-    
-class ReaderError(Exception):
-    def __init__(self, source, cause):
-        super().__init__(f"\nSource: {source}\nCause: {cause}")

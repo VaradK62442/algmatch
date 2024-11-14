@@ -3,8 +3,7 @@ Class to read in a file of preferences for the Stable Marriage Problem stable ma
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.abstractClasses.abstractReader import ReaderError
-
+from algmatch.errors.ReaderErrors import ParticipantQuantityError, IDMisformatError, RepeatIDError, PrefListMisformatError
 
 class FileReader(AbstractReader):
     def __init__(self, filename: str) -> None:
@@ -24,7 +23,7 @@ class FileReader(AbstractReader):
         try:
             self.no_men, self.no_women = map(int, file[0].split())
         except ValueError:
-            raise ReaderError(f"line {cur_line}", "Participant Quantities Misformatted")
+            raise ParticipantQuantityError()
 
         # build men dictionary
         for elt in file[1:self.no_men+1]:
@@ -32,14 +31,14 @@ class FileReader(AbstractReader):
             entry = elt.split()
 
             if not entry or not entry[0].isdigit():
-                raise ReaderError(f"line {cur_line}", "Man ID misformatted")
+                raise IDMisformatError("man", cur_line, line=True)
             man = f"m{entry[0]}"
             if man in self.men:
-                raise ReaderError(f"line {cur_line}", "Repeated man ID")
+                raise RepeatIDError("man", cur_line, line=True)
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise ReaderError(f"line {cur_line}", f"Man preference list misformatted; {i} is not int>0")
+                    raise PrefListMisformatError("man",cur_line,line=True)
             preferences = [f"w{i}" for i in entry[1:]]
 
             self.men[man] = {"list": preferences, "rank": {}}
@@ -50,14 +49,14 @@ class FileReader(AbstractReader):
             entry = elt.split()
 
             if not entry or not entry[0].isdigit():
-                raise ReaderError(f"line {cur_line}", "Woman ID misformatted")
+                raise IDMisformatError("woman",cur_line,line=True)
             woman = f"w{entry[0]}"
             if woman in self.women:
-                raise ReaderError(f"line {cur_line}", "Repeated woman ID")
+                raise RepeatIDError("woman",cur_line,line=True)
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise ReaderError(f"line {cur_line}", "Woman preference list misformatted; {i} is not int>0")
+                    raise PrefListMisformatError("woman",cur_line,line=True)
             preferences = [f"m{i}" for i in entry[1:]]
 
             self.women[woman] = {"list": preferences, "rank": {}}

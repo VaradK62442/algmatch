@@ -3,7 +3,8 @@ Class to read in a file of preferences for the Hospitals/Residents Problem stabl
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.abstractClasses.abstractReader import ReaderError
+from algmatch.errors.ReaderErrors import ParticipantQuantityError, CapacityError, IDMisformatError, RepeatIDError, PrefListMisformatError
+
 
 class FileReader(AbstractReader):
     def __init__(self, filename: str) -> None:
@@ -23,7 +24,7 @@ class FileReader(AbstractReader):
         try:
             self.no_residents, self.no_hospitals = map(int, file[0].split())
         except ValueError:
-            raise ReaderError(f"line {cur_line}", "Participant Quantities Misformatted")
+            raise ParticipantQuantityError()
 
         # build residents dictionary
         for elt in file[1:self.no_residents+1]:
@@ -31,14 +32,14 @@ class FileReader(AbstractReader):
             entry = elt.split()
 
             if not entry or not entry[0].isdigit():
-                raise ReaderError(f"line {cur_line}", "Resident ID misformatted")
+                raise IDMisformatError("resident",cur_line,line=True)
             resident = f"r{entry[0]}"
             if resident in self.residents:
-                raise ReaderError(f"line {cur_line}", "Repeated resident ID")
+                raise RepeatIDError("resident",cur_line,line=True)
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise ReaderError(f"line {cur_line}", "Resident preference list misformatted; {i} is not int>0")
+                    raise PrefListMisformatError("resident",cur_line,i,line=True)
             preferences = [f"h{i}" for i in entry[1:]]
 
             self.residents[resident] = {"list": preferences, "rank": {}}
@@ -49,12 +50,18 @@ class FileReader(AbstractReader):
             entry = elt.split()
 
             if not entry or not entry[0].isdigit():
-                raise ReaderError(f"line {cur_line}", "Hospital ID misformatted")
+                raise IDMisformatError("hospital",cur_line,line=True)
             hospital = f"h{entry[0]}"
             if hospital in self.hospitals:
-                raise ReaderError(f"line {cur_line}", "Repeated hospital ID")
+                raise RepeatIDError("hospital",cur_line,line=True)
 
+            if not entry[1].isdigit():
+                raise CapacityError("hospital",cur_line,line=True)
             capacity = int(entry[1])
+
+            for i in entry[2:]:
+                if not i.isdigit():
+                    raise PrefListMisformatError("hospital",cur_line,i,line=True)
             preferences = [f"r{i}" for i in entry[2:]]
 
             self.hospitals[hospital] = {"capacity": capacity, "list": preferences, "rank": {}}

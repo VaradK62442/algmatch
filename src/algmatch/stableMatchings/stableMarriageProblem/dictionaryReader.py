@@ -3,7 +3,7 @@ Class to read in a dictionary of preferences for the Student Project Allocation 
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.abstractClasses.abstractReader import ReaderError
+from algmatch.errors.ReaderErrors import IDMisformatError, RepeatIDError, PrefListMisformatError
 
 class DictionaryReader(AbstractReader):
     def __init__(self, dictionary: dict) -> None:
@@ -19,14 +19,14 @@ class DictionaryReader(AbstractReader):
                 case "men":
                     for k, v in value.items():
                         if type(k) is not int:
-                            raise ReaderError(f"man {k}", "Man ID misformatted")
+                            raise IDMisformatError("man", k)
                         man = f"m{k}"
                         if man in self.men:
-                            raise ReaderError(f"man {k}", "Repeated man ID")
+                            raise RepeatIDError("man", k)
                         
                         for i in v:
                             if type(i) is not int:
-                                raise ReaderError(f"man {k}", "Man preference list misformatted; {i} is not int")
+                                raise PrefListMisformatError("man", k, i)
                         preferences = [f"w{i}" for i in v]
 
                         self.men[man] = {"list": preferences, "rank": {}}
@@ -34,22 +34,14 @@ class DictionaryReader(AbstractReader):
                 case "women":
                     for k, v in value.items():
                         if type(k) is not int:
-                            raise ReaderError(f"woman {k}", "Woman ID misformatted")
+                            raise IDMisformatError("woman", k)
                         woman = f"w{k}"
                         if woman in self.women:
-                            raise ReaderError(f"woman {k}", "Repeated woman ID")
+                            raise RepeatIDError("woman", k)
                         
                         for i in v:
                             if type(i) is not int:
-                                raise ReaderError(f"woman {k}", "Woman preference list misformatted; {i} is not int")
+                                 raise PrefListMisformatError("woman", k, i)
                         preferences = [f"m{i}" for i in v]
 
                         self.women[woman] = {"list": preferences, "rank": {}}
-
-example = {
-    "women" : {
-        1: [0.5,2]
-    }
-}
-
-d = DictionaryReader(example)
