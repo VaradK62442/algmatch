@@ -13,5 +13,5 @@ class AbstractReader:
         raise NotImplementedError("Method not implemented")
     
 class FileError(Exception):
-    def __init__(self, line, message):
-        super().__init__(f"\nLine: {line}\nCause: {message}")
+    def __init__(self, source, cause):
+        super().__init__(f"\nSource: {source}\nCause: {cause}")
