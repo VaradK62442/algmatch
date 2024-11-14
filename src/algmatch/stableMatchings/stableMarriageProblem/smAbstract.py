@@ -49,7 +49,7 @@ class SMAbstract:
         
             for woman in preferred_women:
                 existing_fiance = self.M[woman]["assigned"]
-                if existing_fiance == None:
+                if existing_fiance is None:
                     return False
                 else:
                     rank_fiance = self.original_women[woman]["rank"][existing_fiance]

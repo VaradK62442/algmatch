@@ -4,7 +4,7 @@ Class to read in a file of preferences for the Stable Marriage Problem stable ma
 from itertools import product
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.abstractClasses.abstractReader import FileError
+from algmatch.abstractClasses.abstractReader import ReaderError
 
 
 class FileReader(AbstractReader):
@@ -16,20 +16,20 @@ class FileReader(AbstractReader):
         for m, m_prefs in self.men.items():
 
             if len(set(m_prefs["list"])) != len(m_prefs["list"]):
-                raise FileError(f"man {m}", "Repetition in preference list.")
+                raise ReaderError(f"man {m}", "Repetition in preference list.")
             
             for w in m_prefs["list"]:
                 if w not in self.women:
-                    raise FileError(f"man {m}", f"Woman {w} not instantiated.")
+                    raise ReaderError(f"man {m}", f"Woman {w} not instantiated.")
             
         for w, w_prefs in self.women.items():
 
             if len(set(w_prefs["list"])) != len(w_prefs["list"]):
-                raise FileError(f"woman {w}", "Repetition in preference list.")
+                raise ReaderError(f"woman {w}", "Repetition in preference list.")
             
             for m in w_prefs["list"]:
                 if m not in self.men:
-                    raise FileError(f"woman {w}", f"Man {m} not instantiated.")
+                    raise ReaderError(f"woman {w}", f"Man {m} not instantiated.")
 
     def clean_unacceptable_pairs(self) -> None:
         for m, w in product(self.men, self.women):
@@ -58,7 +58,7 @@ class FileReader(AbstractReader):
         try:
             self.no_men, self.no_women = map(int, file[0].split())
         except ValueError:
-            raise FileError(cur_line, "Participant Quantities Misformatted")
+            raise ReaderError(cur_line, "Participant Quantities Misformatted")
 
         # build men dictionary
         for elt in file[1:self.no_men+1]:
@@ -66,14 +66,14 @@ class FileReader(AbstractReader):
             entry = elt.split()
 
             if not entry or not entry[0].isdigit():
-                raise FileError(f"line {cur_line}", "Man ID misformatted")
+                raise ReaderError(f"line {cur_line}", "Man ID misformatted")
             man = f"m{entry[0]}"
             if man in self.men:
-                raise FileError(f"line {cur_line}", "Repeated man ID")
+                raise ReaderError(f"line {cur_line}", "Repeated man ID")
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise FileError(f"line {cur_line}", "Man preference list misformatted")
+                    raise ReaderError(f"line {cur_line}", "Man preference list misformatted")
             preferences = [f"w{i}" for i in entry[1:]]
 
             self.men[man] = {"list": preferences, "rank": {}}
@@ -84,14 +84,14 @@ class FileReader(AbstractReader):
             entry = elt.split()
 
             if not entry or not entry[0].isdigit():
-                raise FileError(f"line {cur_line}", "Woman ID misformatted")
+                raise ReaderError(f"line {cur_line}", "Woman ID misformatted")
             woman = f"w{entry[0]}"
             if woman in self.women:
-                raise FileError(f"line {cur_line}", "Repeated woman ID")
+                raise ReaderError(f"line {cur_line}", "Repeated woman ID")
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise FileError(f"line {cur_line}", "Woman preference list misformatted")
+                    raise ReaderError(f"line {cur_line}", "Woman preference list misformatted")
             preferences = [f"m{i}" for i in entry[1:]]
 
             self.women[woman] = {"list": preferences, "rank": {}}
