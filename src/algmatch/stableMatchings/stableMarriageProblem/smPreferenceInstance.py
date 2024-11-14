@@ -47,9 +47,9 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
     def clean_unacceptable_pairs(self) -> None:
         for m, w in product(self.men, self.women):
             if m not in self.women[w]["list"] or w not in self.men[m]["list"]:
-                try: m.remove(w)
+                try: self.men[m]["list"].remove(w)
                 except ValueError: pass
-                try: w.remove(m)
+                try: self.women[w]["list"].remove(m)
                 except ValueError: pass
 
     def set_up_rankings(self):
@@ -57,19 +57,3 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
             self.men[m]["rank"] = {woman: idx for idx, woman in enumerate(self.men[m]["list"])}
         for w in self.women:
             self.women[w]["rank"] = {man: idx for idx, man in enumerate(self.women[w]["list"])}
-    
-example = {
-    'men': {
-        1: [2, 4, 1, 3],
-        2: [3, 1, 4, 2],
-        3: [2, 3, 1, 4],
-        4: [4, 1, 3, 2]
-    },
-    'women': {
-        1: [2, 1, 4, 3],
-        2: [4, 3, 1, 2],
-        3: [1, 4, 3, 2],
-        4: [2, 1, 4, 3]
-    }
-}
-ins = SMPreferenceInstance(dictionary=example)
