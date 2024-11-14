@@ -24,7 +24,7 @@ class FileReader(AbstractReader):
         try:
             self.no_men, self.no_women = map(int, file[0].split())
         except ValueError:
-            raise ReaderError(cur_line, "Participant Quantities Misformatted")
+            raise ReaderError(f"line {cur_line}", "Participant Quantities Misformatted")
 
         # build men dictionary
         for elt in file[1:self.no_men+1]:
@@ -39,7 +39,7 @@ class FileReader(AbstractReader):
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise ReaderError(f"line {cur_line}", "Man preference list misformatted")
+                    raise ReaderError(f"line {cur_line}", f"Man preference list misformatted; {i} is not int>0")
             preferences = [f"w{i}" for i in entry[1:]]
 
             self.men[man] = {"list": preferences, "rank": {}}
@@ -57,7 +57,7 @@ class FileReader(AbstractReader):
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise ReaderError(f"line {cur_line}", "Woman preference list misformatted")
+                    raise ReaderError(f"line {cur_line}", "Woman preference list misformatted; {i} is not int>0")
             preferences = [f"m{i}" for i in entry[1:]]
 
             self.women[woman] = {"list": preferences, "rank": {}}

@@ -23,6 +23,10 @@ class DictionaryReader(AbstractReader):
                         man = f"m{k}"
                         if man in self.men:
                             raise ReaderError(f"man {k}", "Repeated man ID")
+                        
+                        for i in v:
+                            if not i.isdigit():
+                                raise ReaderError(f"man {k}", "Man preference list misformatted; {i} is not int>0")
                         preferences = [f"w{i}" for i in v]
 
                         self.men[man] = {"list": preferences, "rank": {}}
@@ -34,6 +38,10 @@ class DictionaryReader(AbstractReader):
                         woman = f"w{k}"
                         if woman in self.women:
                             raise ReaderError(f"woman {k}", "Repeated woman ID")
+                        
+                        for i in v:
+                            if not i.isdigit():
+                                raise ReaderError(f"woman {k}", "Woman preference list misformatted; {i} is not int>0")
                         preferences = [f"m{i}" for i in v]
 
                         self.women[woman] = {"list": preferences, "rank": {}}
