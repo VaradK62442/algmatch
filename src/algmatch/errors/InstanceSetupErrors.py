@@ -14,6 +14,6 @@ class PrefRepError(InstanceSetupError):
         super().__init__(participant_type, name, cause)
 
 class PrefNotFoundError(InstanceSetupError):
-    def __init__(self, participant_type, name,, offender):
+    def __init__(self, participant_type, name, offender):
         cause = f"{offender} not instantiated."
         super().__init__(participant_type, name, cause)
