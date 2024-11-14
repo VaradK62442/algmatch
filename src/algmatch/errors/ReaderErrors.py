@@ -1,5 +1,5 @@
 """
-A set of custom errors to make checking intances cleaner
+A set of custom errors to make checks during reading of instances cleaner
 """
 
 # Ideally this error should never be called directly

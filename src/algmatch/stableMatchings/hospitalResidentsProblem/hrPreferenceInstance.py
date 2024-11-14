@@ -6,7 +6,7 @@ from itertools import product
 from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
 from algmatch.stableMatchings.hospitalResidentsProblem.fileReader import FileReader
 from algmatch.stableMatchings.hospitalResidentsProblem.dictionaryReader import DictionaryReader
-from algmatch.abstractClasses.abstractReader import ReaderError
+from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 class HRPreferenceInstance(AbstractPreferenceInstance):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
@@ -29,20 +29,20 @@ class HRPreferenceInstance(AbstractPreferenceInstance):
         for r, r_prefs in self.residents.items():
 
             if len(set(r_prefs["list"])) != len(r_prefs["list"]):
-                raise ReaderError(f"resident {r}", "Repetition in preference list.")
+                raise PrefRepError("resident",r)
             
             for h in r_prefs["list"]:
                 if h not in self.hospitals:
-                    raise ReaderError(f"resident {r}", f"Hospital {h} not instantiated.")
+                    raise PrefNotFoundError("resident",r,h)
             
         for h, h_prefs in self.hospitals.items():
 
             if len(set(h_prefs["list"])) != len(h_prefs["list"]):
-                raise ReaderError(f"hospitals {h}", "Repetition in preference list.")
+                raise PrefRepError("hospital",h)
             
             for r in h_prefs["list"]:
                 if r not in self.residents:
-                    raise ReaderError(f"hospitals {h}", f"Resident {r} not instantiated.")
+                    raise PrefNotFoundError("hospital",h,r)
                 
     def clean_unacceptable_pairs(self) -> None:
         for r, h in product(self.residents, self.hospitals):

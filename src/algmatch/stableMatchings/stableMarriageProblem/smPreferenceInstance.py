@@ -6,7 +6,7 @@ from itertools import product
 from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
 from algmatch.stableMatchings.stableMarriageProblem.fileReader import FileReader
 from algmatch.stableMatchings.stableMarriageProblem.dictionaryReader import DictionaryReader
-from algmatch.abstractClasses.abstractReader import ReaderError
+from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 class SMPreferenceInstance(AbstractPreferenceInstance):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
@@ -29,20 +29,20 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
         for m, m_prefs in self.men.items():
 
             if len(set(m_prefs["list"])) != len(m_prefs["list"]):
-                raise ReaderError(f"man {m}", "Repetition in preference list.")
+                raise PrefRepError("man ",m)
             
             for w in m_prefs["list"]:
                 if w not in self.women:
-                    raise ReaderError(f"man {m}", f"Woman {w} not instantiated.")
+                    raise PrefNotFoundError("man",m,w)
             
         for w, w_prefs in self.women.items():
 
             if len(set(w_prefs["list"])) != len(w_prefs["list"]):
-                raise ReaderError(f"woman {w}", "Repetition in preference list.")
+                raise PrefRepError("woman ",w)
             
             for m in w_prefs["list"]:
                 if m not in self.men:
-                    raise ReaderError(f"woman {w}", f"Man {m} not instantiated.")
+                    raise PrefNotFoundError("woman",w,m)
 
     def clean_unacceptable_pairs(self) -> None:
         for m, w in product(self.men, self.women):
