@@ -1,6 +1,7 @@
 """
 Class to read in a file of preferences for the Stable Marriage Problem stable matching algorithm.
 """
+from itertools import product
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
 from algmatch.abstractClasses.abstractReader import FileError
@@ -11,34 +12,38 @@ class FileReader(AbstractReader):
         super().__init__(filename)
         self._read_data()
 
-    def check_for_preference_repetitions(self) -> None:
+    def check_preference_lists(self) -> None:
         for m, m_prefs in self.men.items():
+
             if len(set(m_prefs["list"])) != len(m_prefs["list"]):
                 raise FileError(f"man {m}", "Repetition in preference list.")
-        for w, w_prefs in self.women.items():
-            if len(set(w_prefs["list"])) != len(w_prefs["list"]):
-                raise FileError(f"woman {w}", "Repetition in preference list.")
-
-    def clean_unacceptable_pairs(self) -> None:
-        for m, m_prefs in self.men.items():
-            acceptable_m_prefs = []
+            
             for w in m_prefs["list"]:
                 if w not in self.women:
                     raise FileError(f"man {m}", f"Woman {w} not instantiated.")
-                if m in self.women[w]["list"]:
-                    acceptable_m_prefs.append(w)
-            self.men[m]["list"] = acceptable_m_prefs
-            self.men[m]["rank"] = {woman: idx for idx, woman in enumerate(acceptable_m_prefs)}
             
         for w, w_prefs in self.women.items():
-            acceptable_w_prefs = []
+
+            if len(set(w_prefs["list"])) != len(w_prefs["list"]):
+                raise FileError(f"woman {w}", "Repetition in preference list.")
+            
             for m in w_prefs["list"]:
                 if m not in self.men:
                     raise FileError(f"woman {w}", f"Man {m} not instantiated.")
-                if w in self.men[m]["list"]:
-                    acceptable_w_prefs.append(m)
-            self.women[w]["list"] = acceptable_w_prefs
-            self.women[w]["rank"] = {man: idx for idx, man in enumerate(acceptable_w_prefs)}
+
+    def clean_unacceptable_pairs(self) -> None:
+        for m, w in product(self.men, self.women):
+            if m not in self.women[w]["list"] or w not in self.men[m]["list"]:
+                try: m.remove(w)
+                except ValueError: pass
+                try: w.remove(m)
+                except ValueError: pass
+
+    def set_up_rankings(self):
+        for m in self.men:
+            self.men[m]["rank"] = {woman: idx for idx, woman in enumerate(self.men[m]["list"])}
+        for w in self.women:
+            self.women[w]["rank"] = {man: idx for idx, man in enumerate(self.women[w]["list"])}
     
     def parse_file(self) -> None:
         self.no_men = 0
@@ -93,9 +98,6 @@ class FileReader(AbstractReader):
     
     def _read_data(self) -> None:
         self.parse_file()
-        self.check_for_preference_repetitions()
+        self.check_preference_lists()
         self.clean_unacceptable_pairs()
-
-f = FileReader(filename="src/algmatch/example.txt")
-print(f.men)
-print(f.women)
+        self.set_up_rankings()
