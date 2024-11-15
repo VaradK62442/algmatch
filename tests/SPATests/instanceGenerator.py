@@ -97,11 +97,11 @@ class SPAS:
 
     def write_instance_no_ties(self, filename):  # writes the SPA-S instance to a txt file
 
-        with open(filename, 'w') as Instance:
+        with open(filename, 'w') as I:
 
             # ---------------------------------------------------------------------------------------------------------------------------------------
             #  ...write number of student (n) number of projects (m) number of lecturers (k) ---- for convenience, they are all separated by space
-            Instance.write(str(self.no_students) + ' ' + str(self.no_projects) + ' ' + str(self.no_lecturers) + '\n')
+            I.write(str(self.no_students) + ' ' + str(self.no_projects) + ' ' + str(self.no_lecturers) + '\n')
             # ---------------------------------------------------------------------------------------------------------------------------------------
 
             # ---------------------------------------------------------------------------------------------------------------------------------------
@@ -109,9 +109,9 @@ class SPAS:
             for n in range(1, self.no_students + 1):
                 preference = self.students[f"s{n}"]["list"]
                 sliced = [p[1:] for p in preference] # this only grabs the project index, e.g., p20 becomes 20 and p100 becomes 100
-                Instance.write(str(n) + ' ')
-                Instance.writelines('%s ' % p for p in sliced)
-                Instance.write('\n')
+                I.write(str(n) + ' ')
+                I.writelines('%s ' % p for p in sliced)
+                I.write('\n')
             # ---------------------------------------------------------------------------------------------------------------------------------------
 
             # ---------------------------------------------------------------------------------------------------------------------------------------
@@ -120,9 +120,9 @@ class SPAS:
                 project = f"p{m}"                    
                 upper_quota = self.projects[project]["upper_quota"]
                 lecturer = self.projects[project]["lec"][1:] # index of the lecturer that offers the project
-                Instance.write(str(m) + ' ' + str(upper_quota) + ' ' + str(lecturer))
+                I.write(str(m) + ' ' + str(upper_quota) + ' ' + str(lecturer))
                 
-                Instance.write('\n')
+                I.write('\n')
             # ---------------------------------------------------------------------------------------------------------------------------------------
 
             # ---------------------------------------------------------------------------------------------------------------------------------------
@@ -132,11 +132,11 @@ class SPAS:
                 upper_quota = self.lecturers[lecturer]["upper_quota"]
                 preference = self.lecturers[lecturer]["list"]
                 sliced = [s[1:] for s in preference] # this only grabs the student index, e.g., s20 becomes 20 and s100 becomes 100
-                Instance.write(str(k) + ' ' + str(upper_quota) + ' ')
-                Instance.writelines('%s ' % s for s in sliced)
-                Instance.write('\n')
+                I.write(str(k) + ' ' + str(upper_quota) + ' ')
+                I.writelines('%s ' % s for s in sliced)
+                I.write('\n')
             # ---------------------------------------------------------------------------------------------------------------------------------------
-            Instance.close()
+            I.close()
     
 
 def main():

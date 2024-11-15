@@ -30,8 +30,12 @@ class ESMS(SMAbstract):
     def choose(self, i=1):
         #if every man is assigned
         if i > len(self.men):
+            self._check_stability()
+
             #if stable add to solutions list
-            if self._check_stability():
+            if self.blocking_pair:
+                self.blocking_pair = False
+            else:
                 self.save_matching()
 
         else:

@@ -28,7 +28,7 @@ class SPAStudentOptimal(SPAAbstract):
 
 
     # =======================================================================
-    # provisionally assign s_i to p_j (and to L_k)
+    # provisionally assign s_i to p_j (and to l_k)
     # =======================================================================    
     def _provisionally_assign(self, student, project, lecturer):
         self.M[student]["assigned"] = project
@@ -47,7 +47,7 @@ class SPAStudentOptimal(SPAAbstract):
             if rank_student > rank_current_worst_student:
                 self.M[project]["worst_student"] = student
 
-        # keep track of worst_student assigned to L_k
+        # keep track of worst_student assigned to l_k
         if self.M[lecturer]["worst_student"] is None: 
             self.M[lecturer]["worst_student"] = student
         else:
@@ -59,7 +59,7 @@ class SPAStudentOptimal(SPAAbstract):
 
 
     # =======================================================================
-    # break provisional assignment between s_r and p_j (and L_k)
+    # break provisional assignment between s_r and p_j (and l_k)
     # =======================================================================       
     def _break_assignment(self, student, project, lecturer):
 

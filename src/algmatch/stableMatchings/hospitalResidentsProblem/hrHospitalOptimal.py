@@ -2,6 +2,7 @@
 Algorithm to produce the resident-optimal, hospital-pessimal stable matching.
 """
 
+from copy import deepcopy
 from algmatch.stableMatchings.hospitalResidentsProblem.hrAbstract import HRAbstract
 
 class HRHospitalOptimal(HRAbstract):

@@ -33,13 +33,13 @@ class VerifyCorrectness:
 
         e = ESMS(filename)
         s = StudentProjectAllocation(filename=filename, optimisedSide="student")
-        L = StudentProjectAllocation(filename=filename, optimisedSide="lecturer")
+        l = StudentProjectAllocation(filename=filename, optimisedSide="lecturer")
 
         e.choose()
         s_stable_matching = s.get_stable_matching()
-        L_stable_matching = L.get_stable_matching()
+        l_stable_matching = l.get_stable_matching()
 
-        return L_stable_matching == e.all_matchings[-1] and s_stable_matching == e.all_matchings[0]
+        return l_stable_matching == e.all_matchings[-1] and s_stable_matching == e.all_matchings[0]
     
 
     def run(self):
@@ -73,8 +73,7 @@ def main():
     WRITE_TO_FILE = False
 
     assert UPPER_PROJECT_BOUND <= int(math.ceil(0.5 * TOTAL_STUDENTS)), "Upper project bound is too high"
-    if WRITE_TO_FILE and not os.path.isdir("results"):
-        os.mkdir("results")
+    if WRITE_TO_FILE and not os.path.isdir("results"): os.mkdir("results")
 
     v = VerifyCorrectness(TOTAL_STUDENTS, LOWER_PROJECT_BOUND, UPPER_PROJECT_BOUND, WRITE_TO_FILE)
     for _ in tqdm(range(REPETITIONS)):

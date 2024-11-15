@@ -2,6 +2,7 @@
 Algorithm to produce the resident-optimal, hospital-pessimal stable matching.
 """
 
+from copy import deepcopy
 from algmatch.stableMatchings.hospitalResidentsProblem.hrAbstract import HRAbstract
 
 class HRResidentOptimal(HRAbstract):
@@ -36,11 +37,8 @@ class HRResidentOptimal(HRAbstract):
     
     def _get_worst_existing_resident(self, hospital):
         existing_residents = self.M[hospital]["assigned"]
-
-        def rank_comparator(x):
-            return -self.hospitals[hospital]["rank"][x]
+        rank_comparator = lambda x: -self.hospitals[hospital]["rank"][x]
         worst_resident = min(existing_residents, key = rank_comparator)
-
         return worst_resident
 
     def _while_loop(self):
