@@ -64,7 +64,7 @@ class FileReader(AbstractReader):
 
             if not entry[2].isdigit():
                 raise OffererError("project","lecturer",cur_line,line=True)
-            offerer = int(entry[2])
+            offerer = f"lint(entry[2])"
 
             self.projects[project] = {"upper_quota": capacity, "lecturer": offerer}
 
