@@ -47,10 +47,14 @@ class HRPreferenceInstance(AbstractPreferenceInstance):
     def clean_unacceptable_pairs(self) -> None:
         for r, h in product(self.residents, self.hospitals):
             if r not in self.hospitals[h]["list"] or h not in self.residents[r]["list"]:
-                try: self.residents[r]["list"].remove(h)
-                except ValueError: pass
-                try: self.residents[h]["list"].remove(r)
-                except ValueError: pass
+                try:
+                    self.residents[r]["list"].remove(h)
+                except ValueError:
+                    pass
+                try:
+                    self.residents[h]["list"].remove(r)
+                except ValueError:
+                    pass
 
     def set_up_rankings(self):
         for r in self.residents:

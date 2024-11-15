@@ -49,18 +49,18 @@ class SMInstanceGenerator:
         if type(filename) is not str:
             raise ValueError("Filename is not a string.")
 
-        with open(filename, 'w') as I:
+        with open(filename, 'w') as Instance:
 
             # write the numbers of men and women as the header
-            I.write(str(self.no_men)+' '+str(self.no_women)+'\n')
+            Instance.write(str(self.no_men)+' '+str(self.no_women)+'\n')
             
             # write indexes and preferences, see the DATA_FORMAT_GUIDELINE.md in src/stableMachings/stableMarriageProblem
             for n in range(1, self.no_men + 1):
                 preferences = self.men[n]["list"]
-                I.write(str(n) + ' ' + ' '.join([str(w) for w in preferences]) + '\n')
+                Instance.write(str(n) + ' ' + ' '.join([str(w) for w in preferences]) + '\n')
 
             for n in range(1, self.no_women + 1):
                 preferences = self.women[n]["list"]
-                I.write(str(n) + ' ' + ' '.join([str(m) for m in preferences]) + '\n')
+                Instance.write(str(n) + ' ' + ' '.join([str(m) for m in preferences]) + '\n')
 
-            I.close()
+            Instance.close()

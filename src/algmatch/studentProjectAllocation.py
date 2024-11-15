@@ -21,7 +21,8 @@ class StudentProjectAllocation:
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
         :param optimisedSide: str, optional, default="student", whether the algorithm is "student" (default) or "lecturer" sided.        
         """
-        if filename is not None: filename = os.path.join(os.getcwd(), filename)
+        if filename is not None:
+            filename = os.path.join(os.getcwd(), filename)
         
         assert type(optimisedSide) is str, "Param optimisedSide must be of type str"
         optimisedSide = optimisedSide.lower()
@@ -40,5 +41,6 @@ class StudentProjectAllocation:
         :return: dict, the stable matching.
         """
         self.spa.run()
-        if not self.spa.is_stable: return self.spa.stable_matching
+        if not self.spa.is_stable:
+            return self.spa.stable_matching
         return None

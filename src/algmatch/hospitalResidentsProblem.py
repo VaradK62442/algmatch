@@ -17,7 +17,8 @@ class HospitalResidentsProblem:
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
         :param optimisedSide: str, optional, default="resident", whether the algorithm is "resident" (default) or "hospital" sided.
         """
-        if filename is not None: filename = os.path.join(os.getcwd(), filename)
+        if filename is not None:
+            filename = os.path.join(os.getcwd(), filename)
 
         assert type(optimisedSide) is str, "Param optimisedSide must be of type str"
         optimisedSide = optimisedSide.lower()
@@ -36,5 +37,6 @@ class HospitalResidentsProblem:
         :return: dict, the stable matching for this instance
         """
         self.hr.run()
-        if not self.hr.is_stable: return self.hr.stable_matching
+        if not self.hr.is_stable:
+            return self.hr.stable_matching
         return None

@@ -45,38 +45,42 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
                 if p not in self.projects:
                     raise PrefNotFoundError("student",s,p)
             
-        for l, l_prefs in self.lecturers.items():
+        for L, L_prefs in self.lecturers.items():
 
-            if len(set(l_prefs["list"])) != len(l_prefs["list"]):
-                raise PrefRepError("lecturer",l)
+            if len(set(L_prefs["list"])) != len(L_prefs["list"]):
+                raise PrefRepError("lecturer",L)
             
-            for s in l_prefs["list"]:
+            for s in L_prefs["list"]:
                 if s not in self.students:
-                    raise PrefNotFoundError("lecturer",l,s)
+                    raise PrefNotFoundError("lecturer",L,s)
 
 
     def clean_unacceptable_pairs(self) -> None:
         for s, p in product(self.students, self.projects):
             if s not in self.projects[p]["list"] or p not in self.students[s]["list"]:
-                try: self.students[s]["list"].remove(p)
-                except ValueError: pass
-                try: self.projects[p]["list"].remove(s)
-                except ValueError: pass
+                try:
+                    self.students[s]["list"].remove(p)
+                except ValueError:
+                    pass
+                try:
+                    self.projects[p]["list"].remove(s)
+                except ValueError:
+                    pass
 
-        for l in self.lecturers:
+        for L in self.lecturers:
             proj_pref_set = set()
-            for p in self.lecturers[l]["projects"]:
+            for p in self.lecturers[L]["projects"]:
                 proj_pref_set.update(self.projects[p]["list"])
             new_l_prefs = []
-            for s in self.lecturers[l]["list"]:
+            for s in self.lecturers[L]["list"]:
                 if s in proj_pref_set:
                     new_l_prefs.append(s)
-            self.lecturers[l]["list"] = new_l_prefs
+            self.lecturers[L]["list"] = new_l_prefs
 
     def set_up_rankings(self):
         for s in self.students:
             self.students[s]["rank"] = {project: idx for idx, project in enumerate(self.students[s]["list"])}
         for p in self.projects:
             self.projects[p]["rank"] = {student: idx for idx, student in enumerate(self.projects[p]["list"])}
-        for l in self.lecturers:
-            self.lecturers[l]["rank"] = {woman: idx for idx, woman in enumerate(self.lecturers[l]["list"])}
+        for L in self.lecturers:
+            self.lecturers[L]["rank"] = {woman: idx for idx, woman in enumerate(self.lecturers[L]["list"])}
