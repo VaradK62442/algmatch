@@ -50,20 +50,20 @@ class HRInstanceGenerator:
         if type(filename) is not str:
             raise ValueError("Filename is not a string.")
 
-        with open(filename, 'w') as I:
+        with open(filename, 'w') as Instance:
 
             # write the numbers of residents and hospitals as the header
-            I.write(str(self.no_residents)+' '+str(self.no_hospitals)+'\n')
+            Instance.write(str(self.no_residents)+' '+str(self.no_hospitals)+'\n')
             
             # write indexes, capacities and preferences, 
             # see the DATA_FORMAT_GUIDELINE.md in src/stableMachings/hospitalResidentsProblem
             for n in range(1, self.no_residents + 1):
                 preferences = self.residents[n]["list"]
-                I.write(str(n) + ' ' + ' '.join([str(h) for h in preferences]) + '\n')
+                Instance.write(str(n) + ' ' + ' '.join([str(h) for h in preferences]) + '\n')
 
             for n in range(1, self.no_hospitals + 1):
                 capacity = self.hospitals[n]["capacity"]
                 preferences = self.hospitals[n]["list"]
-                I.write(str(n) + ' ' + str(capacity) + ' ' +' '.join([str(r) for r in preferences]) + '\n')
+                Instance.write(str(n) + ' ' + str(capacity) + ' ' +' '.join([str(r) for r in preferences]) + '\n')
 
-            I.close()
+            Instance.close()
