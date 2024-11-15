@@ -29,7 +29,7 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
         for m, m_prefs in self.men.items():
 
             if len(set(m_prefs["list"])) != len(m_prefs["list"]):
-                raise PrefRepError("man ",m)
+                raise PrefRepError("man",m)
             
             for w in m_prefs["list"]:
                 if w not in self.women:
@@ -38,7 +38,7 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
         for w, w_prefs in self.women.items():
 
             if len(set(w_prefs["list"])) != len(w_prefs["list"]):
-                raise PrefRepError("woman ",w)
+                raise PrefRepError("woman",w)
             
             for m in w_prefs["list"]:
                 if m not in self.men:

@@ -44,7 +44,7 @@ class DictionaryReader(AbstractReader):
                             raise CapacityError("hospital",k)
                         capacity = v["capacity"]
                         
-                        for i in v:
+                        for i in v["preferences"]:
                             if type(i) is not int:
                                 raise PrefListMisformatError("hospital",k,i,line=True)
                         preferences = [f"r{i}" for i in v["preferences"]]

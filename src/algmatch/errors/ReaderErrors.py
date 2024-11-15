@@ -34,3 +34,8 @@ class PrefListMisformatError(ReaderError):
     def __init__(self, participant_type, name, offender, line=False):
         cause = f"{participant_type} preference list misformatted; {offender} is not int"
         super().__init__(participant_type, name, cause, line)
+
+class OffererError(ReaderError):
+    def __init__(self, participant_type, offerer_type, name, line=False):
+        cause = f"{participant_type} offerer misformatted; {offerer_type} is not int"
+        super().__init__(participant_type, name, cause, line)
