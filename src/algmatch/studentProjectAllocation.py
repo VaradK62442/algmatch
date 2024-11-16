@@ -40,5 +40,5 @@ class StudentProjectAllocation:
         :return: dict, the stable matching.
         """
         self.spa.run()
-        if not self.spa.blocking_pair: return self.spa.stable_matching
+        if self.spa.is_stable: return self.spa.stable_matching
         return None
