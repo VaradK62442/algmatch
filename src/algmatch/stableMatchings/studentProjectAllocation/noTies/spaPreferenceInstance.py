@@ -3,8 +3,8 @@ Store preference lists for student project allocation algorithm.
 """
 
 from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
-from algmatch.stableMatchings.studentProjectAllocation.fileReader import FileReader
-from algmatch.stableMatchings.studentProjectAllocation.dictionaryReader import DictionaryReader
+from algmatch.stableMatchings.studentProjectAllocation.noTies.fileReader import FileReader
+from algmatch.stableMatchings.studentProjectAllocation.noTies.dictionaryReader import DictionaryReader
 
 
 class SPAPreferenceInstance(AbstractPreferenceInstance):

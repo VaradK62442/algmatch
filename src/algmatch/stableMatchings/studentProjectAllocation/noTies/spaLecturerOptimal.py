@@ -2,7 +2,7 @@
 Student Project Allocation - Lecturer Optimal version
 """
 
-from algmatch.stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
+from algmatch.stableMatchings.studentProjectAllocation.noTies.spaAbstract import SPAAbstract
 
 
 class SPALecturerOptimal(SPAAbstract):

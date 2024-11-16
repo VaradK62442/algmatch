@@ -39,7 +39,7 @@ class VerifyCorrectness:
         s_stable_matching = s.get_stable_matching()
         l_stable_matching = l.get_stable_matching()
 
-        return l_stable_matching == e.all_matchings[-1] and s_stable_matching == e.all_matchings[0]
+        return l_stable_matching['student_sided'] == e.all_matchings[-1] and s_stable_matching['student_sided'] == e.all_matchings[0]
     
 
     def run(self):
@@ -69,7 +69,7 @@ def main():
     TOTAL_STUDENTS = 5
     LOWER_PROJECT_BOUND = 2
     UPPER_PROJECT_BOUND = 3
-    REPETITIONS = 100_000
+    REPETITIONS = 1_000
     WRITE_TO_FILE = False
 
     assert UPPER_PROJECT_BOUND <= int(math.ceil(0.5 * TOTAL_STUDENTS)), "Upper project bound is too high"

@@ -1,4 +1,4 @@
-from algmatch.stableMatchings.studentProjectAllocation.spaPreferenceInstance import SPAPreferenceInstance
+from algmatch.stableMatchings.studentProjectAllocation.noTies.spaPreferenceInstance import SPAPreferenceInstance
 
 
 class ESMS:
