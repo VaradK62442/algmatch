@@ -1,10 +1,10 @@
-# Data Format Guideline - Student Project Allocation
+# Data Format Guideline - Student Project Allocation with Ties
 
 ## File
 
 Please follow the following format for passing in a text file to instantiate a preference list for the Student Project Allocation stable matching algorithm. 
 
-Let `i` be the number of students, `j` the number of projects, and `k` the number of lecturers.
+Let `i` be the number of students, `j` the number of projects, and `k` the number of lecturers. Ties in preference lists may be denoted by brackets surrounding tied preferences.
 
 ```txt
 i j k
@@ -27,30 +27,30 @@ An example file could look like
 ```txt
 4 4 2
 1 1 2
-2 2 3
+2 (2 3)
 3 3 1
 4 4 1
 1 1 1
 2 1 1
 3 1 2
 4 1 2
-1 2 3 1 2 4
-2 2 2 4 3
+1 2 3 (1 2) 4
+2 2 (2 4 3)
 ```
 
 with 4 students, 4 projects and 2 lecturers, where
 
 - student 1 prefers project 1 to project 2
-- student 2 prefers project 2 to project 3
+- student 2 is indifferent between project 2 and 3
 - project 3 has capacity 1 and supervised by lecturer 2
-- professor 1 has capacity 2 and prefers student 3 to 1 to 2 to 4
+- professor 1 has capacity 2 and prefers student 3 to student 1 and 2, and those to student 4
 - etc.
 
 ## Dictionary
 
 Please provide the following dictionary to instantiate a preference list for the Student Project Allocation stable matching algorithm.
 
-Let `i` be the number of students, `j` the number of projects, and `k` the number of lecturers.
+Let `i` be the number of students, `j` the number of projects, and `k` the number of lecturers. Ties in preference lists may be denoted by a list surrounding tied preferences.
 
 ```txt
 {
@@ -98,7 +98,7 @@ An example dictionary could look like
 ```txt
 {
     'students': {
-        1: [1, 2],
+        1: [[1, 2]],
         2: [2, 3],
         3: [3, 1],
         4: [4, 1]
@@ -124,7 +124,7 @@ An example dictionary could look like
     'lecturers': {
         1: {
             'capacity': 2,
-            'preferences': [3, 1, 2, 4]
+            'preferences': [3, [1, 2, 4]]
         },
         2: {
             'capacity': 2,
@@ -136,8 +136,8 @@ An example dictionary could look like
 
 with 4 students, 4 projects and 2 lecturers, where
 
-- student 1 prefers project 1 to project 2
+- student 1 is indifferent between project 1 and 2
 - student 2 prefers project 2 to project 3
 - project 3 has capacity 1 and supervised by lecturer 2
-- professor 1 has capacity 2 and prefers student 3 to 1 to 2 to 4
+- professor 1 has capacity 2 and prefers student 3 to student 1, 2, and 4
 - etc.
