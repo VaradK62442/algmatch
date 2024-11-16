@@ -5,8 +5,7 @@ Class to read in a file of preferences for the Student Project Allocation with T
 from algmatch.abstractClasses.abstractReader import AbstractReader
 from algmatch.stableMatchings.studentProjectAllocation.ties.entityPreferenceInstance import EntityPreferenceInstance
 
-from pprint import pprint as pp
-
+from algmatch.errors.ReaderErrors import ParticipantQuantityError, CapacityError, IDMisformatError, RepeatIDError, PrefListMisformatError, OffererError
 
 class FileReader(AbstractReader):
     def __init__(self, filename: str) -> None:
@@ -64,16 +63,30 @@ class FileReader(AbstractReader):
         self.students = {}                
         self.projects = {}
         self.lecturers = {}
+        cur_line = 1
         
         with open(self.data, 'r') as file:
             file = file.read().splitlines()
 
-        self.no_students, self.no_projects, self.no_lecturers = map(int, file[0].split())
+        try: 
+            self.no_students, self.no_projects, self.no_lecturers = map(int, file[0].split())
+        except ValueError:
+            raise ParticipantQuantityError()
 
         # build students dictionary
         for elt in file[1:self.no_students+1]:
+            cur_line += 1
             entry = elt.split()
+
+            if not entry or not entry[0].isdigit():
+                raise IDMisformatError("student", cur_line, line=True)
             student = f"s{entry[0]}"
+            if student in self.students:
+                raise RepeatIDError("student", cur_line, line=True)
+
+            for i in entry[1:]:
+                if not all(j.isdigit() or j in ['(',')'] for j in i):
+                    raise PrefListMisformatError("student",cur_line,line=True)
 
             preferences, rank = self._read_preferences_ranks(entry[1:], letter='p')
             
@@ -81,42 +94,44 @@ class FileReader(AbstractReader):
 
         # build projects dictionary
         for elt in file[self.no_students+1:self.no_students+self.no_projects+1]:
+            cur_line += 1
             entry = elt.split()
-            self.projects[f"p{entry[0]}"] = {"upper_quota": int(entry[1]), "lecturer": f"l{entry[2]}"}
+
+            if not entry or not entry[0].isdigit():
+                raise IDMisformatError("project", cur_line, line=True)
+            project = f"p{entry[0]}"
+            if project in self.projects:
+                raise RepeatIDError("project", cur_line, line=True)
+            
+            if not entry[1].isdigit():
+                raise CapacityError("project",cur_line,line=True)
+            capacity = int(entry[1])
+
+            if not entry[2].isdigit():
+                raise OffererError("project","lecturer",cur_line,line=True)
+            offerer = f"l{int(entry[2])}"
+
+            self.projects[project] = {"upper_quota": capacity, "lecturer": offerer}
 
         # build lecturers dictionary
         for elt in file[self.no_students+self.no_projects+1:self.no_students+self.no_projects+self.no_lecturers+1]:
+            cur_line += 1
             entry = elt.split()
+
+            if not entry or not entry[0].isdigit():
+                raise IDMisformatError("lecturer", cur_line, line=True)
             lecturer = f"l{entry[0]}"
+            if lecturer in self.lecturers:
+                raise RepeatIDError("lecturer", cur_line, line=True)
+            
+            if not entry[1].isdigit():
+                raise CapacityError("lecturer",cur_line,line=True)
             capacity = int(entry[1])
 
-            preferences, rank = self._read_preferences_ranks(entry[2:], letter='s')
+            for i in entry[2:]:
+                if not all(j.isdigit() or j in ['(',')'] for j in i):
+                    raise PrefListMisformatError("lecturer",cur_line,line=True)
 
-            # preferences = [f"s{i}" for i in entry[2:]]
-            # rank = {stud: idx for idx, stud in enumerate(preferences)}
+            preferences, rank = self._read_preferences_ranks(entry[2:], letter='s')
                         
             self.lecturers[lecturer] = {"upper_quota": capacity, "projects": set(), "list": preferences, "rank": rank}
-
-        # update projects
-        for project in self.projects:
-            lec = self.projects[project]["lecturer"]
-            self.lecturers[lec]["projects"].add(project)
-            lecturer_list = self.lecturers[lec]["list"]
-            
-            # TODO: beautify?
-            project_list = []
-            for epi in lecturer_list:
-                if epi.isTie:
-                    for stu in epi.values:
-                        for elt in self.students[stu.values]["list"]:
-                            if project in elt:
-                                project_list.append(stu.values)
-                
-                else:
-                    for elt in self.students[epi.values]["list"]:
-                        if project in elt:
-                            project_list.append(epi.values)
-            
-            rank = {stud: idx for idx, stud in enumerate(project_list)}
-            self.projects[project]["list"] = project_list
-            self.projects[project]["rank"] = rank

@@ -5,6 +5,8 @@ Class to read in a dictionary of preferences for the Student Project Allocation 
 from algmatch.abstractClasses.abstractReader import AbstractReader
 from algmatch.stableMatchings.studentProjectAllocation.ties.entityPreferenceInstance import EntityPreferenceInstance
 
+from algmatch.errors.ReaderErrors import ParticipantQuantityError, CapacityError, IDMisformatError, RepeatIDError, PrefListMisformatError, OffererError
+
 class DictionaryReader(AbstractReader):
     def __init__(self, dictionary: dict) -> None:
         super().__init__(dictionary)
@@ -19,7 +21,16 @@ class DictionaryReader(AbstractReader):
             match key:
                 case "students":
                     for k, v in value.items():
+                        if type(k) is not int:
+                            raise IDMisformatError("student",k)
                         student = f"s{k}"
+                        if student in self.students:
+                            raise RepeatIDError("student",k)
+                        
+                        for i in v:
+                            if type(i) is not int and not all(type(j) is int for j in i):
+                                raise PrefListMisformatError("student",k,i)
+
                         preferences = []
                         rank = {}
                         for i, elt in enumerate(v):
@@ -37,16 +48,37 @@ class DictionaryReader(AbstractReader):
 
                 case "projects":
                     for k, v in value.items():
+                        if type(k) is not int:
+                            raise IDMisformatError("project",k)
                         project = f"p{k}"
+                        if project in self.projects:
+                            raise RepeatIDError("project",k)
+                        
+                        if type(v["capacity"]) is not int:
+                            raise CapacityError("project",k)
                         capacity = v["capacity"]
+
+                        if type(v["lecturer"]) is not int:
+                            raise OffererError("project","lecturer",k)
                         lecturer = f"l{v['lecturer']}"
 
                         self.projects[project] = {"upper_quota": capacity, "lecturer": lecturer}
 
                 case "lecturers":
                     for k, v in value.items():
+                        if type(k) is not int:
+                            raise IDMisformatError("lecturer",k)
                         lecturer = f"l{k}"
+                        if lecturer in self.lecturers:
+                            raise RepeatIDError("lecturer",k)
+                        
+                        if type(v["capacity"]) is not int:
+                            raise CapacityError("project",k)
                         capacity = v["capacity"]
+
+                        for i in v["preferences"]:
+                            if type(i) is not int and not all(type(j) is int for j in i):
+                                raise PrefListMisformatError("lecturer",k,i)
 
                         preferences = []
                         rank = {}
@@ -63,26 +95,3 @@ class DictionaryReader(AbstractReader):
                             preferences.append(epi)
 
                         self.lecturers[lecturer] = {"upper_quota": capacity, "projects": set(), "list": preferences, "rank": rank}
-
-        for project in self.projects:
-            lec = self.projects[project]["lecturer"]
-            self.lecturers[lec]["projects"].add(project)
-            lecturer_list = self.lecturers[lec]["list"]
-
-            # TODO: beautify?
-            project_list = []
-            for epi in lecturer_list:
-                if epi.isTie:
-                    for stu in epi.values:
-                        for elt in self.students[stu.values]["list"]:
-                            if project in elt:
-                                project_list.append(stu.values)
-                
-                else:
-                    for elt in self.students[epi.values]["list"]:
-                        if project in elt:
-                            project_list.append(epi.values)
-
-            rank = {stud: idx for idx, stud in enumerate(project_list)}
-            self.projects[project]["list"] = project_list
-            self.projects[project]["rank"] = rank
