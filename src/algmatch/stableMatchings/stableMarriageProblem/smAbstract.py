@@ -49,7 +49,7 @@ class SMAbstract:
         
             for woman in preferred_women:
                 existing_fiance = self.M[woman]["assigned"]
-                if existing_fiance == None:
+                if existing_fiance is None:
                     return False
                 else:
                     rank_fiance = self.original_women[woman]["rank"][existing_fiance]
@@ -72,5 +72,7 @@ class SMAbstract:
 
         self.is_stable = self._check_stability()
 
-        if self.is_stable: return f"stable matching: {self.stable_matching}"
-        else: return f"unstable matching: {self.stable_matching}"
+        if self.is_stable:
+            return f"stable matching: {self.stable_matching}"
+        else:
+            return f"unstable matching: {self.stable_matching}"
