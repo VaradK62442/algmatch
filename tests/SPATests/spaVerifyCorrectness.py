@@ -39,7 +39,7 @@ class VerifyCorrectness:
         s_stable_matching = s.get_stable_matching()
         L_stable_matching = L.get_stable_matching()
 
-        return L_stable_matching == e.all_matchings[-1] and s_stable_matching == e.all_matchings[0]
+        return L_stable_matching['student_sided'] == e.all_matchings[-1] and s_stable_matching['student_sided'] == e.all_matchings[0]
     
 
     def run(self):
