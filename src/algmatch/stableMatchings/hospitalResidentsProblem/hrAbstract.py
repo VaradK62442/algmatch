@@ -2,6 +2,7 @@
 Hospital/Residents Problem - Abstract class
 """
 
+from copy import deepcopy
 import os
 
 from algmatch.stableMatchings.hospitalResidentsProblem.hrPreferenceInstance import HRPreferenceInstance
@@ -22,60 +23,54 @@ class HRAbstract:
         self.residents = self._reader.residents
         self.hospitals = self._reader.hospitals
 
+        # we need original copies of the preference lists to check the stability of solutions
+        self.original_residents = deepcopy(self.residents)
+        self.original_hospitals = deepcopy(self.hospitals)
+
         self.M = {} # provisional matching
         self.stable_matching = {
             "resident_sided": {resident: "" for resident in self.residents},
             "hospital_sided": {hospital: [] for hospital in self.hospitals}
         }
-        self.blocking_pair = False
+        self.is_stable = False
 
     def _blocking_pair_condition(self, resident, hospital):
-        cj = self.hospitals[hospital]["capacity"]
+        # blocking pairs exist w.r.t the original preference lists; we must use original_
+        # capacity doesn't change but I'm using original_hospitals here for consistency in this function.
+        cj = self.original_hospitals[hospital]["capacity"]
         occupancy = len(self.M[hospital]["assigned"])
         if occupancy < cj:
             return True
         
-        resident_rank = self.hospitals[hospital]["rank"][resident]
+        resident_rank = self.original_hospitals[hospital]["rank"][resident]
         for existing_resident in self.M[hospital]["assigned"]:
-            existing_rank = self.hospitals[hospital]["rank"][existing_resident]
+            existing_rank = self.original_hospitals[hospital]["rank"][existing_resident]
             if resident_rank < existing_rank:
                 return True
             
         return False
 
-    # =======================================================================    
-    # Is M stable? Check for blocking pair
-    # self.blocking_pair is set to True if blocking pair exists
-    # =======================================================================
-    def _check_stability(self):        
-        for resident in self.residents:
-            preferred_hospitals = self.residents[resident]["list"]
+    def _check_stability(self):
+        # stability must be checked with regards to the original lists prior to deletions       
+        for resident in self.original_residents:
+            preferred_hospitals = self.original_residents[resident]["list"]
             if self.M[resident]["assigned"] is not None:
                 matched_hospital = self.M[resident]["assigned"]
-                rank_matched_hospital = self.residents[resident]["rank"][matched_hospital]
-                A_ri = self.residents[resident]["list"]
-                preferred_hospitals = [hj for hj in A_ri[:rank_matched_hospital]] # every project that s_i prefers to her matched project                                
+                rank_matched_hospital = self.original_residents[resident]["rank"][matched_hospital]
+                A_ri = self.original_residents[resident]["list"]
+                preferred_hospitals = [hj for hj in A_ri[:rank_matched_hospital]]                             
         
             for hospital in preferred_hospitals:
-                if not self.blocking_pair:
-                    self.blocking_pair = self._blocking_pair_condition(resident, hospital)
+                if self._blocking_pair_condition(resident, hospital):
+                    return False
                 
-                if self.blocking_pair:
-                #    print(student, project, lecturer)
-                   break
-            
-            if self.blocking_pair:
-                # print(student, project, lecturer)
-                break
-
+        return True
 
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
-    
 
     def run(self) -> None:
         self._while_loop()
-        self._check_stability()
 
         for resident in self.residents:
             hospital = self.M[resident]["assigned"]
@@ -83,5 +78,7 @@ class HRAbstract:
                 self.stable_matching["resident_sided"][resident] = hospital
                 self.stable_matching["hospital_sided"][hospital].append(resident)
 
-        if not self.blocking_pair: return f"stable matching: {self.stable_matching}"
+        self.is_stable = self._check_stability()
+
+        if self.is_stable: return f"stable matching: {self.stable_matching}"
         else: return f"unstable matching: {self.stable_matching}"

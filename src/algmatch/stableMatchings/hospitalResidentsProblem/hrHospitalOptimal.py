@@ -27,7 +27,7 @@ class HRHospitalOptimal(HRAbstract):
         self.residents[resident]['list'].remove(hospital)
         self.hospitals[hospital]['list'].remove(resident)
         if len(self.hospitals[hospital]['list']) ==  0:
-            self.unassigned_hospitals.discard(hospital)
+            self.undersub_hospitals.discard(hospital)
 
     def _break_assignment(self, resident, hospital):
         self.M[resident]["assigned"] = None

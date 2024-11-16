@@ -19,7 +19,7 @@ class HospitalResidentsProblem:
         """
         if filename is not None: filename = os.path.join(os.getcwd(), filename)
 
-        assert type(optimisedSide) == str, "Param optimisedSide must be of type str"
+        assert type(optimisedSide) is str, "Param optimisedSide must be of type str"
         optimisedSide = optimisedSide.lower()
         assert optimisedSide in ("residents", "hospitals"), "Optimised side must either be 'residents' or 'hospitals'"
 

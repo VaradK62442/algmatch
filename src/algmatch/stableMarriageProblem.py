@@ -19,7 +19,7 @@ class StableMarriageProblem:
         """
         if filename is not None: filename = os.path.join(os.getcwd(), filename)
 
-        assert type(optimisedSide) == str, "Param optimisedSide must be of type str"
+        assert type(optimisedSide) is str, "Param optimisedSide must be of type str"
         optimisedSide = optimisedSide.lower()
         assert optimisedSide in ("men", "women"), "Optimised side must either be 'men' or 'women'"
         
@@ -36,5 +36,5 @@ class StableMarriageProblem:
         :return: dict, the stable matching for this instance
         """
         self.sm.run()
-        if not self.sm.blocking_pair: return self.sm.stable_matching
+        if self.sm.is_stable: return self.sm.stable_matching
         return None
