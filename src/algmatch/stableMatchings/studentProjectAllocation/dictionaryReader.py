@@ -28,7 +28,7 @@ class DictionaryReader(AbstractReader):
                         
                         for i in v:
                             if type(i) is not int:
-                                raise PrefListMisformatError("resident",k,i)
+                                raise PrefListMisformatError("student",k,i)
                         preferences = [f"p{i}" for i in v]
 
                         self.students[student] = {"list": preferences, "rank": dict()}
