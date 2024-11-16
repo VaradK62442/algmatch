@@ -3,7 +3,7 @@ Class to read in a dictionary of preferences for the Student Project Allocation 
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-
+from algmatch.errors.ReaderErrors import IDMisformatError, RepeatIDError, PrefListMisformatError
 
 class DictionaryReader(AbstractReader):
     def __init__(self, dictionary: dict) -> None:
@@ -18,31 +18,30 @@ class DictionaryReader(AbstractReader):
             match key:
                 case "men":
                     for k, v in value.items():
+                        if type(k) is not int:
+                            raise IDMisformatError("man", k)
                         man = f"m{k}"
+                        if man in self.men:
+                            raise RepeatIDError("man", k)
+                        
+                        for i in v:
+                            if type(i) is not int:
+                                raise PrefListMisformatError("man", k, i)
                         preferences = [f"w{i}" for i in v]
 
                         self.men[man] = {"list": preferences, "rank": {}}
 
                 case "women":
                     for k, v in value.items():
+                        if type(k) is not int:
+                            raise IDMisformatError("woman", k)
                         woman = f"w{k}"
+                        if woman in self.women:
+                            raise RepeatIDError("woman", k)
+                        
+                        for i in v:
+                            if type(i) is not int:
+                                 raise PrefListMisformatError("woman", k, i)
                         preferences = [f"m{i}" for i in v]
 
                         self.women[woman] = {"list": preferences, "rank": {}}
-
-        #remove unacceptable pairs
-        for m, m_prefs in self.men.items():
-            acceptable_m_prefs = []
-            for w in m_prefs["list"]:
-                if m in self.women[w]["list"]:
-                    acceptable_m_prefs.append(w)
-            self.men[m]["list"] = acceptable_m_prefs
-            self.men[m]["rank"] = {woman: idx for idx, woman in enumerate(acceptable_m_prefs)}
-
-        for w, w_prefs in self.women.items():
-            acceptable_w_prefs = []
-            for m in w_prefs["list"]:
-                if w in self.men[m]["list"]:
-                    acceptable_w_prefs.append(m)
-            self.women[w]["list"] = acceptable_w_prefs
-            self.women[w]["rank"] = {man: idx for idx, man in enumerate(acceptable_w_prefs)}

@@ -113,5 +113,7 @@ class SPAAbstract:
 
         self.is_stable = self._check_stability()
 
-        if self.is_stable: return f"stable matching: {self.stable_matching}"
-        else: return f"unstable matching: {self.stable_matching}"
+        if self.is_stable:
+            return f"stable matching: {self.stable_matching}"
+        else:
+            return f"unstable matching: {self.stable_matching}"

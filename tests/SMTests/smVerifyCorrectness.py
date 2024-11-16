@@ -74,14 +74,16 @@ class VerifyCorrectness:
               """)
 
 def main():
-    TOTAL_MEN = 100
-    TOTAL_WOMEN = 100
-    LOWER_LIST_BOUND = 100
-    UPPER_LIST_BOUND = 100
+    n=9
+    TOTAL_MEN = n
+    TOTAL_WOMEN = n
+    LOWER_LIST_BOUND = n
+    UPPER_LIST_BOUND = n
     REPETITIONS = 1
     WRITE_TO_FILE = False
 
-    if WRITE_TO_FILE and not os.path.isdir("results"): os.mkdir("results")
+    if WRITE_TO_FILE and not os.path.isdir("results"):
+        os.mkdir("results")
 
     verifier = VerifyCorrectness(TOTAL_MEN, TOTAL_WOMEN, LOWER_LIST_BOUND, UPPER_LIST_BOUND, WRITE_TO_FILE)
     for _ in tqdm(range(REPETITIONS)):

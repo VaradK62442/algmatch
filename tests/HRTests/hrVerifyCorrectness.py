@@ -81,7 +81,8 @@ def main():
     REPETITIONS = 1000
     WRITE_TO_FILE = False
 
-    if WRITE_TO_FILE and not os.path.isdir("results"): os.mkdir("results")
+    if WRITE_TO_FILE and not os.path.isdir("results"):
+        os.mkdir("results")
 
     verifier = VerifyCorrectness(TOTAL_RESIDENTS, TOTAL_HOSPITALS, LOWER_LIST_BOUND, UPPER_LIST_BOUND, WRITE_TO_FILE)
     for _ in tqdm(range(REPETITIONS)):
