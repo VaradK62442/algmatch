@@ -33,7 +33,7 @@ class HRInstanceGenerator:
         self.residents = {i+1 : {"list": []} for i in range(self.no_residents)}
         for res in self.residents:
             length = random.randint(self.li, self.lj)
-            # we provide this many preferred women at random
+            # we provide this many preferred hospitals at random
             random.shuffle(self.available_hospitals)
             self.residents[res]["list"] = self.available_hospitals[:length]
 
@@ -56,7 +56,7 @@ class HRInstanceGenerator:
             Instance.write(str(self.no_residents)+' '+str(self.no_hospitals)+'\n')
             
             # write indexes, capacities and preferences, 
-            # see the DATA_FORMAT_GUIDELINE.md in src/stableMachings/hospitalResidentsProblem
+            # see the DATA_FORMAT_GUIDELINE.md
             for n in range(1, self.no_residents + 1):
                 preferences = self.residents[n]["list"]
                 Instance.write(str(n) + ' ' + ' '.join([str(h) for h in preferences]) + '\n')
