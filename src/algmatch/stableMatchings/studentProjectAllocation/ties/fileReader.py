@@ -20,10 +20,8 @@ class FileReader(AbstractReader):
         ranks = {}
 
         open_bracket = False
-
-        for i, k in enumerate(entry):
+        for k in entry:
             if "(" in k and open_bracket:
-                # cannot have tie within a tie
                 raise ValueError("Cannot have tie within a tie")
 
             elif "(" in k:
@@ -33,7 +31,6 @@ class FileReader(AbstractReader):
                 preferences[-1].append(f"{letter}{k}")
 
             elif ")" in k and not open_bracket:
-                # cannot have closing bracket without an opening bracket
                 raise ValueError("Cannot have closing bracket without an opening bracket")
 
             elif ")" in k:
@@ -49,10 +46,14 @@ class FileReader(AbstractReader):
                     # inside tie
                     preferences[-1].append(f"{letter}{k}")
 
-            ranks[f"p{k}"] = i
-
         preferences = [tuple(p) if isinstance(p, list) else p for p in preferences]
         preferences = [EntityPreferenceInstance(p) for p in preferences]
+
+        i = 0
+        for p in preferences:
+            for elt in p:
+                ranks[elt] = i
+            i += 1
 
         return preferences, ranks
 

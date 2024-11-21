@@ -9,7 +9,7 @@ from algmatch.stableMatchings.studentProjectAllocation.ties.dictionaryReader imp
 
 from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
-class SPAPreferenceInstance(AbstractPreferenceInstance):
+class SPASTPreferenceInstance(AbstractPreferenceInstance):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
         super().__init__(filename, dictionary)
         self.setup_project_lists()
@@ -45,6 +45,8 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
                         if project in elt:
                             project_list.append(epi.values)
 
+    # TODO: check these work
+    # unused currently
     def check_preference_lists(self) -> None:
         for s, s_prefs in self.students.items():
 

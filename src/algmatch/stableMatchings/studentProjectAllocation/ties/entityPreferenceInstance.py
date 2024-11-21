@@ -39,3 +39,6 @@ class EntityPreferenceInstance:
 
     def __contains__(self, item) -> bool:
         return item in self.values
+    
+    def __iter__(self):
+        return (x for x in self.values) if isinstance(self.values, tuple) else (x for x in [self.values])
