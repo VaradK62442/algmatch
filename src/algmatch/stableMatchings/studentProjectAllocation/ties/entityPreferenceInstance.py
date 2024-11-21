@@ -1,6 +1,10 @@
 """
 Class to represent a preference entity.
 e.g. in a student's preference list, a project is an entity.
+
+An instance of this class is either a single value, or a tied tuple.
+Cannot have ties within ties. 
+e.g. "p1" or ("p1", "p2", "p3") but NOT ("p1", ("p2", "p3"))
 """
 
 class EntityPreferenceInstance:

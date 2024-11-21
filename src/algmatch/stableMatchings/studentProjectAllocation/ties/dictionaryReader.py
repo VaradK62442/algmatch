@@ -94,4 +94,4 @@ class DictionaryReader(AbstractReader):
 
                             preferences.append(epi)
 
-                        self.lecturers[lecturer] = {"upper_quota": capacity, "projects": set(), "list": preferences, "rank": rank}
+                        self.lecturers[lecturer] = {"upper_quota": capacity, "projects": set(), "list": preferences, "rank": rank, "lkj": {}}

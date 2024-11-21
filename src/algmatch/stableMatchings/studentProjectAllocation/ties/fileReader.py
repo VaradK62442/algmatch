@@ -135,4 +135,4 @@ class FileReader(AbstractReader):
 
             preferences, rank = self._read_preferences_ranks(entry[2:], letter='s')
                         
-            self.lecturers[lecturer] = {"upper_quota": capacity, "projects": set(), "list": preferences, "rank": rank}
+            self.lecturers[lecturer] = {"upper_quota": capacity, "projects": set(), "list": preferences, "rank": rank, "lkj": {}}
