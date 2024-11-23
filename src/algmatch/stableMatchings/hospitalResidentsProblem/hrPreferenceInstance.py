@@ -52,7 +52,7 @@ class HRPreferenceInstance(AbstractPreferenceInstance):
                 except ValueError:
                     pass
                 try:
-                    self.residents[h]["list"].remove(r)
+                    self.hospitals[h]["list"].remove(r)
                 except ValueError:
                     pass
 
