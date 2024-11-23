@@ -37,9 +37,6 @@ class VerifyCorrectness:
         m_0 = student_optimal_solver.get_stable_matching()
         m_z = lecturer_optimal_solver.get_stable_matching()
 
-        if len(enumerator.all_stable_matchings) == 0:
-            return False
-
         return m_z == enumerator.all_stable_matchings[-1] and m_0 == enumerator.all_stable_matchings[0]
     
     def run(self):
