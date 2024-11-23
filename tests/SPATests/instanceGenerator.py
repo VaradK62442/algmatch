@@ -1,7 +1,5 @@
 import random
-import math
-import os
-
+from math import ceil
 
 class SPAS:
     def __init__(self, students, lower_bound, upper_bound):
@@ -9,8 +7,8 @@ class SPAS:
             raise ValueError("number of residents must be a postive integer")
         
         self.no_students = students
-        self.no_projects = int(math.ceil(0.5*self.no_students))
-        self.no_lecturers = int(math.ceil(0.2*self.no_students))  # assume number of lecturers <= number of projects
+        self.no_projects = int(ceil(0.5*self.no_students))
+        self.no_lecturers = int(ceil(0.2*self.no_students))  # assume number of lecturers <= number of projects
 
         if type(lower_bound) is not int or type(upper_bound) is not int:
             raise ValueError("Bound must be integers.")
@@ -22,7 +20,7 @@ class SPAS:
             raise ValueError("Lower bound is greater than upper bound")
 
         
-        self.tpc = int(math.ceil(1.2*self.no_students))  # assume total project capacity >= number of projects
+        self.tpc = int(ceil(1.2*self.no_students))  # assume total project capacity >= number of projects
         self.li = lower_bound  # lower bound of the student's preference list
         self.lj = upper_bound  # upper bound of the student's preference list
 
@@ -34,7 +32,7 @@ class SPAS:
         self.available_students = [i+1 for i in range(self.no_students)]
         self.available_projects = [i+1 for i in range(self.no_projects)]
         
-    def instance_generator_no_tie(self):
+    def generate_instance_no_ties(self):
         # ====== BLANKS ======
         self.students = {i+1 : {"list": []} for i in range(self.no_students)}
         # in order to do a trick on this dictionary below, we need them to start at 0
@@ -118,17 +116,3 @@ class SPAS:
                 Instance.write(f"{n} {uquota} {' '.join([str(r) for r in preferences])}\n")
 
             Instance.close()
-
-total_students = 10
-# total_projects =0.5*(total_students)
-# total_lecturers = 0.2*(total_students)
-lower_bound, upper_bound = 2, 3 # make sure this does not exceed the total number of projects
-for k in range(1, 2):
-    S = SPAS(total_students, lower_bound, upper_bound)
-    S.instance_generator_no_tie()
-    file = 'instance'+str(k)+'.txt'
-    # check if instances dir exists
-    if not os.path.exists('instances'):
-        os.makedirs('instances')    
-    filename = 'instances/'+ file
-    S.write_instance_no_ties(filename)

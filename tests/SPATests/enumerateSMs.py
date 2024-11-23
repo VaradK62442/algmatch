@@ -8,19 +8,17 @@ class ESMS(SPAAbstract):
         self.M.update({p:{"assigned":set()} for p in self.projects})
         self.M.update({L:{"assigned":set()} for L in self.lecturers})
 
-        self.full_projects = set()
-        self.full_lecturers = set()
         self.all_stable_matchings = []
 
         # This lets us order residents in the stable matching by number.
         # We cannot use 'sorted' without this key because that uses lexial order.
         self.student_order_comparator = lambda s: int(s[1:])
 
-    def project_is_full(self, p):
-        return self.projects[p]["upper_quota"] == len(self.M[p]["assigned"])
+    def project_is_overfull(self, p):
+        return self.projects[p]["upper_quota"] < len(self.M[p]["assigned"])
     
-    def lecturer_is_full(self, L):
-        return self.lecturers[L]["upper_quota"] == len(self.M[L]["assigned"])
+    def lecturer_is_overfull(self, L):
+        return self.lecturers[L]["upper_quota"] < len(self.M[L]["assigned"])
     
     def save_matching(self):
         stable_matching = {"student_sided":{},"lecturer_sided":{}}
@@ -40,6 +38,12 @@ class ESMS(SPAAbstract):
     def choose(self, i=1):
         #if every resident is assigned
         if i > len(self.students):
+            for project in self.projects:
+                if self.project_is_overfull(project):
+                    return
+            for lecturer in self.lecturers:
+                if self.lecturer_is_overfull(lecturer):
+                    return
             #if stable add to solutions list
             if self._check_stability():
                 self.save_matching()
@@ -47,23 +51,17 @@ class ESMS(SPAAbstract):
         else:
             student = f"s{i}"
             for project in self.students[student]["list"]:
-                # avoid the over-filling of hospitals
                 lecturer = self.projects[project]["lecturer"]
-                if project not in self.full_projects and lecturer not in self.full_lecturers:
-                    self.M[student]["assigned"] = project
-                    self.M[project]["assigned"].add(student)
-                    self.M[lecturer]["assigned"].add(student)
 
-                    if self.project_is_full(project):
-                        self.full_projects.add(project)
-                    if self.lecturer_is_full(lecturer):
-                        self.full_lecturers.add(lecturer)
+                self.M[student]["assigned"] = project
+                self.M[project]["assigned"].add(student)
+                self.M[lecturer]["assigned"].add(student)
 
-                    self.choose(i+1)
+                self.choose(i+1)
 
-                    self.M[student]["assigned"] = None
-                    self.M[project]["assigned"].remove(student)
-                    self.M[lecturer]["assigned"].remove(student)
+                self.M[student]["assigned"] = None
+                self.M[project]["assigned"].remove(student)
+                self.M[lecturer]["assigned"].remove(student)
             # case where the student is unassigned
             self.choose(i+1)
 
