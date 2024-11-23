@@ -37,6 +37,6 @@ class HospitalResidentsProblem:
         :return: dict, the stable matching for this instance
         """
         self.hr.run()
-        if not self.hr.is_stable:
+        if self.hr.is_stable:
             return self.hr.stable_matching
         return None

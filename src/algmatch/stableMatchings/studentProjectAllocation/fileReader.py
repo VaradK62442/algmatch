@@ -64,9 +64,9 @@ class FileReader(AbstractReader):
 
             if not entry[2].isdigit():
                 raise OffererError("project","lecturer",cur_line,line=True)
-            offerer = int(entry[2])
+            offerer = f"l{entry[2]}"
 
-            self.projects[project] = {"upper_quota": capacity, "lecturer": offerer}
+            self.projects[project] = {"lower_quota": 0, "upper_quota": capacity, "lecturer": offerer}
 
         # build lecturers dictionary
         for elt in file[self.no_students+self.no_projects+1:self.no_students+self.no_projects+self.no_lecturers+1]:
