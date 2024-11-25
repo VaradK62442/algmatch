@@ -7,6 +7,7 @@
 RAM: 16 GB
 CPU: 12th Gen Intel Core™ i7-12650H  (16 cores)
 GPU: Nvidia GeForce RTX 4060
+OS: Ubuntu 22.04
 
 ### Timing HR:
 
@@ -65,6 +66,7 @@ GPU: Nvidia GeForce RTX 4060
 RAM: 16 GB
 CPU: AMD Ryzen 9 5900hx (16 cores)
 GPU: Nvidia GeForce RTX 3070
+OS: Ubuntu 22.04
 
 ### Timing HR:
 
