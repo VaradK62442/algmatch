@@ -10,7 +10,7 @@ from algmatch.stableMarriageProblem import StableMarriageProblem
 from SMTests.instanceGenerator import SMInstanceGenerator
 
 from algmatch.studentProjectAllocation import StudentProjectAllocation
-from SPATests.instanceGenerator import SPAS as SPAInstanceGenerator
+from SPATests.instanceGenerator import SPAInstanceGenerator
 
 
 FILENAME = 'instance.txt'
