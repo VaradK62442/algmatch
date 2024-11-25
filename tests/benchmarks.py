@@ -2,7 +2,6 @@ import os
 
 from statistics import stdev, mean
 from time import perf_counter_ns
-from tqdm import tqdm
 
 from algmatch.hospitalResidentsProblem import HospitalResidentsProblem
 from HRTests.instanceGenerator import HRInstanceGenerator

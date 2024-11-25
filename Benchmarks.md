@@ -117,3 +117,62 @@ OS: Ubuntu 22.04
         lecturer-optimal solver:
             average: 1.31 ms
             std.dev.: 0.22 ms
+
+## Device 3
+
+### Specs
+
+RAM: 16 GB
+CPU: 12th Gen Intel Code i7-1250U
+GPU: Intel Iris XE Graphics
+OS: Windows 11 Home
+
+### Timing HR:
+
+        Total residents: 75
+        Total hospitals: 75
+        Preference list length lower bound: 75
+        Preference list length upper bound: 75
+
+        Repetitions: 1000
+
+        residents-optimal solver:
+            average: 0.14 ms
+            std.dev.: 0.06 ms
+
+        hospitals-optimal solver:
+            average: 3.94 ms
+            std.dev.: 0.70 ms
+
+### Timing SM:
+
+        Total men: 75
+        Total women: 75
+        Preference list length lower bound: 75
+        Preference list length upper bound: 75
+
+        Repetitions: 1000
+
+        men-optimal solver:
+            average: 3.14 ms
+            std.dev.: 0.65 ms
+
+        women-optimal solver:
+            average: 3.29 ms
+            std.dev.: 0.50 ms
+
+### Timing SPA:
+
+        Total student: 50
+        Lower project bound: 20
+        Upper project bound: 25
+
+        Repetitions: 1000
+
+        student-optimal solver:
+            average: 1.92 ms
+            std.dev.: 0.56 ms
+
+        lecturer-optimal solver:
+            average: 1.17 ms
+            std.dev.: 0.30 ms
