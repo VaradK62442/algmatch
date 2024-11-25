@@ -76,8 +76,13 @@ def benchmark(IGData, IG, reps, solver, optimised_sides):
 
 
 def main():
+    print("Timing HR:")
     benchmark([75, 75, 75, 75], HRInstanceGenerator, 1_000, HospitalResidentsProblem, ["residents", "hospitals"])
+
+    print("Timing SM:")
     benchmark([75, 75, 75, 75], SMInstanceGenerator, 1_000, StableMarriageProblem, ["men", "women"])
+
+    print("Timing SPA:")
     benchmark([50, 20, 25], SPAInstanceGenerator, 1_000, StudentProjectAllocation, ["student", "lecturer"])
     
 
