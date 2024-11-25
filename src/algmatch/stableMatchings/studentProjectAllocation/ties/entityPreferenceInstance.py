@@ -46,3 +46,9 @@ class EntityPreferenceInstance:
     
     def __iter__(self):
         return (x for x in self.values) if isinstance(self.values, tuple) else (x for x in [self.values])
+
+    def _remove_from_tied(self, value):
+        if isinstance(self.values, tuple): 
+            self.values = tuple(v for v in self.values if v != value)
+        else:
+            raise ValueError("Cannot remove from non-tied preference")
