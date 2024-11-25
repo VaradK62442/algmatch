@@ -14,9 +14,3 @@ The following algorithms are implemented so far:
     - Check algorithm is generating correct stable matchings
 
 Requires Python 3.10 or later.
-
-TEMP:
-For testing, do the following steps to build and install the package.
-In the `algmatch` package, run `python3 -m build` to build the package and put build files in the `dist/` folder.
-Then, run `pip install dist/*.tar.gz --force-reinstall` to install the package.
-Then, from any file, you can do `import algmatch` to use the package.

@@ -1,0 +1,7 @@
+from .hospitalResidentsProblem import HospitalResidentsProblem
+from .stableMarriageProblem import StableMarriageProblem
+from .studentProjectAllocation import StudentProjectAllocation
+
+from .hospitalResidentsProblem import HospitalResidentsProblem as HR
+from .stableMarriageProblem import StableMarriageProblem as SM
+from .studentProjectAllocation import StudentProjectAllocation as SPA
