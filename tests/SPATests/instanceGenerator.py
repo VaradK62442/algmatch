@@ -1,7 +1,7 @@
 import random
 from math import ceil
 
-class SPAS:
+class SPAInstanceGenerator:
     def __init__(self, students, lower_bound, upper_bound):
         if type(students) is not int or students <= 0:
             raise ValueError("number of residents must be a postive integer")
