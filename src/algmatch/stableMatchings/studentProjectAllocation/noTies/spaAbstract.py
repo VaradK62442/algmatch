@@ -2,6 +2,7 @@
 Student Project Allocation - Abstract class
 """
 
+from copy import deepcopy
 import os
 
 from algmatch.stableMatchings.studentProjectAllocation.noTies.spaPreferenceInstance import SPAPreferenceInstance
@@ -23,6 +24,10 @@ class SPAAbstract:
         self.projects = self._reader.projects
         self.lecturers = self._reader.lecturers
 
+        # we need original copies of the preference lists to check the stability of solutions
+        self.original_students = deepcopy(self.students)
+        self.original_lecturers = deepcopy(self.lecturers)
+
         self.M = {} # provisional matching
         self.stable_matching = {
             "student_sided": {student: "" for student in self.students},
@@ -36,7 +41,7 @@ class SPAAbstract:
     # =======================================================================    
     def _blockingpair_1bi(self, _, project, lecturer):
         #  project and lecturer capacity
-        cj, dk = self.projects[project]["upper_quota"], self.lecturers[lecturer]["upper_quota"]
+        cj, dk = self.projects[project]["upper_quota"], self.original_lecturers[lecturer]["upper_quota"]
         # no of students assigned to project in M
         project_occupancy, lecturer_occupancy = len(self.M[project]["assigned"]), len(self.M[lecturer]["assigned"])
         #  project and lecturer are both under-subscribed
@@ -48,16 +53,16 @@ class SPAAbstract:
     def _blockingpair_1bii(self, student, project, lecturer):
         # p_j is undersubscribed, l_k is full and either s_i \in M(l_k)
         # or l_k prefers s_i to the worst student in M(l_k)
-        cj, dk = self.projects[project]["upper_quota"], self.lecturers[lecturer]["upper_quota"]
+        cj, dk = self.projects[project]["upper_quota"], self.original_lecturers[lecturer]["upper_quota"]
         project_occupancy, lecturer_occupancy = len(self.M[project]["assigned"]), len(self.M[lecturer]["assigned"])
         #  project is undersubscribed and lecturer is full
         if project_occupancy < cj and lecturer_occupancy == dk:
             Mlk_students = self.M[lecturer]["assigned"]
             if student in Mlk_students: # s_i \in M(lk)
                 return True
-            student_rank = self.lecturers[lecturer]["rank"][student]
+            student_rank = self.original_lecturers[lecturer]["rank"][student]
             for worst_student in self.M[lecturer]["assigned"]:
-                worst_student_rank = self.lecturers[lecturer]["rank"][worst_student]
+                worst_student_rank = self.original_lecturers[lecturer]["rank"][worst_student]
                 if student_rank < worst_student_rank:
                     return True              
         return False
@@ -80,12 +85,12 @@ class SPAAbstract:
     # self.blocking_pair is set to True if blocking pair exists
     # =======================================================================
     def _check_stability(self) -> bool:        
-        for student in self.students:
-            preferred_projects = self.students[student]["list"]
+        for student in self.original_students:
+            preferred_projects = self.original_students[student]["list"]
             if self.M[student]["assigned"] is not None:
                 matched_project = self.M[student]["assigned"]
-                rank_matched_project = self.students[student]["rank"][matched_project]
-                A_si = self.students[student]["list"]
+                rank_matched_project = self.original_students[student]["rank"][matched_project]
+                A_si = self.original_students[student]["list"]
                 preferred_projects = [pj for pj in A_si[:rank_matched_project]] # every project that s_i prefers to her matched project                                
         
             for project in preferred_projects:

@@ -28,7 +28,7 @@ class DictionaryReader(AbstractReader):
                         
                         for i in v:
                             if type(i) is not int:
-                                raise PrefListMisformatError("resident",k,i)
+                                raise PrefListMisformatError("student",k,i)
                         preferences = [f"p{i}" for i in v]
 
                         self.students[student] = {"list": preferences, "rank": dict()}
@@ -49,7 +49,7 @@ class DictionaryReader(AbstractReader):
                             raise OffererError("project","lecturer",k)
                         offerer = f"l{v['lecturer']}"
 
-                        self.projects[project] = {"upper_quota": capacity, "lecturer": offerer}
+                        self.projects[project] = {"lower_quota": 0, "upper_quota": capacity, "lecturer": offerer}
 
                 case "lecturers":
                     for k, v in value.items():
