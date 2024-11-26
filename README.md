@@ -7,7 +7,7 @@ A package containing various two-sided matching algorithms.
 
 Requires Python 3.10 or later.
 
-Format data according to the guidelines in [this](DATA_FORMAT_GUIDELINES/) folder.
+Format data according to the guidelines in [this](https://github.com/VaradK62442/algmatch/tree/v1.0.1/DATA_FORMAT_GUIDELINES) folder.
 
 # Installation
 
@@ -16,7 +16,7 @@ Simply run `pip install algmatch`.
 # Usage
 
 To import a specific algorithm, use `from algmatch import <algorithm>`, e.g. `from algmatch import SPA` or `from algmatch import StudentProjectAllocation`.
-Create a file or dictionary with your instance, following the guidelines in the [`DATA_FORMAT_GUIDELINES`](DATA_FORMAT_GUIDELINES/) folder.
+Create a file or dictionary with your instance, following the guidelines in the [`DATA_FORMAT_GUIDELINES`](https://github.com/VaradK62442/algmatch/tree/v1.0.1/DATA_FORMAT_GUIDELINES) folder.
 For example, 
 
 Importing data:
@@ -85,7 +85,7 @@ SPA 2 lecturer stable matching:
 {'student_sided': {'s1': 'p2', 's2': 'p3', 's3': 'p1', 's4': 'p4'}, 'lecturer_sided': {'l1': ['s1', 's3'], 'l2': ['s2', 's4']}}
 ```
 
-See more example usage [here](examples.ipynb).
+See more example usage [here](https://github.com/VaradK62442/algmatch/blob/v1.0.1/examples.ipynb).
 
 # Further details
 
