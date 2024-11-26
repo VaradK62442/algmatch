@@ -26,9 +26,12 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Clean up old distributions
+        run: |
+          rm -rf dist/
+
       - name: Build release distributions
         run: |
-          # NOTE: put your own distribution build steps here.
           python -m pip install build
           python -m build
 
@@ -59,10 +62,6 @@ jobs:
         with:
           name: release-dists
           path: dist/
-
-      - name: Clean up old distributions
-        run: |
-          rm -rf dist/
 
       - name: Publish release distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
