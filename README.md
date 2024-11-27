@@ -79,9 +79,9 @@ print(spa_lecturer_stable_matching)
 ```
 
 ```
-SPA 2 student stable matching:
+SPA student stable matching:
 {'student_sided': {'s1': 'p1', 's2': 'p2', 's3': 'p3', 's4': 'p4'}, 'lecturer_sided': {'l1': ['s1', 's2'], 'l2': ['s3', 's4']}}
-SPA 2 lecturer stable matching:
+SPA lecturer stable matching:
 {'student_sided': {'s1': 'p2', 's2': 'p3', 's3': 'p1', 's4': 'p4'}, 'lecturer_sided': {'l1': ['s1', 's3'], 'l2': ['s2', 's4']}}
 ```
 
