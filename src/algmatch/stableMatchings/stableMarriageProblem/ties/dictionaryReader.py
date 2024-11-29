@@ -26,7 +26,7 @@ class DictionaryReader(AbstractReader):
                         
                         for i in v:
                             # if not int, must be a tie list
-                            if type(i) not in (int,list) and not all(type(j) is int for j in i):
+                            if type(i) is not int and not all(type(j) is int for j in i):
                                 raise PrefListMisformatError("man", k, i)
                         preferences = []
                         for i, elt in enumerate(v):
@@ -34,11 +34,11 @@ class DictionaryReader(AbstractReader):
                                 tie = set()
                                 tie.add(f"w{elt}")
                             else:
-                                tie = set([f"w{j}" for j in elt])
+                                tie = {f"w{j}" for j in elt}
                             preferences.append(tie)
 
 
-                        self.men[man] = {"list": preferences, "rank": rank}
+                        self.men[man] = {"list": preferences, "rank": {}}
 
                 case "women":
                     for k, v in value.items():
@@ -50,7 +50,7 @@ class DictionaryReader(AbstractReader):
                         
                         for i in v:
                             # if not int, must be a tie list
-                            if type(i) not in (int,list) and not all(type(j) is int for j in i):
+                            if type(i) is not int and not all(type(j) is int for j in i):
                                 raise PrefListMisformatError("woman", k, i)
                         preferences = []
                         for i, elt in enumerate(v):
@@ -58,13 +58,7 @@ class DictionaryReader(AbstractReader):
                                 tie = set()
                                 tie.add(f"m{elt}")
                             else:
-                                tie = set([f"m{j}" for j in elt])
+                                tie = {f"w{j}" for j in elt}
                             preferences.append(tie)
 
                         self.women[woman] = {"list": preferences, "rank": {}}
-
-
-example = {}
-dr = DictionaryReader(example)
-print(dr.men)
-print(dr.women)
