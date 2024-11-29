@@ -4,8 +4,8 @@ Store preference lists for Stable Marriage stable matching algorithm.
 from itertools import product
 
 from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
-from algmatch.stableMatchings.stableMarriageProblem.fileReader import FileReader
-from algmatch.stableMatchings.stableMarriageProblem.dictionaryReader import DictionaryReader
+from algmatch.stableMatchings.stableMarriageProblem.noTies.fileReader import FileReader
+from algmatch.stableMatchings.stableMarriageProblem.noTies.dictionaryReader import DictionaryReader
 from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 class SMPreferenceInstance(AbstractPreferenceInstance):

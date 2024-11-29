@@ -4,8 +4,8 @@ Store preference lists for Hospital/Residents Problem stbale matching algorithm.
 from itertools import product
 
 from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
-from algmatch.stableMatchings.hospitalResidentsProblem.fileReader import FileReader
-from algmatch.stableMatchings.hospitalResidentsProblem.dictionaryReader import DictionaryReader
+from algmatch.stableMatchings.hospitalResidentsProblem.noTies.fileReader import FileReader
+from algmatch.stableMatchings.hospitalResidentsProblem.noTies.dictionaryReader import DictionaryReader
 from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 class HRPreferenceInstance(AbstractPreferenceInstance):
