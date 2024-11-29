@@ -1,8 +1,8 @@
 from algmatch.stableMatchings.stableMarriageProblem.smAbstract import SMAbstract
 
 class ESMS(SMAbstract):
-    def __init__(self, filename):
-        super(ESMS, self).__init__(filename=filename)
+    def __init__(self, dictionary):
+        super(ESMS, self).__init__(dictionary=dictionary)
 
         self.M = {m:{"assigned":None} for m in self.men} | {w:{"assigned":None} for w in self.women}
         self.assigned_women = set()

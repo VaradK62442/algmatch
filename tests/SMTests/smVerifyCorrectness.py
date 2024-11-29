@@ -1,14 +1,13 @@
-import os
 from tqdm import tqdm
 
 from algmatch.stableMarriageProblem import StableMarriageProblem
 
 from instanceGenerator import SMInstanceGenerator as InstanceGenerator
-from enumerateSMs import ESMS
+from minmaxSMs import MMSMS
 
 
 class VerifyCorrectness:
-    def __init__(self, total_men, total_women, lower_bound, upper_bound, write_to_file):
+    def __init__(self, total_men, total_women, lower_bound, upper_bound):
         """
         It takes argument as follows (set in init):
             number of men
@@ -21,9 +20,9 @@ class VerifyCorrectness:
         self._total_women = total_women
         self._lower_bound = lower_bound
         self._upper_bound = upper_bound
-        self._write_to_file = write_to_file
 
         self.gen = InstanceGenerator(self._total_men, self._total_women, self._lower_bound, self._upper_bound)
+        self.current_instance = {}
 
         self._default_filename = 'instance.txt'
         self._results_dir = 'results/'
@@ -32,22 +31,19 @@ class VerifyCorrectness:
 
 
     def generate_instances(self):
-        self.gen.generate_instance_no_ties()
-        self.gen.write_instance_no_ties(self._default_filename)
-
+        self.current_instance = self.gen.generate_instance_no_ties()
 
     def verify_instance(self):
-        filename = self._default_filename
 
-        enumerator = ESMS(filename)
-        man_optimal_solver = StableMarriageProblem(filename=filename, optimisedSide="men")
-        woman_optimal_solver = StableMarriageProblem(filename=filename, optimisedSide="women")
+        minmaxer = MMSMS(dictionary=self.current_instance)
+        man_optimal_solver = StableMarriageProblem(dictionary=self.current_instance, optimisedSide="men")
+        woman_optimal_solver = StableMarriageProblem(dictionary=self.current_instance, optimisedSide="women")
 
-        enumerator.find_all_stable_matchings()
+        minmaxer.find_minmax_matchings()
         m_0 = man_optimal_solver.get_stable_matching()
         m_z = woman_optimal_solver.get_stable_matching()
 
-        return m_z == enumerator.all_stable_matchings[-1] and m_0 == enumerator.all_stable_matchings[0]
+        return m_z == minmaxer.minmax_matchings[-1] and m_0 == minmaxer.minmax_matchings[0]
     
 
     def run(self):
@@ -59,7 +55,6 @@ class VerifyCorrectness:
             if self._write_to_file:
                 self.gen.write_instance_no_ties(f"{self._results_dir}incorrect_instance_{self._incorrect_count}.txt")
     
-        os.remove(self._default_filename)
 
     def show_results(self):
         print(f"""
@@ -74,18 +69,14 @@ class VerifyCorrectness:
               """)
 
 def main():
-    n=9
+    n=6
     TOTAL_MEN = n
     TOTAL_WOMEN = n
     LOWER_LIST_BOUND = n
     UPPER_LIST_BOUND = n
-    REPETITIONS = 1
-    WRITE_TO_FILE = False
+    REPETITIONS = 100_000
 
-    if WRITE_TO_FILE and not os.path.isdir("results"):
-        os.mkdir("results")
-
-    verifier = VerifyCorrectness(TOTAL_MEN, TOTAL_WOMEN, LOWER_LIST_BOUND, UPPER_LIST_BOUND, WRITE_TO_FILE)
+    verifier = VerifyCorrectness(TOTAL_MEN, TOTAL_WOMEN, LOWER_LIST_BOUND, UPPER_LIST_BOUND)
     for _ in tqdm(range(REPETITIONS)):
         verifier.run()
 

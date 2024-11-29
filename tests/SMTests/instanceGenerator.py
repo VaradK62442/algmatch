@@ -20,8 +20,7 @@ class SMInstanceGenerator:
         self.li = lower_bound
         self.lj = upper_bound 
 
-        self.men = {} # man dictionary
-        self.women = {} # woman dictionary
+        self.instance = {"men" : {}, "women" : {}}
 
         # lists of numbers that will be shuffled to get preferences
         self.available_men = [i+1 for i in range(self.no_men)]
@@ -29,38 +28,22 @@ class SMInstanceGenerator:
 
         
     def generate_instance_no_ties(self):
-        # ====== MEN ======= 
-        self.men = {i+1 : {"list": []} for i in range(self.no_men)}
-        for man in self.men:
+        # ====== RESET INSTANCE ======
+        self.instance = {"men" : {i+1 : [] for i in range(self.no_men)},
+                         "women" : {i+1 : [] for i in range(self.no_women)}}
+
+        # ====== MEN ====== 
+        for man_list in self.instance["men"].values():
             length = random.randint(self.li, self.lj)
             # we provide this many preferred women at random
             random.shuffle(self.available_women)
-            self.men[man]["list"] = self.available_women[:length]
+            man_list.extend(self.available_women[:length])
 
-        # ====== WOMEN ======= 
-        self.women = {i+1 : {"list": []} for i in range(self.no_women)}
-        for woman in self.women:
+        # ====== WOMEN ======
+        for woman_list in self.instance["women"].values():
             length = random.randint(self.li, self.lj) 
             #  we provide this many preferred men at random
             random.shuffle(self.available_men)
-            self.women[woman]["list"] = self.available_men[:length]
+            woman_list.extend(self.available_men[:length])
 
-    def write_instance_no_ties(self, filename):  # writes to txt file
-        if type(filename) is not str:
-            raise ValueError("Filename is not a string.")
-
-        with open(filename, 'w') as Instance:
-
-            # write the numbers of men and women as the header
-            Instance.write(str(self.no_men)+' '+str(self.no_women)+'\n')
-            
-            # write indexes and preferences, see the DATA_FORMAT_GUIDELINE.md in src/stableMachings/stableMarriageProblem
-            for n in range(1, self.no_men + 1):
-                preferences = self.men[n]["list"]
-                Instance.write(str(n) + ' ' + ' '.join([str(w) for w in preferences]) + '\n')
-
-            for n in range(1, self.no_women + 1):
-                preferences = self.women[n]["list"]
-                Instance.write(str(n) + ' ' + ' '.join([str(m) for m in preferences]) + '\n')
-
-            Instance.close()
+        return self.instance
