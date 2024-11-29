@@ -58,7 +58,7 @@ class DictionaryReader(AbstractReader):
                                 tie = set()
                                 tie.add(f"m{elt}")
                             else:
-                                tie = {f"w{j}" for j in elt}
+                                tie = {f"m{j}" for j in elt}
                             preferences.append(tie)
 
                         self.women[woman] = {"list": preferences, "rank": {}}
