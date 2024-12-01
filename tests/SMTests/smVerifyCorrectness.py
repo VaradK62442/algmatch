@@ -24,8 +24,6 @@ class VerifyCorrectness:
         self.gen = InstanceGenerator(self._total_men, self._total_women, self._lower_bound, self._upper_bound)
         self.current_instance = {}
 
-        self._default_filename = 'instance.txt'
-        self._results_dir = 'results/'
         self._correct_count = 0
         self._incorrect_count = 0
 
@@ -52,9 +50,7 @@ class VerifyCorrectness:
             self._correct_count += 1
         else:
             self._incorrect_count += 1
-            if self._write_to_file:
-                self.gen.write_instance_no_ties(f"{self._results_dir}incorrect_instance_{self._incorrect_count}.txt")
-    
+
 
     def show_results(self):
         print(f"""
