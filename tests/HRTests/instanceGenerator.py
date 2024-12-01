@@ -27,43 +27,25 @@ class HRInstanceGenerator:
         self.available_residents = [i+1 for i in range(self.no_residents)]
         self.available_hospitals = [i+1 for i in range(self.no_hospitals)]
 
-        
     def generate_instance_no_ties(self):
+        # ====== RESET INSTANCE ======
+        self.instance = {"residents" : {i+1 : [] for i in range(self.no_residents)},
+                         "hospitals" : {i+1 : {"capacity":0,"preferences":[]} for i in range(self.no_hospitals)}}
+
         # ====== RESIDENTS ======= 
-        self.residents = {i+1 : {"list": []} for i in range(self.no_residents)}
-        for res in self.residents:
+        for res_list in self.instance["residents"].values():
             length = random.randint(self.li, self.lj)
             # we provide this many preferred hospitals at random
             random.shuffle(self.available_hospitals)
-            self.residents[res]["list"] = self.available_hospitals[:length]
+            res_list.extend(self.available_hospitals[:length])
 
         # ====== HOSPITALS ======= 
-        self.hospitals = {i+1 : {"capacity": 0, "list": []} for i in range(self.no_hospitals)}
-        for hos in self.hospitals:
+        for hos_dict in self.instance["hospitals"].values():
             # random capacity; 1 <= capacity <= residents
-            self.hospitals[hos]["capacity"] = random.randint(1,self.no_residents)
+            hos_dict["capacity"] = random.randint(1,self.no_residents)
             # we provide a random ordering of all residents
             random.shuffle(self.available_residents)
-            self.hospitals[hos]["list"] = self.available_residents[:]
+            hos_dict["list"] = self.available_residents[:]
 
-    def write_instance_no_ties(self, filename):  # writes to txt file
-        if type(filename) is not str:
-            raise ValueError("Filename is not a string.")
 
-        with open(filename, 'w') as Instance:
-
-            # write the numbers of residents and hospitals as the header
-            Instance.write(str(self.no_residents)+' '+str(self.no_hospitals)+'\n')
-            
-            # write indexes, capacities and preferences, 
-            # see the DATA_FORMAT_GUIDELINE.md
-            for n in range(1, self.no_residents + 1):
-                preferences = self.residents[n]["list"]
-                Instance.write(str(n) + ' ' + ' '.join([str(h) for h in preferences]) + '\n')
-
-            for n in range(1, self.no_hospitals + 1):
-                capacity = self.hospitals[n]["capacity"]
-                preferences = self.hospitals[n]["list"]
-                Instance.write(str(n) + ' ' + str(capacity) + ' ' +' '.join([str(r) for r in preferences]) + '\n')
-
-            Instance.close()
+        return self.instance

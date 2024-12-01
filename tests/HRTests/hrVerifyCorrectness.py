@@ -1,10 +1,10 @@
-import os
 from tqdm import tqdm
 
 from algmatch.hospitalResidentsProblem import HospitalResidentsProblem
 
 from instanceGenerator import HRInstanceGenerator as InstanceGenerator
 from enumerateSMs import ESMS
+from minmaxSMs import MMSMS
 
 
 class VerifyCorrectness:
@@ -24,31 +24,38 @@ class VerifyCorrectness:
         self._write_to_file = write_to_file
 
         self.gen = InstanceGenerator(self._total_residents, self._total_hospitals, self._lower_bound, self._upper_bound)
+        self.current_instance = {}
 
-        self._default_filename = 'instance.txt'
-        self._results_dir = 'results/'
         self._correct_count = 0
         self._incorrect_count = 0
 
 
     def generate_instances(self):
-        self.gen.generate_instance_no_ties()
-        self.gen.write_instance_no_ties(self._default_filename)
-
+        self.current_instance = self.gen.generate_instance_no_ties()
 
     def verify_instance(self):
-        filename = self._default_filename
 
-        enumerator = ESMS(filename)
-        resident_optimal_solver = HospitalResidentsProblem(filename=filename, optimisedSide="residents")
-        hospital_optimal_solver = HospitalResidentsProblem(filename=filename, optimisedSide="hospitals")
+        minmaxer = MMSMS(dictionary=self.current_instance)
+        resident_optimal_solver = HospitalResidentsProblem(dictionary=self.current_instance, optimisedSide="residents")
+        hospital_optimal_solver = HospitalResidentsProblem(dictionary=self.current_instance, optimisedSide="hospitals")
+
+        minmaxer.find_minmax_matchings()
+        m_0 = resident_optimal_solver.get_stable_matching()
+        m_z = hospital_optimal_solver.get_stable_matching()
+
+        return m_z == minmaxer.minmax_matchings[-1] and m_0 == minmaxer.minmax_matchings[0]
+    
+    def old_verify_instance(self):
+
+        enumerator = ESMS(dictionary=self.current_instance)
+        resident_optimal_solver = HospitalResidentsProblem(dictionary=self.current_instance, optimisedSide="residents")
+        hospital_optimal_solver = HospitalResidentsProblem(dictionary=self.current_instance, optimisedSide="hospitals")
 
         enumerator.find_all_stable_matchings()
         m_0 = resident_optimal_solver.get_stable_matching()
         m_z = hospital_optimal_solver.get_stable_matching()
 
         return m_z == enumerator.all_stable_matchings[-1] and m_0 == enumerator.all_stable_matchings[0]
-    
 
     def run(self):
         self.generate_instances()
@@ -56,10 +63,6 @@ class VerifyCorrectness:
             self._correct_count += 1
         else:
             self._incorrect_count += 1
-            if self._write_to_file:
-                self.gen.write_instance_no_ties(f"{self._results_dir}incorrect_instance_{self._incorrect_count}.txt")
-    
-        os.remove(self._default_filename)
 
     def show_results(self):
         print(f"""
@@ -78,11 +81,8 @@ def main():
     TOTAL_HOSPITALS = 5
     LOWER_LIST_BOUND = 0
     UPPER_LIST_BOUND = 3
-    REPETITIONS = 1000
+    REPETITIONS = 100_000
     WRITE_TO_FILE = False
-
-    if WRITE_TO_FILE and not os.path.isdir("results"):
-        os.mkdir("results")
 
     verifier = VerifyCorrectness(TOTAL_RESIDENTS, TOTAL_HOSPITALS, LOWER_LIST_BOUND, UPPER_LIST_BOUND, WRITE_TO_FILE)
     for _ in tqdm(range(REPETITIONS)):
