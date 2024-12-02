@@ -96,16 +96,3 @@ class SMTPreferenceInstance(AbstractPreferenceInstance):
                 # there are no reps, all comprehensions are disjoint
                 ranking |= {man : i for man in tie}
             self.women[w]["rank"] = ranking
-
-example = {
-    "men" : {
-        1 : [[1,2],3],
-        2 : [1,[3,2]],
-        3 : [[2,1,3]]
-    },
-    "women" : {
-        1 : [2,3,1],
-        2 : [3,1,2],
-        3 : [3,2,1],
-    }
-}
