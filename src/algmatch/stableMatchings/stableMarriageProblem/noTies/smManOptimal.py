@@ -1,5 +1,5 @@
 """
-Algorithm to produce M_0, the man-optimal, woman-pessimal stable matching, where such a thing exists.
+Algorithm to produce M_0, the man-optimal, woman-pessimal stable matching.
 """
 
 from algmatch.stableMatchings.stableMarriageProblem.noTies.smAbstract import SMAbstract
