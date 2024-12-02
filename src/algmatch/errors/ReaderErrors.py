@@ -39,3 +39,20 @@ class OffererError(ReaderError):
     def __init__(self, participant_type, offerer_type, name, line=False):
         cause = f"{participant_type} offerer misformatted; {offerer_type} is not int"
         super().__init__(participant_type, name, cause, line)
+
+# ====== Ties ======
+
+class NestedTiesError(ReaderError):
+    def __init__(self, participant_type, name):
+        cause = f"Nested ties when parsing {participant_type}"
+        super().__init__(participant_type, name, cause, line=True)
+
+class UnopenedTieError(ReaderError):
+    def __init__(self, participant_type, name):
+        cause = f"Close bracket with no corresponding open bracket in {participant_type}"
+        super().__init__(participant_type, name, cause, line=True)
+
+class UnclosedTieError(ReaderError):
+    def __init__(self, participant_type, name):
+        cause = f"Open bracket with no corresponding close bracket in {participant_type}"
+        super().__init__(participant_type, name, cause, line=True)
