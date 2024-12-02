@@ -44,18 +44,6 @@ class VerifyCorrectness:
         m_z = hospital_optimal_solver.get_stable_matching()
 
         return m_z == minmaxer.minmax_matchings[-1] and m_0 == minmaxer.minmax_matchings[0]
-    
-    def old_verify_instance(self):
-
-        enumerator = ESMS(dictionary=self.current_instance)
-        resident_optimal_solver = HospitalResidentsProblem(dictionary=self.current_instance, optimisedSide="residents")
-        hospital_optimal_solver = HospitalResidentsProblem(dictionary=self.current_instance, optimisedSide="hospitals")
-
-        enumerator.find_all_stable_matchings()
-        m_0 = resident_optimal_solver.get_stable_matching()
-        m_z = hospital_optimal_solver.get_stable_matching()
-
-        return m_z == enumerator.all_stable_matchings[-1] and m_0 == enumerator.all_stable_matchings[0]
 
     def run(self):
         self.generate_instances()
