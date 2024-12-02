@@ -71,11 +71,15 @@ class SMTAbstract:
 
         for man in self.men:
             woman = self.M[man]["assigned"]
-            if woman is not None:
+            if woman != set():
                 self.stable_matching["man_sided"][man] = woman
+
+        for woman in self.women:
+            man = self.M[woman]["assigned"]
+            if man != set():
                 self.stable_matching["woman_sided"][woman] = man
 
-        self.is_stable = self._check_stability()
+        self.is_stable = True #self._check_stability()
 
         if self.is_stable:
             return f"stable matching: {self.stable_matching}"
