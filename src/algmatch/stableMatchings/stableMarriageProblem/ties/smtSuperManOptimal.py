@@ -3,12 +3,14 @@ Algorithm to produce M_0, the man-optimal, woman-pessimal super-stable matching,
 """
 
 from algmatch.stableMatchings.stableMarriageProblem.ties.smtAbstract import SMTAbstract
+from algmatch.stableMatchings.stableMarriageProblem.ties.smGraphMax import SMGraphMax
 
 class SMTSuperManOptimal(SMTAbstract):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
         super().__init__(filename=filename, dictionary=dictionary)
 
         self.unassigned_men = set()
+        self.proposed = {w : False for w in self.women}
 
         for man, prefs in self.men.items():
             if len(prefs["list"]) > 0:
@@ -17,8 +19,6 @@ class SMTSuperManOptimal(SMTAbstract):
 
         for woman in self.women:
             self.M[woman] = {"assigned": set()}
-
-        self.proposed = {w : False for w in self.women}
 
     def _get_pref_length(self,man):
         pref_sets = self.men[man]["list"]
@@ -71,7 +71,7 @@ class SMTSuperManOptimal(SMTAbstract):
             man = men_assigned.pop()
             self._break_engagement(man,woman)
  
-    def _while_loop(self):
+    def _while_loop(self) -> bool:
         while True:
             while len(self.unassigned_men) != 0:
 
@@ -103,6 +103,16 @@ class SMTSuperManOptimal(SMTAbstract):
                     end_condition = False
             if end_condition:
                 break
+        
+        # do flow alg to get max matching
+        graph_maxer = SMGraphMax(self.M)
+        M_prime = graph_maxer.get_max_matching()
+
+        # check viability of matching
+        for w in self.women:
+            if self.M_prime[w]["assigned"] == None and self.proposed[w]:
+                return False
+        return True
 
 instance = {
     "men": {

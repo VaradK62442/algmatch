@@ -67,21 +67,19 @@ class SMTAbstract:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
 
     def run(self) -> None:
-        self._while_loop()
+        if self._while_loop():
+            for man in self.men:
+                woman = self.M[man]["assigned"]
+                if woman != set():
+                    self.stable_matching["man_sided"][man] = woman
 
-        for man in self.men:
-            woman = self.M[man]["assigned"]
-            if woman != set():
-                self.stable_matching["man_sided"][man] = woman
+            for woman in self.women:
+                man = self.M[woman]["assigned"]
+                if man != set():
+                    self.stable_matching["woman_sided"][woman] = man
 
-        for woman in self.women:
-            man = self.M[woman]["assigned"]
-            if man != set():
-                self.stable_matching["woman_sided"][woman] = man
+            self.is_stable = True #self._check_stability()
 
-        self.is_stable = True #self._check_stability()
-
-        if self.is_stable:
-            return f"stable matching: {self.stable_matching}"
-        else:
-            return f"unstable matching: {self.stable_matching}"
+            if self.is_stable:
+                return f"super-stable matching: {self.stable_matching}"
+        return "no super-stable matching"
