@@ -39,21 +39,22 @@ class SMAbstract:
     # =======================================================================
     def _check_stability(self):      
         # stability must be checked with regards to the original lists prior to deletions  
-        for man in self.original_men:
-            preferred_women = self.original_men[man]["list"]
+        for man, m_prefs in self.original_men.items():
+            preferred_women = m_prefs["list"]
             if self.M[man]["assigned"] is not None:
                 matched_woman = self.M[man]["assigned"]
-                rank_matched_woman = self.original_men[man]["rank"][matched_woman]
-                A_mi = self.original_men[man]["list"]
-                preferred_women = [wj for wj in A_mi[:rank_matched_woman]] # every woman that m_i prefers to his matched partner                     
+                rank_matched_woman = m_prefs["rank"][matched_woman]
+                preferred_women = m_prefs["list"][:rank_matched_woman] # every woman that m_i prefers to his matched partner                     
         
             for woman in preferred_women:
                 existing_fiance = self.M[woman]["assigned"]
                 if existing_fiance is None:
                     return False
                 else:
-                    rank_fiance = self.original_women[woman]["rank"][existing_fiance]
-                    if man in self.original_women[woman]["list"][:rank_fiance]:
+                    w_ranks = self.original_women[woman]["rank"]
+                    rank_fiance = w_ranks[existing_fiance]
+                    rank_man = w_ranks[man]
+                    if rank_man < rank_fiance:
                         return False
                       
         return True

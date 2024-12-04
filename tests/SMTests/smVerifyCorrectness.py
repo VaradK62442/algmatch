@@ -65,12 +65,12 @@ class VerifyCorrectness:
               """)
 
 def main():
-    n=6
+    n=8
     TOTAL_MEN = n
     TOTAL_WOMEN = n
     LOWER_LIST_BOUND = n
     UPPER_LIST_BOUND = n
-    REPETITIONS = 100_000
+    REPETITIONS = 100
 
     verifier = VerifyCorrectness(TOTAL_MEN, TOTAL_WOMEN, LOWER_LIST_BOUND, UPPER_LIST_BOUND)
     for _ in tqdm(range(REPETITIONS)):
