@@ -5,7 +5,6 @@ class ESMS(SMAbstract):
         super(ESMS, self).__init__(dictionary=dictionary)
 
         self.M = {m:{"assigned":None} for m in self.men} | {w:{"assigned":None} for w in self.women}
-        self.assigned_women = set()
         self.all_stable_matchings = []
 
     
@@ -23,10 +22,14 @@ class ESMS(SMAbstract):
                 stable_matching["woman_sided"][woman] = self.M[woman]["assigned"]
         self.all_stable_matchings.append(stable_matching)
 
-    # ------------------------------------------------------------------------
-    # The choose function finds all the matchings in the given instance
-    # The check_stability function is used to print only the stable matchings
-    # ------------------------------------------------------------------------
+    def add_pair(self, man, woman):
+        self.M[man]["assigned"] = woman
+        self.M[woman]["assigned"] = man
+
+    def delete_pair(self, man, woman):
+        self.M[man]["assigned"] = None
+        self.M[woman]["assigned"] = None
+        
     def choose(self, i=1):
         #if every man is assigned
         if i > len(self.men):
@@ -38,16 +41,10 @@ class ESMS(SMAbstract):
             man = 'm'+str(i)
             for woman in self.men[man]["list"]:
                 # avoid the multiple assignment of women
-                if woman not in self.assigned_women:
-                    self.M[man]["assigned"] = woman
-                    self.M[woman]["assigned"] = man
-                    self.assigned_women.add(woman)
-
+                if self.M[woman]["assigned"] is None:
+                    self.add_pair(man, woman)
                     self.choose(i+1)
-
-                    self.M[man]["assigned"] = None
-                    self.M[woman]["assigned"] = None
-                    self.assigned_women.remove(woman)
+                    self.delete_pair(man, woman)
             # case where the man is unassigned
             self.choose(i+1)
 

@@ -5,7 +5,6 @@ class MMSMS(HRAbstract):
         super(MMSMS, self).__init__(dictionary=dictionary)
 
         self.M = {r:{"assigned":None} for r in self.residents} | {h:{"assigned":set()} for h in self.hospitals}
-        self.assigned_residents = set()
         self.full_hospitals = set()
         self.minmax_matchings = []
 
@@ -27,10 +26,14 @@ class MMSMS(HRAbstract):
             stable_matching["hospital_sided"][hospital] = sorted(self.M[hospital]["assigned"], key=self.resident_order_comparator)
         self.minmax_matchings.append(stable_matching)
 
-    # ------------------------------------------------------------------------
-    # The choose function finds all the matchings in the given instance
-    # The inherited _check_stability function is used to print only the stable matchings
-    # ------------------------------------------------------------------------
+    def add_pair(self, resident, hospital):
+        self.M[resident]["assigned"] = hospital
+        self.M[hospital]["assigned"].add(resident)
+            
+    def delete_pair(self, resident, hospital):
+        self.M[resident]["assigned"] = None
+        self.M[hospital]["assigned"].remove(resident)
+    
     def resident_choose(self, i=1):
         #if every resident is assigned
         if i > len(self.residents):
@@ -43,9 +46,7 @@ class MMSMS(HRAbstract):
             for hospital in self.residents[resident]["list"]:
                 # avoid the over-filling of hospitals
                 if hospital not in self.full_hospitals:
-                    self.M[resident]["assigned"] = hospital
-                    self.M[hospital]["assigned"].add(resident)
-
+                    self.add_pair(resident, hospital)
                     if self.hospital_is_full(hospital):
                         self.full_hospitals.add(hospital)
 
@@ -53,8 +54,7 @@ class MMSMS(HRAbstract):
                     if len(self.minmax_matchings) == 1:
                         return
 
-                    self.M[resident]["assigned"] = None
-                    self.M[hospital]["assigned"].remove(resident)
+                    self.delete_pair(resident, hospital)
                     self.full_hospitals.discard(hospital)
             # case where the resident is unassigned
             self.resident_choose(i+1)
@@ -70,26 +70,18 @@ class MMSMS(HRAbstract):
             hospital= 'h'+str(i)
             for resident in self.hospitals[hospital]["list"]:
                 # avoid the over-filling of hospitals
-                if resident not in self.assigned_residents:
-                    self.M[resident]["assigned"] = hospital
-                    self.M[hospital]["assigned"].add(resident)
-                    self.assigned_residents.add(resident)
+                if self.M["resident"] is not None:
+                    self.add_pair(resident, hospital)
 
                     self.hospital_choose(i+1)
                     if len(self.minmax_matchings) == 2:
                         return
 
-                    self.M[resident]["assigned"] = None
-                    self.M[hospital]["assigned"].remove(resident)
-                    self.assigned_residents.discard(resident)
+                    self.delete_pair(resident, hospital)
             # case where the resident is unassigned
             self.resident_choose(i+1)
     
-    # alias with more readable name
     def find_minmax_matchings(self):
-        # resident optimal
         self.resident_choose()
-        # reset
         self.M = {r:{"assigned":None} for r in self.residents} | {h:{"assigned":set()} for h in self.hospitals}
-        # resident pessimal
         self.hospital_choose()
