@@ -3,7 +3,6 @@ from tqdm import tqdm
 from algmatch.hospitalResidentsProblem import HospitalResidentsProblem
 
 from instanceGenerator import HRInstanceGenerator as InstanceGenerator
-from enumerateSMs import ESMS
 from minmaxSMs import MMSMS
 
 
