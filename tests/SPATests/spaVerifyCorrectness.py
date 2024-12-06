@@ -1,6 +1,6 @@
 from algmatch.studentProjectAllocation import StudentProjectAllocation
 
-from instanceGenerator import SPAS as InstanceGenerator
+from instanceGenerator import SPAInstanceGenerator as InstanceGenerator
 from enumerateSMs import ESMS
 
 import os

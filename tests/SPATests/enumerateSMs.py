@@ -20,6 +20,16 @@ class ESMS(SPAAbstract):
     def lecturer_is_overfull(self, L):
         return self.lecturers[L]["upper_quota"] < len(self.M[L]["assigned"])
     
+    def add_triple(self, student, project, lecturer):
+        self.M[student]["assigned"] = project
+        self.M[project]["assigned"].add(student)
+        self.M[lecturer]["assigned"].add(student)
+
+    def delete_triple(self, student, project, lecturer):
+        self.M[student]["assigned"] = None
+        self.M[project]["assigned"].remove(student)
+        self.M[lecturer]["assigned"].remove(student)
+
     def save_matching(self):
         stable_matching = {"student_sided":{},"lecturer_sided":{}}
         for student in self.students:
@@ -52,16 +62,11 @@ class ESMS(SPAAbstract):
             student = f"s{i}"
             for project in self.students[student]["list"]:
                 lecturer = self.projects[project]["lecturer"]
-
-                self.M[student]["assigned"] = project
-                self.M[project]["assigned"].add(student)
-                self.M[lecturer]["assigned"].add(student)
-
+            
+                self.add_triple(student, project, lecturer)
                 self.choose(i+1)
+                self.delete_triple(student, project, lecturer)
 
-                self.M[student]["assigned"] = None
-                self.M[project]["assigned"].remove(student)
-                self.M[lecturer]["assigned"].remove(student)
             # case where the student is unassigned
             self.choose(i+1)
 
