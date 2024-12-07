@@ -1,5 +1,5 @@
 """
-Class to read in a dictionary of preferences for the Student Project Allocation stable matching algorithm.
+Class to read in a dictionary of preferences for the Hospital/Residents Problem stable matching algorithm.
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
