@@ -46,7 +46,7 @@ class DictionaryReader(AbstractReader):
                         
                         for i in v["preferences"]:
                             if type(i) is not int:
-                                raise PrefListMisformatError("hospital",k,i,line=True)
+                                raise PrefListMisformatError("hospital",k,i)
                         preferences = [f"r{i}" for i in v["preferences"]]
 
                         self.hospitals[hospital] = {"capacity": capacity, "list": preferences, "rank": {}}
