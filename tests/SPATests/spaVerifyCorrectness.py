@@ -3,7 +3,7 @@ from tqdm import tqdm
 from algmatch.studentProjectAllocation import StudentProjectAllocation
 
 from instanceGenerator import SPAInstanceGenerator as InstanceGenerator
-from enumerateSMs import ESMS
+from minmaxSMs import MMSMS
 
 class VerifyCorrectness:
     def __init__(self, total_students, lower_project_bound, upper_project_bound):
@@ -23,15 +23,15 @@ class VerifyCorrectness:
 
     def verify_instance(self):
 
-        enumerator = ESMS(dictionary=self.current_instance)
+        minmaxer = MMSMS(dictionary=self.current_instance)
         student_optimal_solver = StudentProjectAllocation(dictionary=self.current_instance, optimisedSide="student")
         lecturer_optimal_solver = StudentProjectAllocation(dictionary=self.current_instance, optimisedSide="lecturer")
 
-        enumerator.find_all_stable_matchings()
+        minmaxer.find_minmax_matchings()
         m_0 = student_optimal_solver.get_stable_matching()
         m_z = lecturer_optimal_solver.get_stable_matching()
 
-        return m_z == enumerator.all_stable_matchings[-1] and m_0 == enumerator.all_stable_matchings[0]
+        return m_z == minmaxer.minmax_matchings[-1] and m_0 == minmaxer.minmax_matchings[0]
     
     def run(self):
         self.generate_instances()
