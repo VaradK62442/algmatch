@@ -7,7 +7,7 @@ from minmaxSMs import MMSMS
 
 
 class VerifyCorrectness:
-    def __init__(self, total_residents, total_hospitals, lower_bound, upper_bound, write_to_file):
+    def __init__(self, total_residents, total_hospitals, lower_bound, upper_bound):
         """
         It takes argument as follows (set in init):
             number of men
@@ -20,7 +20,6 @@ class VerifyCorrectness:
         self._total_hospitals = total_hospitals
         self._lower_bound = lower_bound
         self._upper_bound = upper_bound
-        self._write_to_file = write_to_file
 
         self.gen = InstanceGenerator(self._total_residents, self._total_hospitals, self._lower_bound, self._upper_bound)
         self.current_instance = {}
@@ -69,9 +68,8 @@ def main():
     LOWER_LIST_BOUND = 0
     UPPER_LIST_BOUND = 3
     REPETITIONS = 100_000
-    WRITE_TO_FILE = False
 
-    verifier = VerifyCorrectness(TOTAL_RESIDENTS, TOTAL_HOSPITALS, LOWER_LIST_BOUND, UPPER_LIST_BOUND, WRITE_TO_FILE)
+    verifier = VerifyCorrectness(TOTAL_RESIDENTS, TOTAL_HOSPITALS, LOWER_LIST_BOUND, UPPER_LIST_BOUND)
     for _ in tqdm(range(REPETITIONS)):
         verifier.run()
 

@@ -4,13 +4,18 @@ class MMSMS(HRAbstract):
     def __init__(self, dictionary):
         super(MMSMS, self).__init__(dictionary=dictionary)
 
-        self.M = {r:{"assigned":None} for r in self.residents} | {h:{"assigned":set()} for h in self.hospitals}
+        self.M = {}
         self.full_hospitals = set()
         self.minmax_matchings = []
 
         # This lets us order residents in the stable matching by number.
         # We cannot use 'sorted' without this key because that uses lexial order.
         self.resident_order_comparator = lambda r: int(r[1:])
+
+    def setup_M(self):
+        self.M = {}
+        self.M.update({r:{"assigned":None} for r in self.residents})
+        self.M.update({h:{"assigned":set()} for h in self.hospitals})
 
     def hospital_is_full(self, h):
         return self.hospitals[h]["capacity"] == len(self.M[h]["assigned"])
@@ -82,6 +87,8 @@ class MMSMS(HRAbstract):
             self.resident_choose(i+1)
     
     def find_minmax_matchings(self):
+        self.setup_M()
         self.resident_choose()
-        self.M = {r:{"assigned":None} for r in self.residents} | {h:{"assigned":set()} for h in self.hospitals}
+
+        self.setup_M()
         self.hospital_choose()
