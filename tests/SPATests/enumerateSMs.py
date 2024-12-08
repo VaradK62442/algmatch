@@ -1,8 +1,8 @@
 from algmatch.stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
 
 class ESMS(SPAAbstract):
-    def __init__(self, filename):
-        super(ESMS, self).__init__(filename=filename)
+    def __init__(self, dictionary):
+        super(ESMS, self).__init__(dictionary=dictionary)
 
         self.M.update({s:{"assigned":None} for s in self.students})
         self.M.update({p:{"assigned":set()} for p in self.projects})

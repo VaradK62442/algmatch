@@ -34,17 +34,17 @@ class SPAInstanceGenerator:
         
     def generate_instance_no_ties(self):
         # ====== BLANKS ======
-        self.students = {i+1 : {"list": []} for i in range(self.no_students)}
+        self.students = {i+1 : [] for i in range(self.no_students)}
         # in order to do a trick on this dictionary below, we need them to start at 0
-        self.projects = {i: {"upper_quota": 1, "lecturer": ""} for i in range(self.no_projects)}
-        self.lecturers = {i+1: {"upper_quota": 0, "projects": [], "list": [], "max_proj_uquota": 0, "sum_proj_uquota": 0} for i in range(self.no_lecturers)}
+        self.projects = {i: {"capacity": 1, "lecturer": ""} for i in range(self.no_projects)}
+        self.lecturers = {i+1: {"capacity": 0, "preferences": [], "max_proj_uquota": 0, "sum_proj_uquota": 0} for i in range(self.no_lecturers)}
         
         # ====== STUDENTS ======
         for student in self.students:
             length = random.randint(self.li, self.lj)
             # we provide this many preferred projects at random
             random.shuffle(self.available_projects)
-            self.students[student]["list"] = self.available_projects[:length]
+            self.students[student] = self.available_projects[:length]
 
         # ====== PROJECT QUOTAS ======
         # randomly assign the remaining project capacities
@@ -52,7 +52,7 @@ class SPAInstanceGenerator:
             # we can get a random value, and just update that inner dictionary.
             # Testing with perf_counter_ns in IDLE suggests that this is faster.
             # This is the line than need the projects to start at zero.
-            random.choice(self.projects)["upper_quota"] += 1
+            random.choice(self.projects)["capacity"] += 1
 
         # ====== PROJECT-LECTURER ======
         project_lecturer_map = {p: 0 for p in self.projects}
@@ -75,7 +75,7 @@ class SPAInstanceGenerator:
         # ====== LECTURERS =======
         # calculate quota bounds
         for project in self.projects:
-            quota = self.projects[project]["upper_quota"]
+            quota = self.projects[project]["capacity"]
             offerer = project_lecturer_map[project]
             if quota > self.lecturers[offerer]["max_proj_uquota"]:
                 self.lecturers[offerer]["max_proj_uquota"] = quota
@@ -85,34 +85,27 @@ class SPAInstanceGenerator:
             lecturer_info = self.lecturers[lecturer]
             max_q = lecturer_info["max_proj_uquota"]
             sum_q = lecturer_info["sum_proj_uquota"]
-            lecturer_info["upper_quota"] = random.randint(max_q, sum_q)
+            lecturer_info["capacity"] = random.randint(max_q, sum_q)
             random.shuffle(self.available_students)
-            lecturer_info["list"] = self.available_students[:]
+            lecturer_info["preferences"] = self.available_students[:]
 
-    def write_instance_no_ties(self, filename):  # writes to txt file
-        if type(filename) is not str:
-            raise ValueError("Filename is not a string.")
+        return self.pack_dictionary()
 
-        with open(filename, 'w') as Instance:
+    def pack_dictionary(self):
+        self.instance = {}
 
-            # write the numbers of each participant type as the header
-            Instance.write(f"{self.no_students} {self.no_projects} {self.no_lecturers}\n")
-            
-            # write indexes, capacities and preferences, 
-            # see the DATA_FORMAT_GUIDELINE.md
-            for n in range(1, self.no_students + 1):
-                preferences = self.students[n]["list"]
-                Instance.write(f"{n} {' '.join([str(h) for h in preferences])}\n")
+        # clean up extra variables
+        for l_data in self.lecturers.values():
+            del l_data["max_proj_uquota"]
+            del l_data["sum_proj_uquota"]
 
-            for n in range(self.no_projects):                
-                # the dictionary start at 0, see above
-                uquota = self.projects[n]["upper_quota"]
-                offerer = self.projects[n]["lecturer"]
-                Instance.write(f"{n+1} {uquota} {offerer}\n")
+        # shift projects back up one
+        for i in range(self.no_projects,0,-1):
+            self.projects[i] = self.projects[i-1].copy()
+        del self.projects[0]
 
-            for n in range(1, self.no_lecturers + 1):
-                uquota = self.lecturers[n]["upper_quota"]
-                preferences = self.lecturers[n]["list"]
-                Instance.write(f"{n} {uquota} {' '.join([str(r) for r in preferences])}\n")
+        self.instance["students"] = self.students
+        self.instance["projects"] = self.projects
+        self.instance["lecturers"] = self.lecturers
 
-            Instance.close()
+        return self.instance
