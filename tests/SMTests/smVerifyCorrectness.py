@@ -56,8 +56,8 @@ class VerifyCorrectness:
         print(f"""
             Total men: {self._total_men}
             Total women: {self._total_women}
-            Preferene list length lower bound: {self._lower_bound}
-            Preferene list length upper bound: {self._upper_bound}
+            Preference list length lower bound: {self._lower_bound}
+            Preference list length upper bound: {self._upper_bound}
             Repetitions: {self._correct_count + self._incorrect_count}
 
             Correct: {self._correct_count}
@@ -65,12 +65,12 @@ class VerifyCorrectness:
               """)
 
 def main():
-    n=8
+    n=5
     TOTAL_MEN = n
     TOTAL_WOMEN = n
     LOWER_LIST_BOUND = n
     UPPER_LIST_BOUND = n
-    REPETITIONS = 100
+    REPETITIONS = 40_000
 
     verifier = VerifyCorrectness(TOTAL_MEN, TOTAL_WOMEN, LOWER_LIST_BOUND, UPPER_LIST_BOUND)
     for _ in tqdm(range(REPETITIONS)):
