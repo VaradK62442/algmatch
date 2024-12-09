@@ -1,3 +1,4 @@
+from time import perf_counter_ns
 from tqdm import tqdm
 
 from algmatch.stableMarriageProblem import StableMarriageProblem
@@ -72,9 +73,14 @@ def main():
     UPPER_LIST_BOUND = n
     REPETITIONS = 40_000
 
+    start = perf_counter_ns()
+
     verifier = VerifyCorrectness(TOTAL_MEN, TOTAL_WOMEN, LOWER_LIST_BOUND, UPPER_LIST_BOUND)
     for _ in tqdm(range(REPETITIONS)):
         verifier.run()
+
+    end = perf_counter_ns()
+    print(f"\nFinal Runtime: {(end-start)/1000**3}s")
 
     verifier.show_results()
     

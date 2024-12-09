@@ -53,19 +53,24 @@ class MultiVerifyCorrectness:
     
 
     def run(self):
-        local_correct_count = 0
-        local_incorrect_count = 0
+        local_correct = 0
+        local_incorrect = 0
+        local_total = 0
 
-        while local_correct_count + local_incorrect_count < self._reps:
+        while local_total < self._reps:
             self.generate_instances()
             if self.verify_instance():
-                local_correct_count += 1
+                local_correct += 1
+                local_total += 1
                 with self.lock:
                     self.result_dict['correct'] += 1
+                    self.result_dict['total'] += 1
             else:
-                local_incorrect_count += 1
+                local_incorrect += 1
+                local_total += 1
                 with self.lock:
                     self.result_dict['incorrect'] += 1
+                    self.result_dict['total'] += 1
         
     def show_results(self):
         print(f"""
@@ -85,14 +90,15 @@ def main():
     TOTAL_WOMEN = n
     LOWER_LIST_BOUND = n
     UPPER_LIST_BOUND = n
-    REPETITIONS = 10_000 # per thread
-    THREADS = 4
+    REPETITIONS = 2_500 # per thread
+    THREADS = 16
 
     start = perf_counter_ns()
     with Manager() as manager:
         result_dict = manager.dict()
         result_dict['correct'] = 0
         result_dict['incorrect'] = 0
+        result_dict['total'] = 0
 
         verifier = MultiVerifyCorrectness(TOTAL_MEN, TOTAL_WOMEN,
                                           LOWER_LIST_BOUND, UPPER_LIST_BOUND,
@@ -109,7 +115,7 @@ def main():
         with tqdm(total=REPETITIONS*THREADS) as pbar:
             while any(thread.is_alive() for thread in v_threads):
                 sleep(0.25)
-                pbar.n = result_dict['correct']+result_dict['incorrect']
+                pbar.n = result_dict['total']
                 pbar.last_print_n = pbar.n
                 pbar.update(0)
 
@@ -117,7 +123,7 @@ def main():
             v_t.join()
         
         end = perf_counter_ns()
-        print(f"\n{(end-start)/1000**3}s")
+        print(f"\nFinal Runtime: {(end-start)/1000**3}s")
 
         verifier.show_results()
 
