@@ -2,7 +2,7 @@ from algmatch.stableMatchings.stableMarriageProblem.smAbstract import SMAbstract
 
 class MMSMS(SMAbstract):
     def __init__(self, dictionary):
-        super(MMSMS, self).__init__(dictionary=dictionary)
+        SMAbstract.__init__(self,dictionary=dictionary)
 
         self.M = {m:{"assigned":None} for m in self.men} | {w:{"assigned":None} for w in self.women}
         self.minmax_matchings = []
