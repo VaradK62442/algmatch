@@ -7,7 +7,7 @@ from algmatch.hospitalResidentsProblem import HospitalResidentsProblem
 from HRTests.instanceGenerator import HRInstanceGenerator
 
 from algmatch.stableMarriageProblem import StableMarriageProblem
-from SMTests.instanceGenerator import SMInstanceGenerator
+from tests.SMTests.utils.instanceGenerator import SMInstanceGenerator
 
 from algmatch.studentProjectAllocation import StudentProjectAllocation
 from SPATests.instanceGenerator import SPAInstanceGenerator

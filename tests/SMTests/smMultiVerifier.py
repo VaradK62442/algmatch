@@ -2,55 +2,19 @@ from multiprocessing import Lock, Manager, Process
 from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
-from algmatch.stableMarriageProblem import StableMarriageProblem
+from tests.SMTests.smAbstractVerifier import SMAbstractVerifier
 
-from instanceGenerator import SMInstanceGenerator as InstanceGenerator
-from minmaxSMs import MMSMS
-
-
-class MultiVerifyCorrectness:
+class MultiVerifyCorrectness(SMAbstractVerifier):
     def __init__(self, total_men, total_women,
                  lower_bound, upper_bound,
                  reps, result_dict):
-        """
-        It takes argument as follows (set in init):
-            number of men
-            number of women
-            lower bound of the preference list length
-            upper bound of the preference list length
-        """
 
-        self._total_men = total_men
-        self._total_women = total_women
-        self._lower_bound = lower_bound
-        self._upper_bound = upper_bound
+        super().__init__(total_men, total_women,
+                         lower_bound, upper_bound)
 
         self._reps = reps
         self.result_dict = result_dict
         self.lock = Lock()
-
-        self.gen = InstanceGenerator(self._total_men, self._total_women, self._lower_bound, self._upper_bound)
-        self.current_instance = {}
-
-        self._correct_count = 0
-        self._incorrect_count = 0
-
-
-    def generate_instances(self):
-        self.current_instance = self.gen.generate_instance_no_ties()
-
-    def verify_instance(self):
-
-        minmaxer = MMSMS(dictionary=self.current_instance)
-        man_optimal_solver = StableMarriageProblem(dictionary=self.current_instance, optimisedSide="men")
-        woman_optimal_solver = StableMarriageProblem(dictionary=self.current_instance, optimisedSide="women")
-
-        minmaxer.find_minmax_matchings()
-        m_0 = man_optimal_solver.get_stable_matching()
-        m_z = woman_optimal_solver.get_stable_matching()
-
-        return m_z == minmaxer.minmax_matchings[-1] and m_0 == minmaxer.minmax_matchings[0]
-    
 
     def run(self):
         local_correct = 0
@@ -78,7 +42,7 @@ class MultiVerifyCorrectness:
             Total women: {self._total_women}
             Preference list length lower bound: {self._lower_bound}
             Preference list length upper bound: {self._upper_bound}
-            Repetitions: {self.result_dict['correct'] + self.result_dict['incorrect']}
+            Repetitions: {self.result_dict['total']}
 
             Correct: {self.result_dict['correct']}
             Incorrect: {self.result_dict['incorrect']}
