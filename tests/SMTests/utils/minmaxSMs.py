@@ -4,10 +4,14 @@ class MMSMS(SMAbstract):
     def __init__(self, dictionary):
         SMAbstract.__init__(self,dictionary=dictionary)
 
-        self.M = {m:{"assigned":None} for m in self.men} | {w:{"assigned":None} for w in self.women}
+        self.M = {}
         self.minmax_matchings = []
 
-    
+    def setup_M(self):
+        self.M.clear()
+        self.M.update({m:{"assigned":None} for m in self.men})
+        self.M.update({w:{"assigned":None} for w in self.women})
+
     def save_matching(self):
         stable_matching = {"man_sided":{},"woman_sided":{}}
         for man in self.men:
@@ -76,6 +80,8 @@ class MMSMS(SMAbstract):
             self.woman_choose(i+1)
 
     def find_minmax_matchings(self):
+        self.setup_M()
         self.man_choose()
-        self.M = {m:{"assigned":None} for m in self.men} | {w:{"assigned":None} for w in self.women}
+
+        self.setup_M()
         self.woman_choose()
