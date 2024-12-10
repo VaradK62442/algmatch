@@ -2,8 +2,8 @@ from tqdm import tqdm
 
 from algmatch.hospitalResidentsProblem import HospitalResidentsProblem
 
-from instanceGenerator import HRInstanceGenerator as InstanceGenerator
-from minmaxSMs import MMSMS
+from tests.HRTests.utils.instanceGenerator import HRInstanceGenerator as InstanceGenerator
+from tests.HRTests.utils.minmaxSMs import MMSMS
 
 
 class VerifyCorrectness:

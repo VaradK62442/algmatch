@@ -2,8 +2,8 @@ from tqdm import tqdm
 
 from algmatch.studentProjectAllocation import StudentProjectAllocation
 
-from instanceGenerator import SPAInstanceGenerator as InstanceGenerator
-from minmaxSMs import MMSMS
+from tests.SPATests.utils.instanceGenerator import SPAInstanceGenerator as InstanceGenerator
+from tests.SPATests.utils.minmaxSMs import MMSMS
 
 class VerifyCorrectness:
     def __init__(self, total_students, lower_project_bound, upper_project_bound):
