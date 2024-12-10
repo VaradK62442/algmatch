@@ -13,7 +13,7 @@ class MMSMS(HRAbstract):
         self.resident_order_comparator = lambda r: int(r[1:])
 
     def setup_M(self):
-        self.M = {}
+        self.M.clear()
         self.M.update({r:{"assigned":None} for r in self.residents})
         self.M.update({h:{"assigned":set()} for h in self.hospitals})
 
