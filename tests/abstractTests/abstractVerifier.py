@@ -1,7 +1,9 @@
 class AbstractVerifier:
-    def __init__(self, problem,
+    def __init__(self, problem, sides,
                  gen, gen_args, brute_force):
+        
         self.Problem = problem
+        self.sides = sides
         self.BruteForce = brute_force
         self.gen = gen(*gen_args)
         self.current_instance = {}
@@ -13,8 +15,10 @@ class AbstractVerifier:
         # optimal and pessimal from man/resident/student side
 
         minmaxer = self.BruteForce(dictionary=self.current_instance)
-        optimal_solver = self.Problem(dictionary=self.current_instance, optimisedSide="men")
-        pessimal_solver = self.Problem(dictionary=self.current_instance, optimisedSide="women")
+        optimal_solver = self.Problem(dictionary=self.current_instance,
+                                      optimisedSide=self.sides[0])
+        pessimal_solver = self.Problem(dictionary=self.current_instance,
+                                       optimisedSide=self.sides[1])
 
         minmaxer.find_minmax_matchings()
         m_0 = optimal_solver.get_stable_matching()

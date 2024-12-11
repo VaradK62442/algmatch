@@ -26,6 +26,7 @@ class SMAbstractVerifier(AbstractVerifier):
         AbstractVerifier.__init__(
             self,
             StableMarriageProblem,
+            ("men", "women"),
             SMInstanceGenerator,
             generator_args,
             MMSMS
