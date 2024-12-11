@@ -29,7 +29,7 @@ def main():
     TOTAL_HOSPITALS = 5
     LOWER_LIST_BOUND = 0
     UPPER_LIST_BOUND = 3
-    REPETITIONS = 10_000
+    REPETITIONS = 80_000
 
     start = perf_counter_ns()
 
