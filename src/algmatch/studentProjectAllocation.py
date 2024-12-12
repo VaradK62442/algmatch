@@ -26,7 +26,7 @@ class StudentProjectAllocation:
         
         assert type(optimisedSide) is str, "Param optimisedSide must be of type str"
         optimisedSide = optimisedSide.lower()
-        assert optimisedSide in ("student", "lecturer"), "optimisedSide must be either 'student' or 'lecturer'"
+        assert optimisedSide in ("students", "lecturers"), "optimisedSide must be either 'student' or 'lecturer'"
 
         if optimisedSide == "student":
             self.spa = SPAStudentOptimal(filename=filename, dictionary=dictionary) 
