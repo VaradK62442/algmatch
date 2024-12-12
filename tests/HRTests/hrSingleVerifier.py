@@ -18,7 +18,7 @@ class HRSingleVerifier(HRAV, ASV):
             Total hospitals: {self._total_hospitals}
             Preferene list length lower bound: {self._lower_bound}
             Preferene list length upper bound: {self._upper_bound}
-            Repetitions: {self._correct_count + self._incorrect_count}
+            Repetitions: {self._total_count}
 
             Correct: {self._correct_count}
             Incorrect: {self._incorrect_count}

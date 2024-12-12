@@ -17,7 +17,7 @@ class SPASSingleVerifier(SPASAV, ASV):
             Total students: {self._total_students}
             Lower project bound: {self._lower_project_bound}
             Upper project bound: {self._upper_project_bound}
-            Repetitions: {self._correct_count + self._incorrect_count}
+            Repetitions: {self._total_count}
 
             Correct: {self._correct_count}
             Incorrect: {self._incorrect_count}

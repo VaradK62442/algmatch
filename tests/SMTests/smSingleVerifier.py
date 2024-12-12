@@ -18,7 +18,7 @@ class SMSingleVerifier(SMAV, ASV):
             Total women: {self._total_women}
             Preference list length lower bound: {self._lower_bound}
             Preference list length upper bound: {self._upper_bound}
-            Repetitions: {self._correct_count + self._incorrect_count}
+            Repetitions: {self._total_count}
 
             Correct: {self._correct_count}
             Incorrect: {self._incorrect_count}
