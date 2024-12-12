@@ -8,7 +8,7 @@ class ESMS(SPAAbstract):
         self.M.update({p:{"assigned":set()} for p in self.projects})
         self.M.update({L:{"assigned":set()} for L in self.lecturers})
 
-        self.all_stable_matchings = []
+        self.minmax_matchings = []
 
         # This lets us order residents in the stable matching by number.
         # We cannot use 'sorted' without this key because that uses lexial order.
@@ -39,7 +39,7 @@ class ESMS(SPAAbstract):
                 stable_matching["student_sided"][student] = self.M[student]["assigned"]
         for lecturer in self.lecturers:
             stable_matching["lecturer_sided"][lecturer] = sorted(self.M[lecturer]["assigned"], key=self.student_order_comparator)
-        self.all_stable_matchings.append(stable_matching)
+        self.minmax_matchings.append(stable_matching)
 
     # ------------------------------------------------------------------------
     # The choose function finds all the matchings in the given instance
@@ -71,5 +71,5 @@ class ESMS(SPAAbstract):
             self.choose(i+1)
 
     # alias with more readable name
-    def find_all_stable_matchings(self):
+    def find_minmax_matchings(self):
         self.choose()

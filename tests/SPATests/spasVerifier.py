@@ -3,6 +3,7 @@ from algmatch.studentProjectAllocation import StudentProjectAllocation
 from tests.abstractTests.abstractVerifier import AbstractVerifier
 from tests.SPATests.utils.instanceGenerator import SPAInstanceGenerator
 from tests.SPATests.utils.minmaxSMs import MMSMS
+from tests.SPATests.utils.enumerateSMs import ESMS
 
 class SPASAbstractVerifier(AbstractVerifier):
     def __init__(self, total_students,
@@ -29,5 +30,5 @@ class SPASAbstractVerifier(AbstractVerifier):
             ("students", "lecturers"),
             SPAInstanceGenerator,
             generator_args,
-            MMSMS
+            ESMS
         )
