@@ -1,7 +1,7 @@
 from time import perf_counter_ns
 from tqdm import tqdm
 
-from tests.abstractTests.abstractSingleVerifier import AbstractSingleVerifier as ASV
+from tests.abstractTestClasses.abstractSingleVerifier import AbstractSingleVerifier as ASV
 from tests.HRTests.hrVerifier import HRAbstractVerifier as HRAV
 
 class HRSingleVerifier(HRAV, ASV):

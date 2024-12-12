@@ -3,7 +3,7 @@ from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
 from tests.HRTests.hrVerifier import HRAbstractVerifier as HRAV
-from tests.abstractTests.abstractMultiVerifier import AbstractMultiVerifier as AMV
+from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
 
 class HRMultiVerifier(HRAV, AMV):
     def __init__(self, total_residents, total_hospitals,

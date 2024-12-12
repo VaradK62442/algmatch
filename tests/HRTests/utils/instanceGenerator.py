@@ -1,6 +1,6 @@
 import random
 
-from tests.abstractTests.abstractInstanceGenerator import AbstractInstanceGenerator
+from tests.abstractTestClasses.abstractInstanceGenerator import AbstractInstanceGenerator
 
 class HRInstanceGenerator(AbstractInstanceGenerator):
     def __init__(self, residents, hospitals, lower_bound, upper_bound):

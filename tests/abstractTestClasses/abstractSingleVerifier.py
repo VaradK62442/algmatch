@@ -1,4 +1,4 @@
-from tests.abstractTests.abstractVerifier import AbstractVerifier
+from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
 
 class AbstractSingleVerifier(AbstractVerifier):
     def __init__(self):

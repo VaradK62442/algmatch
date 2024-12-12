@@ -1,7 +1,7 @@
 import random
 from math import ceil
 
-from tests.abstractTests.abstractInstanceGenerator import AbstractInstanceGenerator
+from tests.abstractTestClasses.abstractInstanceGenerator import AbstractInstanceGenerator
 
 class SPAInstanceGenerator(AbstractInstanceGenerator):
     def __init__(self, students, lower_bound, upper_bound):

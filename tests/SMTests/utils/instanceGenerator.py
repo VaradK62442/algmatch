@@ -1,6 +1,6 @@
 import random
 
-from tests.abstractTests.abstractInstanceGenerator import AbstractInstanceGenerator
+from tests.abstractTestClasses.abstractInstanceGenerator import AbstractInstanceGenerator
 
 class SMInstanceGenerator(AbstractInstanceGenerator):
     def __init__(self, men, women, lower_bound, upper_bound):

@@ -1,6 +1,6 @@
 from algmatch.hospitalResidentsProblem import HospitalResidentsProblem
 
-from tests.abstractTests.abstractVerifier import AbstractVerifier
+from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
 from tests.HRTests.utils.instanceGenerator import HRInstanceGenerator
 from tests.HRTests.utils.minmaxSMs import MMSMS
 

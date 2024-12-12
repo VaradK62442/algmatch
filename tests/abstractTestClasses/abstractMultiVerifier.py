@@ -1,6 +1,6 @@
 from multiprocessing import Lock
 
-from tests.abstractTests.abstractVerifier import AbstractVerifier
+from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
 
 class AbstractMultiVerifier(AbstractVerifier):
     def __init__(self, reps, result_dict):

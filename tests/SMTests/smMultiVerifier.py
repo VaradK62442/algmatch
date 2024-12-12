@@ -3,7 +3,7 @@ from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
 from tests.SMTests.smVerifier import SMAbstractVerifier as SMAV
-from tests.abstractTests.abstractMultiVerifier import AbstractMultiVerifier as AMV
+from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
 
 class SMMultiVerifier(SMAV, AMV):
     def __init__(self, total_men, total_women,

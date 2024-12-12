@@ -1,6 +1,6 @@
 from algmatch.stableMarriageProblem import StableMarriageProblem
 
-from tests.abstractTests.abstractVerifier import AbstractVerifier
+from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
 from tests.SMTests.utils.instanceGenerator import SMInstanceGenerator
 from tests.SMTests.utils.minmaxSMs import MMSMS
 
