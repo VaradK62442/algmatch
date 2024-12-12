@@ -32,7 +32,7 @@ def main():
     TOTAL_HOSPITALS = 5
     LOWER_LIST_BOUND = 0
     UPPER_LIST_BOUND = 3
-    REPETITIONS = 20_000
+    REPETITIONS = 20_000 # per thread
     THREADS = 4
 
 

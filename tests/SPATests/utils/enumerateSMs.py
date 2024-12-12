@@ -10,7 +10,7 @@ class ESMS(SPAAbstract):
 
         self.minmax_matchings = []
 
-        # This lets us order residents in the stable matching by number.
+        # This lets us order students in the stable matching by number.
         # We cannot use 'sorted' without this key because that uses lexial order.
         self.student_order_comparator = lambda s: int(s[1:])
 
@@ -46,7 +46,7 @@ class ESMS(SPAAbstract):
     # The inherited _check_stability function is used to print only the stable matchings
     # ------------------------------------------------------------------------
     def choose(self, i=1):
-        #if every resident is assigned
+        #if every student is assigned
         if i > len(self.students):
             for project in self.projects:
                 if self.project_is_overfull(project):

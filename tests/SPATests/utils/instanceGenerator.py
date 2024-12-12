@@ -37,7 +37,7 @@ class SPAInstanceGenerator(AbstractInstanceGenerator):
     def generate_instance_no_ties(self):
         # ====== BLANKS ======
         self.students = {i+1 : [] for i in range(self.no_students)}
-        # in order to do a trick on this dictionary below, we need them to start at 0
+        # in order to do a trick on this dictionary below, we need project ids to start at 0
         self.projects = {i: {"capacity": 1, "lecturer": ""} for i in range(self.no_projects)}
         self.lecturers = {i+1: {"capacity": 0, "preferences": [], "max_proj_uquota": 0, "sum_proj_uquota": 0} for i in range(self.no_lecturers)}
         
@@ -53,7 +53,7 @@ class SPAInstanceGenerator(AbstractInstanceGenerator):
         for i in range(self.tpc - self.no_projects):
             # we can get a random value, and just update that inner dictionary.
             # Testing with perf_counter_ns in IDLE suggests that this is faster.
-            # This is the line than need the projects to start at zero.
+            # This is the line that needs the projects to start at zero.
             random.choice(self.projects)["capacity"] += 1
 
         # ====== PROJECT-LECTURER ======

@@ -7,7 +7,7 @@ class MMSMS(SPAAbstract):
         self.M = {}
         self.minmax_matchings = []
 
-        # This lets us order residents in the stable matching by number.
+        # This lets us order students in the stable matching by number.
         # We cannot use 'sorted' without this key because that uses lexial order.
         self.student_order_comparator = lambda s: int(s[1:])
 
