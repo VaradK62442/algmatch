@@ -1,6 +1,8 @@
 import random
 
-class SMInstanceGenerator:
+from tests.abstractTests.abstractInstanceGenerator import AbstractInstanceGenerator
+
+class SMInstanceGenerator(AbstractInstanceGenerator):
     def __init__(self, men, women, lower_bound, upper_bound):
         if men <= 0 or type(men) is not int:
             raise ValueError("number of men must be a postive integer")

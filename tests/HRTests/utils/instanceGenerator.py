@@ -1,6 +1,8 @@
 import random
 
-class HRInstanceGenerator:
+from tests.abstractTests.abstractInstanceGenerator import AbstractInstanceGenerator
+
+class HRInstanceGenerator(AbstractInstanceGenerator):
     def __init__(self, residents, hospitals, lower_bound, upper_bound):
         if residents <= 0 or type(residents) is not int:
             raise ValueError("number of residents must be a postive integer")
