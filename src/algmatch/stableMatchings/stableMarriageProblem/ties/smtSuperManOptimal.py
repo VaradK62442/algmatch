@@ -7,7 +7,9 @@ from algmatch.stableMatchings.stableMarriageProblem.ties.graphMax import GraphMa
 
 class SMTSuperManOptimal(SMTAbstract):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
-        super().__init__(filename=filename, dictionary=dictionary,stability_type="super")
+        super().__init__(filename=filename,
+                         dictionary=dictionary,
+                         stability_type="super")
 
         self.unassigned_men = set()
         self.proposed = {w : False for w in self.women}
@@ -20,63 +22,17 @@ class SMTSuperManOptimal(SMTAbstract):
         for woman in self.women:
             self.M[woman] = {"assigned": set()}
 
-    def _get_pref_length(self,man):
-        pref_sets = self.men[man]["list"]
-        total = sum([len(s) for s in pref_sets])
-        return total
-
-    def _get_head(self,pref_list):
-        idx = 0
-        while idx < len(pref_list):
-            head = pref_list[idx]
-            if len(head) > 0:
-                return head
-            idx += 1
-        raise ValueError("Pref_list empty")
-    
-    def _get_tail(self,pref_list):
-        idx = len(pref_list)-1
-        while idx >= 0:
-            tail = pref_list[idx]
-            if len(tail) > 0:
-                return tail
-            idx -= 1
-        raise ValueError("Pref_list empty")
-
     def _delete_pair(self, man, woman):
-        for tie in  self.men[man]['list']:
-            tie.discard(woman)
-        for tie in  self.women[woman]['list']:
-            tie.discard(man)
+        super()._delete_pair(self,man,woman)
         if self._get_pref_length(man) == 0:
             self.unassigned_men.discard(man)
-
-    def _delete_tail(self,woman):
-        tail = self._get_tail(self.women[woman]["list"])
-        while len(tail) != 0:
-            man = tail.pop()
-            self._delete_pair(man,woman)
-
-    def _engage(self, man, woman):
-        self.M[man]["assigned"].add(woman)
-        self.M[woman]["assigned"].add(man)
-
-    def _break_engagement(self, man, woman):
-        self.M[man]["assigned"].discard(woman)
-        self.M[woman]["assigned"].discard(man)
-
-    def _break_all_engagements(self,woman):
-        men_assigned = self.M[woman]["assigned"]
-        while len(men_assigned) != 0:
-            man = men_assigned.pop()
-            self._break_engagement(man,woman)
  
     def _while_loop(self) -> bool:
         while True:
             while len(self.unassigned_men) != 0:
 
                 m = self.unassigned_men.pop()
-                w_tie = self._get_head(self.men[m]["list"])
+                w_tie = self._get_head(m)
                 for w in w_tie:
                     self._engage(m,w)
                     self.proposed[w] = True

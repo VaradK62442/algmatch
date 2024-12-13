@@ -71,22 +71,91 @@ class SMTAbstract:
         return True
     
     def _check_strong_stability(self):
-        return True 
+        raise NotImplementedError("Strong stability checking isn't implemented")
+
+    def _get_pref_list(self,person):
+        if person in self.men:
+            return self.men[person]["list"]
+        elif person in self.women:
+            return self.women[person]["list"]
+        else:
+            raise ValueError(f"{person} is not a man or a woman")
+
+    def _get_pref_length(self,person):
+        pref_list = self._get_pref_list(person)
+        total = sum([len(tie) for tie in pref_list])
+        return total
+
+    def _get_head(self,person):
+        pref_list = self._get_pref_list(person)
+        idx = 0
+        while idx < len(pref_list):
+            head = pref_list[idx]
+            if len(head) > 0:
+                return head
+            idx += 1
+        raise ValueError("Pref_list empty")
+    
+    def _get_tail(self,person):
+        pref_list = self._get_pref_list(person)
+        idx = len(pref_list)-1
+        while idx >= 0:
+            tail = pref_list[idx]
+            if len(tail) > 0:
+                return tail
+            idx -= 1
+        raise ValueError("Pref_list empty")
+    
+    def _engage(self, man, woman):
+        self.M[man]["assigned"].add(woman)
+        self.M[woman]["assigned"].add(man)
+
+    def _break_engagement(self, man, woman):
+        self.M[man]["assigned"].discard(woman)
+        self.M[woman]["assigned"].discard(man)
+
+    def _delete_pair(self,man,woman):
+        # allow either order of args
+        if man in self.women:
+            man, woman = woman, man
+        # TO-DO: speed this up iusing ranks
+        for tie in self.men[man]['list']:
+            tie.discard(woman)
+        for tie in self.women[woman]['list']:
+            tie.discard(man)
+
+    def _delete_tail(self,person):
+        tail = self._get_tail(person)
+        while len(tail) != 0:
+            deletion = tail.pop()
+            self._delete_pair(person, deletion)
+
+    def _break_all_engagements(self,person):
+        assignee_set = self.M[person]["assigned"]
+        while len(assignee_set) != 0:
+            assignee = assignee_set.pop()
+            self._break_engagement(person,assignee)
 
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
 
+    def save_man_sided(self):
+        for man in self.men:
+            woman = self.M[man]["assigned"]
+            if woman != set():
+                self.stable_matching["man_sided"][man] = woman
+
+    def save_woman_sided(self):
+        for woman in self.women:
+            man = self.M[woman]["assigned"]
+            if man != set():
+                self.stable_matching["woman_sided"][woman] = man
+
     def run(self) -> None:
         if self._while_loop():
-            for man in self.men:
-                woman = self.M[man]["assigned"]
-                if woman != set():
-                    self.stable_matching["man_sided"][man] = woman
-
-            for woman in self.women:
-                man = self.M[woman]["assigned"]
-                if man != set():
-                    self.stable_matching["woman_sided"][woman] = man
+            
+            self.save_man_sided()
+            self.save_woman_sided()
 
             if self.stability_type == "super":
                 self.is_stable = self._check_super_stability()
