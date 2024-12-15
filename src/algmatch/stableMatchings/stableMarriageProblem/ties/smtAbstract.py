@@ -9,7 +9,11 @@ from algmatch.stableMatchings.stableMarriageProblem.ties.smtPreferenceInstance i
 
 
 class SMTAbstract:
-    def __init__(self, filename: str | None = None, dictionary: dict | None = None, stability_type: str = None) -> None:
+    def __init__(self,
+                 filename: str | None = None,
+                 dictionary: dict | None = None,
+                 stability_type: str = None) -> None:
+        
         assert filename is not None or dictionary is not None, "Either filename or dictionary must be provided"
         assert not (filename is not None and dictionary is not None), "Only one of filename or dictionary must be provided"
         
@@ -36,7 +40,7 @@ class SMTAbstract:
         }
         self.is_stable = False
 
-    def assert_valid_stability_type(self, st):
+    def assert_valid_stability_type(self, st) -> None:
         assert st is not None, "Select a stability type - either 'super' or 'strong'"
         assert type(st) is str, "Stability type is not str'"
         assert st.lower() in ("super", "strong"), "Stability type must be either 'super' or 'strong'"
@@ -45,7 +49,7 @@ class SMTAbstract:
     # Is M stable? Check for blocking pair
     # self.blocking_pair is set to True if blocking pair exists
     # =======================================================================
-    def _check_super_stability(self):      
+    def _check_super_stability(self) -> bool:      
         # stability must be checked with regards to the original lists prior to deletions  
         for man, m_prefs in self.original_men.items():
             preferred_women = self.original_men[man]["list"]
@@ -70,23 +74,31 @@ class SMTAbstract:
                             return False
         return True
     
-    def _check_strong_stability(self):
+    def _check_strong_stability(self) -> bool:
         raise NotImplementedError("Strong stability checking isn't implemented")
 
-    def _get_pref_list(self,person):
+    def _get_pref_list(self,person) -> list:
         if person in self.men:
             return self.men[person]["list"]
         elif person in self.women:
             return self.women[person]["list"]
         else:
             raise ValueError(f"{person} is not a man or a woman")
+        
+    def _get_pref_ranks(self,person) -> dict:
+        if person in self.men:
+            return self.men[person]["rank"]
+        elif person in self.women:
+            return self.women[person]["rank"]
+        else:
+            raise ValueError(f"{person} is not a man or a woman")
 
-    def _get_pref_length(self,person):
+    def _get_pref_length(self,person) -> int:
         pref_list = self._get_pref_list(person)
         total = sum([len(tie) for tie in pref_list])
         return total
 
-    def _get_head(self,person):
+    def _get_head(self,person) -> set:
         pref_list = self._get_pref_list(person)
         idx = 0
         while idx < len(pref_list):
@@ -96,7 +108,7 @@ class SMTAbstract:
             idx += 1
         raise ValueError("Pref_list empty")
     
-    def _get_tail(self,person):
+    def _get_tail(self,person) -> set:
         pref_list = self._get_pref_list(person)
         idx = len(pref_list)-1
         while idx >= 0:
@@ -106,15 +118,15 @@ class SMTAbstract:
             idx -= 1
         raise ValueError("Pref_list empty")
     
-    def _engage(self, man, woman):
+    def _engage(self, man, woman) -> None:
         self.M[man]["assigned"].add(woman)
         self.M[woman]["assigned"].add(man)
 
-    def _break_engagement(self, man, woman):
+    def _break_engagement(self, man, woman) -> None:
         self.M[man]["assigned"].discard(woman)
         self.M[woman]["assigned"].discard(man)
 
-    def _delete_pair(self,man,woman):
+    def _delete_pair(self,man,woman) -> None:
         # allow either order of args
         if man in self.women:
             man, woman = woman, man
@@ -124,28 +136,36 @@ class SMTAbstract:
         for tie in self.women[woman]['list']:
             tie.discard(man)
 
-    def _delete_tail(self,person):
+    def _delete_tail(self,person) -> None:
         tail = self._get_tail(person)
         while len(tail) != 0:
             deletion = tail.pop()
             self._delete_pair(person, deletion)
 
-    def _break_all_engagements(self,person):
+    def _break_all_engagements(self,person) -> None:
         assignee_set = self.M[person]["assigned"]
         while len(assignee_set) != 0:
             assignee = assignee_set.pop()
             self._break_engagement(person,assignee)
 
-    def _while_loop(self):
+    def _reject_lower_ranks(self,target,proposer) -> None:
+        rank_p = self._get_pref_ranks(target)[proposer]
+        for reject_tie in self._get_pref_list(target)[rank_p+1:]:
+            while len(reject_tie) != 0:
+                reject = reject_tie.pop()
+                self._break_engagement(target,reject)
+                self._delete_pair(target,reject)
+
+    def _while_loop(self) -> bool:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
 
-    def save_man_sided(self):
+    def save_man_sided(self) -> None:
         for man in self.men:
             woman = self.M[man]["assigned"]
             if woman != set():
                 self.stable_matching["man_sided"][man] = woman
 
-    def save_woman_sided(self):
+    def save_woman_sided(self) -> None:
         for woman in self.women:
             man = self.M[woman]["assigned"]
             if man != set():

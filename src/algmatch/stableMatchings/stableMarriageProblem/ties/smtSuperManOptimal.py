@@ -6,7 +6,10 @@ from algmatch.stableMatchings.stableMarriageProblem.ties.smtAbstract import SMTA
 from algmatch.stableMatchings.stableMarriageProblem.ties.graphMax import GraphMax
 
 class SMTSuperManOptimal(SMTAbstract):
-    def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
+    def __init__(self,
+                 filename: str | None = None,
+                 dictionary: dict | None = None) -> None:
+        
         super().__init__(filename=filename,
                          dictionary=dictionary,
                          stability_type="super")
@@ -22,10 +25,19 @@ class SMTSuperManOptimal(SMTAbstract):
         for woman in self.women:
             self.M[woman] = {"assigned": set()}
 
-    def _delete_pair(self, man, woman):
+    def _delete_pair(self, man, woman) -> None:
         super()._delete_pair(self,man,woman)
         if self._get_pref_length(man) == 0:
             self.unassigned_men.discard(man)
+
+    def end_while_loop(self) -> bool:
+        for m in self.men:
+            if len(self.M[m]["assigned"]) == 0:
+                continue
+            if self._get_pref_length(m) > 0:
+                continue
+            return False
+        return True
  
     def _while_loop(self) -> bool:
         while True:
@@ -36,28 +48,14 @@ class SMTSuperManOptimal(SMTAbstract):
                 for w in w_tie:
                     self._engage(m,w)
                     self.proposed[w] = True
-
-                    rank_m = self.women[w]["rank"][m]
-                    for reject_tie in self.women[w]["list"][rank_m+1:]:
-                        while len(reject_tie) != 0:
-                            reject = reject_tie.pop()
-                            self._break_engagement(reject,w)
-                            self._delete_pair(reject,w)
+                    self._reject_lower_ranks(w,m)
 
             for w in self.women:
                 if len(self.M[w]["assigned"]) > 1:
                     self._break_all_engagements(w)
                     self._delete_tail(w)
 
-            end_condition = True
-            for m in self.men:
-                if len(self.M[m]["assigned"]) == 0:
-                    pass
-                elif self._get_pref_length(m) > 0:
-                    pass
-                else:
-                    end_condition = False
-            if end_condition:
+            if self.end_while_loop():
                 break
         
         # do flow alg to get max matching

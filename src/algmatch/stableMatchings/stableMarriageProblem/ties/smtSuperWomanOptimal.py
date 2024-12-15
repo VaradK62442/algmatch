@@ -6,7 +6,10 @@ from algmatch.stableMatchings.stableMarriageProblem.ties.smtAbstract import SMTA
 from algmatch.stableMatchings.stableMarriageProblem.ties.graphMax import GraphMax
 
 class SMTSuperWomanOptimal(SMTAbstract):
-    def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
+    def __init__(self,
+                 filename: str | None = None,
+                 dictionary: dict | None = None) -> None:
+        
         super().__init__(filename=filename,
                          dictionary=dictionary,
                          stability_type="super")
@@ -22,10 +25,19 @@ class SMTSuperWomanOptimal(SMTAbstract):
                 self.unassigned_women.add(woman)
             self.M[woman] = {"assigned": set()}
 
-    def _delete_pair(self, man, woman):
-        super()._delete_pair(self,man,woman)
+    def _delete_pair(self, man, woman) -> None:
+        super()._delete_pair(man,woman)
         if self._get_pref_length(woman) == 0:
             self.unassigned_women.discard(woman)
+
+    def end_while_loop(self) -> bool:
+        for w in self.women:
+            if len(self.M[w]["assigned"]) == 0:
+                continue
+            if self._get_pref_length(w) > 0:
+                continue
+            return False
+        return True
  
     def _while_loop(self) -> bool:
         while True:
@@ -36,28 +48,14 @@ class SMTSuperWomanOptimal(SMTAbstract):
                 for m in m_tie:
                     self._engage(m,w)
                     self.proposed[m] = True
-
-                    rank_w = self.men[m]["rank"][w]
-                    for reject_tie in self.men[m]["list"][rank_w+1:]:
-                        while len(reject_tie) != 0:
-                            reject = reject_tie.pop()
-                            self._break_engagement(m,reject)
-                            self._delete_pair(m,reject)
+                    self._reject_lower_ranks(m,w)
 
             for m in self.men:
                 if len(self.M[m]["assigned"]) > 1:
                     self._break_all_engagements(m)
                     self._delete_tail(m)
 
-            end_condition = True
-            for w in self.women:
-                if len(self.M[w]["assigned"]) == 0:
-                    pass
-                elif self._get_pref_length(w) > 0:
-                    pass
-                else:
-                    end_condition = False
-            if end_condition:
+            if self.end_while_loop():
                 break
         
         # do flow alg to get max matching
