@@ -1,16 +1,16 @@
 from algmatch.stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
 
 class ESMS(SPAAbstract):
-    def __init__(self, filename):
-        super(ESMS, self).__init__(filename=filename)
+    def __init__(self, dictionary):
+        super(ESMS, self).__init__(dictionary=dictionary)
 
         self.M.update({s:{"assigned":None} for s in self.students})
         self.M.update({p:{"assigned":set()} for p in self.projects})
         self.M.update({L:{"assigned":set()} for L in self.lecturers})
 
-        self.all_stable_matchings = []
+        self.minmax_matchings = []
 
-        # This lets us order residents in the stable matching by number.
+        # This lets us order students in the stable matching by number.
         # We cannot use 'sorted' without this key because that uses lexial order.
         self.student_order_comparator = lambda s: int(s[1:])
 
@@ -20,6 +20,16 @@ class ESMS(SPAAbstract):
     def lecturer_is_overfull(self, L):
         return self.lecturers[L]["upper_quota"] < len(self.M[L]["assigned"])
     
+    def add_triple(self, student, project, lecturer):
+        self.M[student]["assigned"] = project
+        self.M[project]["assigned"].add(student)
+        self.M[lecturer]["assigned"].add(student)
+
+    def delete_triple(self, student, project, lecturer):
+        self.M[student]["assigned"] = None
+        self.M[project]["assigned"].remove(student)
+        self.M[lecturer]["assigned"].remove(student)
+
     def save_matching(self):
         stable_matching = {"student_sided":{},"lecturer_sided":{}}
         for student in self.students:
@@ -29,14 +39,14 @@ class ESMS(SPAAbstract):
                 stable_matching["student_sided"][student] = self.M[student]["assigned"]
         for lecturer in self.lecturers:
             stable_matching["lecturer_sided"][lecturer] = sorted(self.M[lecturer]["assigned"], key=self.student_order_comparator)
-        self.all_stable_matchings.append(stable_matching)
+        self.minmax_matchings.append(stable_matching)
 
     # ------------------------------------------------------------------------
     # The choose function finds all the matchings in the given instance
     # The inherited _check_stability function is used to print only the stable matchings
     # ------------------------------------------------------------------------
     def choose(self, i=1):
-        #if every resident is assigned
+        #if every student is assigned
         if i > len(self.students):
             for project in self.projects:
                 if self.project_is_overfull(project):
@@ -52,19 +62,14 @@ class ESMS(SPAAbstract):
             student = f"s{i}"
             for project in self.students[student]["list"]:
                 lecturer = self.projects[project]["lecturer"]
-
-                self.M[student]["assigned"] = project
-                self.M[project]["assigned"].add(student)
-                self.M[lecturer]["assigned"].add(student)
-
+            
+                self.add_triple(student, project, lecturer)
                 self.choose(i+1)
+                self.delete_triple(student, project, lecturer)
 
-                self.M[student]["assigned"] = None
-                self.M[project]["assigned"].remove(student)
-                self.M[lecturer]["assigned"].remove(student)
             # case where the student is unassigned
             self.choose(i+1)
 
     # alias with more readable name
-    def find_all_stable_matchings(self):
+    def find_minmax_matchings(self):
         self.choose()

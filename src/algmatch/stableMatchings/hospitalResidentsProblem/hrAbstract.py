@@ -36,15 +36,17 @@ class HRAbstract:
 
     def _blocking_pair_condition(self, resident, hospital):
         # blocking pairs exist w.r.t the original preference lists; we must use original_
-        # capacity doesn't change but I'm using original_hospitals here for consistency in this function.
-        cj = self.original_hospitals[hospital]["capacity"]
-        occupancy = len(self.M[hospital]["assigned"])
+        h_data = self.original_hospitals[hospital]
+        assignees = self.M[hospital]["assigned"]
+
+        cj = h_data["capacity"]
+        occupancy = len(assignees)
         if occupancy < cj:
             return True
         
-        resident_rank = self.original_hospitals[hospital]["rank"][resident]
-        for existing_resident in self.M[hospital]["assigned"]:
-            existing_rank = self.original_hospitals[hospital]["rank"][existing_resident]
+        resident_rank = h_data["rank"][resident]
+        for existing_resident in assignees:
+            existing_rank = h_data["rank"][existing_resident]
             if resident_rank < existing_rank:
                 return True
             
@@ -52,13 +54,12 @@ class HRAbstract:
 
     def _check_stability(self):
         # stability must be checked with regards to the original lists prior to deletions       
-        for resident in self.original_residents:
-            preferred_hospitals = self.original_residents[resident]["list"]
+        for resident, r_prefs in self.original_residents.items():
+            preferred_hospitals = r_prefs["list"]
             if self.M[resident]["assigned"] is not None:
                 matched_hospital = self.M[resident]["assigned"]
-                rank_matched_hospital = self.original_residents[resident]["rank"][matched_hospital]
-                A_ri = self.original_residents[resident]["list"]
-                preferred_hospitals = [hj for hj in A_ri[:rank_matched_hospital]]                             
+                rank_matched_hospital = r_prefs["rank"][matched_hospital]
+                preferred_hospitals = r_prefs["list"][:rank_matched_hospital]                             
         
             for hospital in preferred_hospitals:
                 if self._blocking_pair_condition(resident, hospital):
