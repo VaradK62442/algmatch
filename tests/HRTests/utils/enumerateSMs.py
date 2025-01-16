@@ -1,8 +1,8 @@
 from algmatch.stableMatchings.hospitalResidentsProblem.hrAbstract import HRAbstract
 
 class ESMS(HRAbstract):
-    def __init__(self, filename):
-        super(ESMS, self).__init__(filename=filename)
+    def __init__(self, dictionary):
+        super(ESMS, self).__init__(dictionary=dictionary)
 
         self.M = {r:{"assigned":None} for r in self.residents} | {h:{"assigned":set()} for h in self.hospitals}
         self.full_hospitals = set()
@@ -26,10 +26,18 @@ class ESMS(HRAbstract):
             stable_matching["hospital_sided"][hospital] = sorted(self.M[hospital]["assigned"], key=self.resident_order_comparator)
         self.all_stable_matchings.append(stable_matching)
 
-    # ------------------------------------------------------------------------
-    # The choose function finds all the matchings in the given instance
-    # The inherited _check_stability function is used to print only the stable matchings
-    # ------------------------------------------------------------------------
+    def add_pair(self, resident, hospital):
+        self.M[resident]["assigned"] = hospital
+        self.M[hospital]["assigned"].add(resident)
+
+        if self.hospital_is_full(hospital):
+            self.full_hospitals.add(hospital)
+            
+    def delete_pair(self, resident, hospital):
+        self.M[resident]["assigned"] = None
+        self.M[hospital]["assigned"].remove(resident)
+        self.full_hospitals.discard(hospital)
+    
     def choose(self, i=1):
         #if every resident is assigned
         if i > len(self.residents):
@@ -42,17 +50,9 @@ class ESMS(HRAbstract):
             for hospital in self.residents[resident]["list"]:
                 # avoid the over-filling of hospitals
                 if hospital not in self.full_hospitals:
-                    self.M[resident]["assigned"] = hospital
-                    self.M[hospital]["assigned"].add(resident)
-
-                    if self.hospital_is_full(hospital):
-                        self.full_hospitals.add(hospital)
-
+                    self.add_pair(resident, hospital)
                     self.choose(i+1)
-
-                    self.M[resident]["assigned"] = None
-                    self.M[hospital]["assigned"].remove(resident)
-                    self.full_hospitals.discard(hospital)
+                    self.delete_pair(resident, hospital)
             # case where the resident is unassigned
             self.choose(i+1)
 
