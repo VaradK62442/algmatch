@@ -4,7 +4,6 @@ Abstract class to store preference lists for both sides in a type of matching pr
 
 import os
 
-
 class AbstractPreferenceInstance:
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
         assert filename is not None or dictionary is not None, "Either filename or dictionary must be provided"
@@ -16,7 +15,6 @@ class AbstractPreferenceInstance:
 
         if dictionary is not None:
             self._load_from_dictionary(dictionary)
-
 
     def _load_from_file(self, filename: str) -> None:
         raise NotImplementedError("Method not implemented")

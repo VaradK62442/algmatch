@@ -3,12 +3,12 @@ Store preference lists for Hospital Residents stable matching algorithm.
 """
 from itertools import product
 
-from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
+from algmatch.abstractClasses.abstractPreferenceInstanceWithTies import AbstractPreferenceInstanceWithTies
 from algmatch.stableMatchings.hospitalResidentsProblem.ties.fileReader import FileReader
 from algmatch.stableMatchings.hospitalResidentsProblem.ties.dictionaryReader import DictionaryReader
 from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
-class HRTPreferenceInstance(AbstractPreferenceInstance):
+class HRTPreferenceInstance(AbstractPreferenceInstanceWithTies):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
         super().__init__(filename, dictionary)
         self.check_preference_lists()
@@ -24,17 +24,7 @@ class HRTPreferenceInstance(AbstractPreferenceInstance):
         reader = DictionaryReader(dictionary)
         self.residents = reader.residents
         self.hospitals = reader.hospitals
-
-    def any_repetitions(self,prefs):
-        seen_count = 0
-        seen_set = set()
-        for tie in prefs:
-            seen_count += len(tie)
-            seen_set |= tie
-        if len(seen_set) != seen_count:
-            return True
-        return False
-
+        
     def check_preference_lists(self) -> None:
         for r, r_prefs in self.residents.items():
 

@@ -3,12 +3,12 @@ Store preference lists for Stable Marriage stable matching algorithm.
 """
 from itertools import product
 
-from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
+from algmatch.abstractClasses.abstractPreferenceInstanceWithTies import AbstractPreferenceInstanceWithTies
 from algmatch.stableMatchings.stableMarriageProblem.ties.fileReader import FileReader
 from algmatch.stableMatchings.stableMarriageProblem.ties.dictionaryReader import DictionaryReader
 from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
-class SMTPreferenceInstance(AbstractPreferenceInstance):
+class SMTPreferenceInstance(AbstractPreferenceInstanceWithTies):
     def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
         super().__init__(filename, dictionary)
         self.check_preference_lists()
@@ -25,20 +25,10 @@ class SMTPreferenceInstance(AbstractPreferenceInstance):
         self.men = reader.men
         self.women = reader.women
 
-    def any_repitions(self,prefs):
-        seen_count = 0
-        seen_set = set()
-        for tie in prefs:
-            seen_count += len(tie)
-            seen_set |= tie
-        if len(seen_set) != seen_count:
-            return True
-        return False
-
     def check_preference_lists(self) -> None:
         for m, m_prefs in self.men.items():
 
-            if self.any_repitions(m_prefs["list"]):
+            if self.any_repetitions(m_prefs["list"]):
                 raise PrefRepError("man",m)
             
             for w_tie in m_prefs["list"]:
@@ -48,7 +38,7 @@ class SMTPreferenceInstance(AbstractPreferenceInstance):
             
         for w, w_prefs in self.women.items():
 
-            if self.any_repitions(w_prefs["list"]):
+            if self.any_repetitions(w_prefs["list"]):
                 raise PrefRepError("woman",w)
             
             for m_tie in w_prefs["list"]:
@@ -76,7 +66,7 @@ class SMTPreferenceInstance(AbstractPreferenceInstance):
                     except KeyError:
                         pass
                 # clean empty sets
-                # we've produced at most one per side ithis loop
+                # we've produced at most one per side in this loop
                 if set() in m_list:
                     m_list.remove(set())
                 if set() in w_list:
@@ -84,12 +74,14 @@ class SMTPreferenceInstance(AbstractPreferenceInstance):
 
 
     def set_up_rankings(self):
+
         for m in self.men:
             ranking = {}
             for i, tie in enumerate(self.men[m]["list"]):
                 # there are no reps, all comprehensions are disjoint
                 ranking |= {woman : i for woman in tie}
             self.men[m]["rank"] = ranking
+            
         for w in self.women:
             ranking = {}
             for i, tie in enumerate(self.women[w]["list"]):
