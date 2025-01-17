@@ -21,18 +21,24 @@ class FileReader(AbstractReader):
     def regex_split(self,line):
         return findall(r"\d+|[\(\)]", line)
 
-    def _scan_preference_tokens(self,token_list,gender,pref_char):
+    def _scan_preference_tokens(self,token_list,side):
         preferences = []
         in_tie = False
         cur_set = set()
+
+        if side == "man":
+            pref_char = "w"
+        else:
+            pref_char = "m"
+
         for token in token_list[1:]:
             if token == '(':
                 if in_tie:
-                    raise NestedTiesError(gender, self.cur_line)
+                    raise NestedTiesError(side, self.cur_line)
                 in_tie = True
             elif token == ')':
                 if not in_tie:
-                    raise UnopenedTieError(gender, self.cur_line)
+                    raise UnopenedTieError(side, self.cur_line)
                 in_tie = False
                 preferences.append(cur_set.copy())
                 cur_set.clear()
@@ -42,7 +48,7 @@ class FileReader(AbstractReader):
                     preferences.append(cur_set.copy())
                     cur_set.clear()
         if in_tie:
-            raise UnclosedTieError(gender, self.cur_line)
+            raise UnclosedTieError(side, self.cur_line)
         return preferences
 
     def _read_data(self) -> None:
@@ -70,11 +76,8 @@ class FileReader(AbstractReader):
             man = f"m{entry[0]}"
             if man in self.men:
                 raise RepeatIDError("man", self.cur_line, line=True)
-            
-            # we don't check that every token is a digit
-            # this became unnecessary with the use of re.findall
 
-            preferences = self._scan_preference_tokens(entry,"man","w")
+            preferences = self._scan_preference_tokens(entry,"man")
             self.men[man] = {"list": preferences, "rank": {}}
 
         # build women dictionary
@@ -88,5 +91,5 @@ class FileReader(AbstractReader):
             if woman in self.women:
                 raise RepeatIDError("woman",self.cur_line,line=True)
 
-            preferences = self._scan_preference_tokens(entry,"woman","m")
+            preferences = self._scan_preference_tokens(entry,"woman")
             self.women[woman] = {"list": preferences, "rank": {}}

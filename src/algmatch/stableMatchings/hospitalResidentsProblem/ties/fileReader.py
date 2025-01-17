@@ -79,14 +79,11 @@ class FileReader(AbstractReader):
             resident = f"r{entry[0]}"
             if resident in self.residents:
                 raise RepeatIDError("resident", self.cur_line, line=True)
-            
-            # we don't check that every token is a digit
-            # this became unnecessary with the use of re.findall
 
             preferences = self._scan_preference_tokens(entry,"resident")
             self.residents[resident] = {"list": preferences, "rank": {}}
 
-        # build women dictionary
+        # build hospital dictionary
         for elt in file[self.no_residents+1:self.no_residents+self.no_hospitals+1]:
             self.cur_line += 1
             entry = self.regex_split(elt)
