@@ -45,10 +45,6 @@ class SMTAbstract:
         assert type(st) is str, "Stability type is not str'"
         assert st.lower() in ("super", "strong"), "Stability type must be either 'super' or 'strong'"
 
-    # =======================================================================    
-    # Is M stable? Check for blocking pair
-    # self.blocking_pair is set to True if blocking pair exists
-    # =======================================================================
     def _check_super_stability(self) -> bool:      
         # stability must be checked with regards to the original lists prior to deletions  
         for man, m_prefs in self.original_men.items():
