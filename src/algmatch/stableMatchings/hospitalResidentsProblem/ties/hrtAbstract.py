@@ -5,7 +5,6 @@ Stable Marriage Problem With Ties - Abstract class
 from copy import deepcopy
 import os
 
-from algmatch.stableMatchings.stableMarriageProblem.ties.smtPreferenceInstance import SMTPreferenceInstance
 from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtPreferenceInstance import HRTPreferenceInstance
 
 
@@ -23,10 +22,10 @@ class HRTAbstract:
 
         if filename is not None:    
             assert os.path.isfile(filename), f"File {filename} does not exist"
-            self._reader = SMTPreferenceInstance(filename=filename)
+            self._reader = HRTPreferenceInstance(filename=filename)
 
         if dictionary is not None:
-            self._reader = SMTPreferenceInstance(dictionary=dictionary)
+            self._reader = HRTPreferenceInstance(dictionary=dictionary)
 
         self.residents = self._reader.residents
         self.hospitals = self._reader.hospitals
