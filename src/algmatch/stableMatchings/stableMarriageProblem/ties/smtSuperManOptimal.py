@@ -26,7 +26,7 @@ class SMTSuperManOptimal(SMTAbstract):
             self.M[woman] = {"assigned": set()}
 
     def _delete_pair(self, man, woman) -> None:
-        super()._delete_pair(self,man,woman)
+        super()._delete_pair(man, woman)
         if self._get_pref_length(man) == 0:
             self.unassigned_men.discard(man)
 

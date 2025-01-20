@@ -17,7 +17,7 @@ class SMTAbstract:
         assert filename is not None or dictionary is not None, "Either filename or dictionary must be provided"
         assert not (filename is not None and dictionary is not None), "Only one of filename or dictionary must be provided"
         
-        self.assert_valid_stability_type(stability_type)
+        self._assert_valid_stability_type(stability_type)
         self.stability_type = stability_type.lower()
 
         if filename is not None:    
@@ -40,7 +40,7 @@ class SMTAbstract:
         }
         self.is_stable = False
 
-    def assert_valid_stability_type(self, st) -> None:
+    def _assert_valid_stability_type(self, st) -> None:
         assert st is not None, "Select a stability type - either 'super' or 'strong'"
         assert type(st) is str, "Stability type is not str'"
         assert st.lower() in ("super", "strong"), "Stability type must be either 'super' or 'strong'"
