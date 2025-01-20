@@ -18,7 +18,7 @@ class HRTAbstract:
         assert filename is not None or dictionary is not None, "Either filename or dictionary must be provided"
         assert not (filename is not None and dictionary is not None), "Only one of filename or dictionary must be provided"
         
-        self.assert_valid_stability_type(stability_type)
+        self._assert_valid_stability_type(stability_type)
         self.stability_type = stability_type.lower()
 
         if filename is not None:    
@@ -41,13 +41,44 @@ class HRTAbstract:
         }
         self.is_stable = False
 
-    def assert_valid_stability_type(self, st) -> None:
+    def _assert_valid_stability_type(self, st) -> None:
         assert st is not None, "Select a stability type - either 'super' or 'strong'"
         assert type(st) is str, "Stability type is not str'"
         assert st.lower() in ("super", "strong"), "Stability type must be either 'super' or 'strong'"
 
+    def _get_worst_existing_resident(self, hospital):
+        existing_residents = self.M[hospital]["assigned"]
+
+        def rank_comparator(x):
+            return -self.hospitals[hospital]["rank"][x]
+        worst_resident = min(existing_residents, key = rank_comparator)
+
+        return worst_resident
+    
     def _check_super_stability(self) -> bool:      
-        raise NotImplementedError("Super-stability checking isn't implemented")
+        # stability must be checked with regards to the original lists prior to deletions  
+        for resident, r_prefs in self.original_residents.items():
+            preferred_hospitals = self.original_residents[resident]["list"]
+            if self.M[resident]["assigned"] is not None:
+                matched_hospital = self.M[resident]["assigned"]
+                rank_matched_hospital = r_prefs["rank"][matched_hospital]
+                # every hospital that r_i prefers to his match or is indifferent between them
+                preferred_hospitals = r_prefs["list"][:rank_matched_hospital+1]  
+                # this includes his current match so we remove it
+                preferred_hospitals[-1].remove(matched_hospital)      
+        
+            for h_tie in preferred_hospitals:
+                for hospital in h_tie:
+                    worst_resident = self._get_worst_existing_resident(hospital)
+                    if worst_resident is None:
+                        return False
+                    else:
+                        h_prefs = self.original_hospitals[hospital]
+                        rank_worst = h_prefs["rank"][worst_resident]
+                        rank_resident = h_prefs["rank"][resident]
+                        if rank_resident >= rank_worst:
+                            return False
+        return True
     
     def _check_strong_stability(self) -> bool:
         raise NotImplementedError("Strong stability checking isn't implemented")
