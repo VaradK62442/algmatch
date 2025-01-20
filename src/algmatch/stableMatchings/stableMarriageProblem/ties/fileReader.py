@@ -19,6 +19,7 @@ class FileReader(AbstractReader):
         self._read_data()
 
     def regex_split(self,line):
+        # Read as: find cases of more than one digit or either '(' or ')'
         return findall(r"\d+|[\(\)]", line)
 
     def _scan_preference_tokens(self,token_list,side):
@@ -31,7 +32,7 @@ class FileReader(AbstractReader):
         else:
             pref_char = "m"
 
-        for token in token_list[1:]:
+        for token in token_list:
             if token == '(':
                 if in_tie:
                     raise NestedTiesError(side, self.cur_line)
@@ -77,7 +78,7 @@ class FileReader(AbstractReader):
             if man in self.men:
                 raise RepeatIDError("man", self.cur_line, line=True)
 
-            preferences = self._scan_preference_tokens(entry,"man")
+            preferences = self._scan_preference_tokens(entry[1:],"man")
             self.men[man] = {"list": preferences, "rank": {}}
 
         # build women dictionary
@@ -91,5 +92,5 @@ class FileReader(AbstractReader):
             if woman in self.women:
                 raise RepeatIDError("woman",self.cur_line,line=True)
 
-            preferences = self._scan_preference_tokens(entry,"woman")
+            preferences = self._scan_preference_tokens(entry[1:],"woman")
             self.women[woman] = {"list": preferences, "rank": {}}
