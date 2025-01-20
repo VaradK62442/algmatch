@@ -22,7 +22,7 @@ class FileReader(AbstractReader):
 
         try:
             self.no_men, self.no_women = map(int, file[0].split())
-        except ValueError:
+        except (ValueError, IndexError):
             raise ParticipantQuantityError()
 
         # build men dictionary

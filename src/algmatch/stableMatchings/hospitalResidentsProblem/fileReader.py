@@ -23,7 +23,7 @@ class FileReader(AbstractReader):
 
         try:
             self.no_residents, self.no_hospitals = map(int, file[0].split())
-        except ValueError:
+        except (ValueError, IndexError):
             raise ParticipantQuantityError()
 
         # build residents dictionary
