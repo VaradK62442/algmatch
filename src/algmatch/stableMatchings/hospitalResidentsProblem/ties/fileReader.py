@@ -19,6 +19,7 @@ class FileReader(AbstractReader):
         super().__init__(filename)
         self._read_data()
 
+    # Read as: find cases of more than one digit or either '(' or ')'
     def regex_split(self,line):
         return findall(r"\d+|[\(\)]", line)
 
@@ -28,13 +29,11 @@ class FileReader(AbstractReader):
         cur_set = set()
 
         if side == "resident":
-            start = 1
             pref_char = "h"
         else:
-            start = 2
             pref_char = "r"
 
-        for token in token_list[start:]:
+        for token in token_list:
             if token == '(':
                 if in_tie:
                     raise NestedTiesError(side, self.cur_line)
@@ -80,7 +79,7 @@ class FileReader(AbstractReader):
             if resident in self.residents:
                 raise RepeatIDError("resident", self.cur_line, line=True)
 
-            preferences = self._scan_preference_tokens(entry,"resident")
+            preferences = self._scan_preference_tokens(entry[1:],"resident")
             self.residents[resident] = {"list": preferences, "rank": {}}
 
         # build hospital dictionary
@@ -98,5 +97,5 @@ class FileReader(AbstractReader):
                 raise CapacityError("hospital",self.cur_line,line=True)
             capacity = int(entry[1])
 
-            preferences = self._scan_preference_tokens(entry,"hospital")
+            preferences = self._scan_preference_tokens(entry[2:],"hospital")
             self.hospitals[hospital] = {"capacity": capacity, "list": preferences, "rank": {}}
