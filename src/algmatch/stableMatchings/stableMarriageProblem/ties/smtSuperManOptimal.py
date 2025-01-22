@@ -30,19 +30,10 @@ class SMTSuperManOptimal(SMTAbstract):
         if self._get_pref_length(man) == 0:
             self.unassigned_men.discard(man)
 
-    def end_while_loop(self) -> bool:
-        for m in self.men:
-            if len(self.M[m]["assigned"]) == 0:
-                continue
-            if self._get_pref_length(m) > 0:
-                continue
-            return False
-        return True
- 
     def _while_loop(self) -> bool:
-        while True:
+        while len(self.unassigned_men) != 0:
+            
             while len(self.unassigned_men) != 0:
-
                 m = self.unassigned_men.pop()
                 w_tie = self._get_head(m)
                 for w in w_tie:
@@ -55,9 +46,6 @@ class SMTSuperManOptimal(SMTAbstract):
                     self._break_all_engagements(w)
                     self._delete_tail(w)
 
-            if self.end_while_loop():
-                break
-        
         # do flow alg to get max matching
         graph_maxer = GraphMax(self.M)
         self.M = graph_maxer.get_max_matching()

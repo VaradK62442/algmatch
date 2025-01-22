@@ -40,9 +40,9 @@ class SMTSuperWomanOptimal(SMTAbstract):
         return True
  
     def _while_loop(self) -> bool:
-        while True:
-            while len(self.unassigned_women) != 0:
+        while len(self.unassigned_women) != 0:
 
+            while len(self.unassigned_women) != 0:
                 w = self.unassigned_women.pop()
                 m_tie = self._get_head(w)
                 for m in m_tie:
@@ -55,9 +55,6 @@ class SMTSuperWomanOptimal(SMTAbstract):
                     self._break_all_engagements(m)
                     self._delete_tail(m)
 
-            if self.end_while_loop():
-                break
-        
         # do flow alg to get max matching
         graph_maxer = GraphMax(self.M)
         self.M = graph_maxer.get_max_matching()
