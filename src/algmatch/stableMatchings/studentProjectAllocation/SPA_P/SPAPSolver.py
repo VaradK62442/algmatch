@@ -22,6 +22,9 @@ class GurobiSPAP:
 
         self.J = gp.Model("SPAP")
 
+        self.matching = dict()
+        self.count = 0
+
     
     def _assignment_constraints(self) -> None:
         """
@@ -257,6 +260,30 @@ class GurobiSPAP:
         self._objective_function()
 
         self.J.optimize()
+        
+        for student in self._students:
+            matched = False
+            for project in self._students[student][0]:
+                if self.J.getVarByName(f"{student} is assigned {project}").x == 1.0:
+                    matched = True
+                    lecturer = self._projects[project][1]
+
+                    self.matching[student] = project
+                    self._projects[project][2] += 1
+                    self._lecturers[lecturer][2] += 1
+
+                    l_k_worst_project = self._lecturers[lecturer][3]
+                    if l_k_worst_project is None:
+                        self._lecturers[lecturer][3] = project
+                    else:
+                        if self._lecturers[lecturer][1].index(l_k_worst_project) < self._lecturers[lecturer][1].index(project):
+                            self._lecturers[lecturer][3] = project
+
+                    break
+
+            if not matched:
+                self.matching[student] = ''
+                self.count += 1
 
 
     def display_assignments(self) -> None:
