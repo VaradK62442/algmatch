@@ -9,9 +9,9 @@ class FileReader(AbstractReader):
     def __init__(self, filename: str) -> None:
         super().__init__(filename)
         
-        self.students = {} # student -> {list: [preferences], rank: {project: rank}}
+        self.students = {} # student -> [project preferences, {project: assigned?}]
         self.projects = {} # project -> [capacity, lecturer, num students assigned]
-        self.lecturers = {} # lecturer -> [capacity, projects, num students assigned, worst project]
+        self.lecturers = {} # lecturer -> [capacity, project preferences, num students assigned, worst project]
         
         self._read_data()
 
@@ -23,10 +23,10 @@ class FileReader(AbstractReader):
 
             for l in f[1:student_size+1]:
                 line = l.strip().split()
-                self.students[f's{line[0]}'] = {
-                    'list': [f'p{i}' for i in line[1:]],
-                    'rank': {f'p{i}': idx for idx, i in enumerate(line[1:])}
-                }
+                self.students[f's{line[0]}'] = [
+                    [f'p{i}' for i in line[1:]],
+                    {f'p{i}': 0 for i in line[1:]}
+                ]
 
             for l in f[student_size+1:student_size+project_size+1]:
                 line = l.strip().split()
