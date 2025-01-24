@@ -10,7 +10,7 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.fileReader import F
 
 
 class GurobiSPAP:
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: str, output_flag=1) -> None:
         self.filename = filename
         r = FileReader(filename)
 
@@ -21,6 +21,7 @@ class GurobiSPAP:
         self._lecturers = r.lecturers
 
         self.J = gp.Model("SPAP")
+        self.J.setParam('OutputFlag', output_flag)
 
         self.matching = dict()
         self.count = 0
