@@ -8,6 +8,8 @@ from gurobipy import GRB
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.fileReader import FileReader
 
+from collections import defaultdict
+
 
 class GurobiSPAP:
     def __init__(self, filename: str, output_flag=1) -> None:
@@ -23,7 +25,7 @@ class GurobiSPAP:
         self.J = gp.Model("SPAP")
         self.J.setParam('OutputFlag', output_flag)
 
-        self.matching = dict()
+        self.matching = defaultdict(str)
         self.count = 0
 
     
@@ -283,7 +285,6 @@ class GurobiSPAP:
                     break
 
             if not matched:
-                self.matching[student] = ''
                 self.count += 1
 
 

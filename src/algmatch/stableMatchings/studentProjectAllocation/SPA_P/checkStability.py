@@ -4,6 +4,8 @@ Given a solved instance of a SPA-P problem, check for blocking pairs and coaliti
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.SPAPSolver import GurobiSPAP
 
+from collections import defaultdict
+
 
 class StabilityChecker:
     def __init__(self, solver: GurobiSPAP) -> None:
@@ -13,7 +15,7 @@ class StabilityChecker:
         self._projects = self.G._projects
         self._lecturers = self.G._lecturers
 
-        self._directed_graph = dict()
+        self._directed_graph = defaultdict(list)
 
         self.blocking_pair = False
         self.coalition = False
@@ -128,7 +130,6 @@ class StabilityChecker:
 
     def check_coalitions(self) -> None:
         for s1 in self._students:
-            self._directed_graph[s1] = []
             for s2 in self._students:
                 if s1 != s2 and self.G.matching[s1] != '' and self.G.matching[s2] != '':
                     current_project = self.G.matching[s1]

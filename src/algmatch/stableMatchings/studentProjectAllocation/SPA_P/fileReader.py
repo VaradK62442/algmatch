@@ -42,5 +42,5 @@ class FileReader(AbstractReader):
                     int(line[1]),
                     [f'p{i}' for i in line[2:]],
                     0,
-                    None # TODO: could be assigned here instead of setting to None?
+                    None
                 ]
