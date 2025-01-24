@@ -26,7 +26,6 @@ class GurobiSPAP:
         self.J.setParam('OutputFlag', output_flag)
 
         self.matching = defaultdict(str)
-        self.count = 0
 
     
     def _assignment_constraints(self) -> None:
@@ -283,9 +282,6 @@ class GurobiSPAP:
                             self._lecturers[lecturer][3] = project
 
                     break
-
-            if not matched:
-                self.count += 1
 
 
     def display_assignments(self) -> None:
