@@ -5,6 +5,7 @@ Can also specify number of instances to solve. This will save the files by defau
 
 import sys
 import os
+import math
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerator import SPAPIG
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.SPAPSolver import GurobiSPAP
@@ -24,6 +25,9 @@ def write_solution(matching: dict, filename: str) -> None:
 
 
 def main(iters: int, students=5, lower_bound=1, upper_bound=3, output_flag=1) -> None:
+
+    assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
+    assert upper_bound <= int(math.ceil(students / 2)), "Upper bound must be less than or equal to half the number of students."
 
     INSTANCE_FOLDER = "instances/"
     SOLUTIONS_FOLDER = "solutions/"

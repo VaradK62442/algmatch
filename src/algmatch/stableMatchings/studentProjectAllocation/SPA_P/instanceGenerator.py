@@ -10,6 +10,10 @@ import sys
 
 class SPAPIG:
     def __init__(self, num_students, lower_bound, upper_bound) -> None:
+        
+        assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
+        assert upper_bound <= int(math.ceil(num_students / 2)), "Upper bound must be less than or equal to half the number of students."
+
         self._num_students = num_students
         self._num_projects = int(math.ceil(self._num_students / 2))
         self._num_lecturers = int(math.ceil(self._num_students / 5)) # assume |lecturers| < |projects|
