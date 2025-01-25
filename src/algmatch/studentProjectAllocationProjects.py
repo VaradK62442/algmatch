@@ -34,7 +34,7 @@ class StudentProjectAllocationProjectsSingle:
         self.solver = GurobiSPAP(filename=filename, output_flag=output_flag)
 
 
-    def get_stable_matching(self) -> dict | None:
+    def get_stable_matching(self) -> dict | str:
         """
         Get the stable matching for the Student Project Allocation algorithm.
         Also writes the output to file or console, as specified.
@@ -46,7 +46,7 @@ class StudentProjectAllocationProjectsSingle:
         result = "\n".join([f"{s[1:]} {p[1:]}" for s, p in self.solver.matching.items()])
         print(result, file=None if self.output_file is None else open(self.output_file, 'w'))
         
-        return self.solver.matching
+        return self.solver.matching if self.solver.check_stability() else "Matching is not stable."
     
 
 class StudentProjectAllocationProjectsMultiple:
@@ -64,6 +64,16 @@ class StudentProjectAllocationProjectsMultiple:
     ):
         """
         Run several iterations of the SPA-P algorithm.
+
+        :param iters: int, optional, default=1, the number of iterations to run the SPA-P algorithm for.
+        :param students: int, optional, default=5, the number of students.
+        :param lower_bound: int, optional, default=1, the lower bound of projects a student can rank.
+        :param upper_bound: int, optional, default=3, the upper bound of projects a student can rank.
+        :param project_ratio: float, optional, default=0.5, the ratio of projects to students.
+        :param lecturer_ratio: float, optional, default=0.2, the ratio of lecturers to students.
+        :param instance_folder: str, optional, default="instances/", the folder to save the instances to.
+        :param solutions_folder: str, optional, default="solutions/", the folder to save the solutions to.
+        :param output_flag: 0 or 1, optional, default=1, the flag to determine whether to output the Gurobi solver output.
         """
         
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
@@ -113,9 +123,7 @@ class StudentProjectAllocationProjectsMultiple:
 
             solver = GurobiSPAP(filename=filename, output_flag=self.output_flag)
             solver.solve()
-
-            checker = StabilityChecker(solver)
-            is_stable = checker.check_stability()
+            is_stable = solver.check_stability()
 
             if is_stable:
                 self._write_solution(solver.matching, self.solutions_folder + f"solution_{i}.txt")

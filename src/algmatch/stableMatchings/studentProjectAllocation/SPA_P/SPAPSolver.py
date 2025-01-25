@@ -7,6 +7,7 @@ import gurobipy as gp
 from gurobipy import GRB
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.fileReader import FileReader
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.checkStability import StabilityChecker
 
 from collections import defaultdict
 
@@ -264,10 +265,8 @@ class GurobiSPAP:
         self.J.optimize()
         
         for student in self._students:
-            matched = False
             for project in self._students[student][0]:
                 if self.J.getVarByName(f"{student} is assigned {project}").x == 1.0:
-                    matched = True
                     lecturer = self._projects[project][1]
 
                     self.matching[student] = project
@@ -282,6 +281,11 @@ class GurobiSPAP:
                             self._lecturers[lecturer][3] = project
 
                     break
+
+
+    def check_stability(self) -> bool:
+        checker = StabilityChecker(self)
+        return checker.check_stability()
 
 
     def display_assignments(self) -> None:
@@ -300,6 +304,7 @@ def main():
     filename = sys.argv[1]
     G = GurobiSPAP(filename)
     G.solve()
+    print(G.check_stability())
     G.display_assignments()
 
 
