@@ -40,7 +40,7 @@ class StabilityChecker:
         if self._lecturers[lecturer][2] < self._lecturers[lecturer][0]:
             self.blocking_pair = True
 
-    def _typec(self, student, project):
+    def _typec(self, project):
         """
         s_i not in M(l_k) and l_k prefers p_j to his worst non-empty project
         """
@@ -87,7 +87,7 @@ class StabilityChecker:
                             if self.blocking_pair:
                                 break
 
-                            self._typec(student, project)
+                            self._typec(project)
                             if self.blocking_pair:
                                 break
 
