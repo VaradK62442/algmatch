@@ -7,7 +7,6 @@ import gurobipy as gp
 from gurobipy import GRB
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.fileReader import FileReader
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.checkStability import StabilityChecker
 
 from collections import defaultdict
 
@@ -283,11 +282,6 @@ class GurobiSPAP:
                     break
 
 
-    def check_stability(self) -> bool:
-        checker = StabilityChecker(self)
-        return checker.check_stability()
-
-
     def display_assignments(self) -> None:
         # assumes model has been solved
         for student in self._students:
@@ -304,7 +298,6 @@ def main():
     filename = sys.argv[1]
     G = GurobiSPAP(filename)
     G.solve()
-    print(G.check_stability())
     G.display_assignments()
 
 

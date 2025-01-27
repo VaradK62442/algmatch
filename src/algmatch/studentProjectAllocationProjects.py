@@ -45,8 +45,10 @@ class StudentProjectAllocationProjectsSingle:
 
         result = "\n".join([f"{s[1:]} {p[1:]}" for s, p in self.solver.matching.items()])
         print(result, file=None if self.output_file is None else open(self.output_file, 'w'))
+
+        checker = StabilityChecker(self.solver)
         
-        return self.solver.matching if self.solver.check_stability() else "Matching is not stable."
+        return self.solver.matching if checker.check_stability() else "Matching is not stable."
     
 
 class StudentProjectAllocationProjectsMultiple:
@@ -123,7 +125,8 @@ class StudentProjectAllocationProjectsMultiple:
 
             solver = GurobiSPAP(filename=filename, output_flag=self.output_flag)
             solver.solve()
-            is_stable = solver.check_stability()
+            checker = StabilityChecker(solver)
+            is_stable = checker.check_stability()
 
             if is_stable:
                 self._write_solution(solver.matching, self.solutions_folder + f"solution_{i}.txt")
