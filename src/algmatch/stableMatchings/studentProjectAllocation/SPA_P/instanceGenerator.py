@@ -9,7 +9,7 @@ import sys
 
 
 class SPAPIG:
-    def __init__(self, num_students, lower_bound, upper_bound, num_projects, num_lecturers) -> None:
+    def __init__(self, num_students, lower_bound, upper_bound, num_projects, num_lecturers, force_project_capacity=0, force_lecturer_capacity=0) -> None:
         
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
         assert upper_bound <= num_projects, "Upper bound must be less than or equal to the number of projects."
@@ -18,7 +18,10 @@ class SPAPIG:
         self._num_projects = num_projects
         self._num_lecturers = num_lecturers
 
+        self._force_project_capacity = force_project_capacity
+        self._force_lecturer_capacity = force_lecturer_capacity
         self._total_project_capacity = int(math.ceil(1.1 * self._num_students))
+
         self._li = lower_bound # lower bound of student preference list
         self._lj = upper_bound # upper bound of student preference list
 
@@ -41,9 +44,13 @@ class SPAPIG:
         """
         # PROJECTS
         project_list = list(self._plc.keys())
-        # randomly assign remaining project capacities
-        for _ in range(self._total_project_capacity - self._num_projects):
-            self._plc[random.choice(project_list)][0] += 1
+        if self._force_project_capacity:
+            for project in self._plc:
+                self._plc[project][0] = self._force_project_capacity
+        else:
+            # randomly assign remaining project capacities
+            for _ in range(self._total_project_capacity - self._num_projects):
+                    self._plc[random.choice(project_list)][0] += 1
 
         # STUDENTS
         for student in self._sp:
@@ -79,7 +86,10 @@ class SPAPIG:
         # decide ordered preference and capacity
         for lecturer in self._lp:
             random.shuffle(self._lp[lecturer][1])
-            self._lp[lecturer][0] = random.randint(self._lp[lecturer][2], self._lp[lecturer][3])
+            if self._force_lecturer_capacity:
+                self._lp[lecturer][0] = self._force_lecturer_capacity
+            else:
+                self._lp[lecturer][0] = random.randint(self._lp[lecturer][2], self._lp[lecturer][3])
 
 
     def write_instance_to_file(self, filename: str) -> None:

@@ -59,7 +59,9 @@ class StudentProjectAllocationProjectsMultiple:
             lower_bound: int = 1,
             upper_bound: int = 3,
             projects: int = 10,
+            project_capacity: int = 0,
             lecturers: int = 5,
+            lecturer_capacity: int = 0,
             instance_folder: str = "instances/",
             solutions_folder: str = "solutions/",
             output_flag: 0 | 1 = 1
@@ -87,7 +89,9 @@ class StudentProjectAllocationProjectsMultiple:
         self.upper_bound = upper_bound
 
         self.projects = projects
+        self.project_capacity = project_capacity
         self.lecturers = lecturers
+        self.lecturer_capacity = lecturer_capacity
 
         self.instance_folder = os.path.join(os.getcwd(), instance_folder)
         self.solutions_folder = os.path.join(os.getcwd(), solutions_folder)
@@ -102,7 +106,15 @@ class StudentProjectAllocationProjectsMultiple:
 
 
     def _save_instance(self, filename: str) -> None:
-        S = SPAPIG(self.num_students, self.lower_bound, self.upper_bound, self.projects, self.lecturers)
+        S = SPAPIG(
+            self.num_students, 
+            self.lower_bound, 
+            self.upper_bound, 
+            self.projects, 
+            self.lecturers, 
+            self.project_capacity, 
+            self.lecturer_capacity
+        )
         S.generate_instance()
         S.write_instance_to_file(filename)
 
@@ -162,9 +174,11 @@ def main():
     parser.add_argument("--students", type=int, default=5, help="The number of students.")
     parser.add_argument("--lower_bound", type=int, default=1, help="The lower bound of the number of projects a student can rank.")
     parser.add_argument("--upper_bound", type=int, default=3, help="The upper bound of the number of projects a student can rank.")
-    parser.add_argument("--length", type=float, default=3, help="The fixed length of the number of projects a student can rank.")
-    parser.add_argument("--projects", type=float, default=10, help="The number of projects.")
-    parser.add_argument("--lecturers", type=float, default=5, help="The number of lecturers.")
+    parser.add_argument("--length", type=int, default=3, help="The fixed length of the number of projects a student can rank.")
+    parser.add_argument("--projects", type=int, default=10, help="The number of projects.")
+    parser.add_argument("--force_project_capacity", type=int, default=0, help="The capacity of all projects. If 0, capacity is random.")
+    parser.add_argument("--lecturers", type=int, default=5, help="The number of lecturers.")
+    parser.add_argument("--force_lecturer_capacity", type=int, default=0, help="The capacity of all lecturers. If 0, capacity is random.")
     parser.add_argument("--instance_folder", type=str, default="instances/", help="The folder to save the instances to.")
     parser.add_argument("--solutions_folder", type=str, default="solutions/", help="The folder to save the solutions to.")
     parser.add_argument("--output_flag", type=int, default=1, help="The flag to determine whether to output the Gurobi solver output.")
