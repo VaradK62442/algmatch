@@ -137,16 +137,17 @@ class StudentProjectAllocationProjectsMultiple:
 def main():
 
     def help_msg(name=None):
-        msg="""
+        return """
         Usage: python3 main.py [--single | --multiple] [options]
 
         Run the SPA-P algorithm for a single instance:
             python3 main.py --single --filename FILENAME --output OUTPUT --output_flag OUTPUT_FLAG
 
         Run the SPA-P algorithm for multiple instances:
-            python3 main.py --multiple --iters ITERS --students STUDENTS --lower_bound LOWER_BOUND --upper_bound UPPER_BOUND --project_ratio PROJECT_RATIO --lecturer_ratio LECTURER_RATIO --instance_folder INSTANCE_FOLDER --solutions_folder SOLUTIONS_FOLDER --output_flag OUTPUT_FLAG
+            python3 main.py --multiple --iters ITERS --students STUDENTS 
+                            [--lower_bound LOWER_BOUND --upper_bound UPPER_BOUND | --length LENGTH] 
+                            --projects PROJECTS --lecturers LECTURERS --instance_folder INSTANCE_FOLDER --solutions_folder SOLUTIONS_FOLDER --output_flag OUTPUT_FLAG
         """
-        return msg
     
     parser = argparse.ArgumentParser(description="Run the SPA-P algorithm.", usage=help_msg())
 
@@ -159,10 +160,11 @@ def main():
 
     parser.add_argument("--iters", type=int, default=1, help="The number of iterations to run the SPA-P algorithm for.")
     parser.add_argument("--students", type=int, default=5, help="The number of students.")
-    parser.add_argument("--lower_bound", type=int, default=1, help="The lower bound of projects a student can rank.")
-    parser.add_argument("--upper_bound", type=int, default=3, help="The upper bound of projects a student can rank.")
-    parser.add_argument("--project_ratio", type=float, default=0.5, help="The ratio of projects to students.")
-    parser.add_argument("--lecturer_ratio", type=float, default=0.2, help="The ratio of lecturers to students.")
+    parser.add_argument("--lower_bound", type=int, default=1, help="The lower bound of the number of projects a student can rank.")
+    parser.add_argument("--upper_bound", type=int, default=3, help="The upper bound of the number of projects a student can rank.")
+    parser.add_argument("--length", type=float, default=3, help="The fixed length of the number of projects a student can rank.")
+    parser.add_argument("--projects", type=float, default=10, help="The number of projects.")
+    parser.add_argument("--lecturers", type=float, default=5, help="The number of lecturers.")
     parser.add_argument("--instance_folder", type=str, default="instances/", help="The folder to save the instances to.")
     parser.add_argument("--solutions_folder", type=str, default="solutions/", help="The folder to save the solutions to.")
     parser.add_argument("--output_flag", type=int, default=1, help="The flag to determine whether to output the Gurobi solver output.")
@@ -170,6 +172,10 @@ def main():
     args = parser.parse_args()
 
     if not any([args.single, args.multiple]) or all([args.single, args.multiple]):
+        parser.print_help()
+        return
+    
+    if args.multiple and any([args.filename, args.output]):
         parser.print_help()
         return
 
@@ -182,11 +188,16 @@ def main():
         spa.get_stable_matching()
 
     elif args.multiple:
+        if args.length:
+            lower_bound, upper_bound = args.length, args.length
+        else:
+            lower_bound, upper_bound = args.lower_bound, args.upper_bound
+
         spa = StudentProjectAllocationProjectsMultiple(
             iters=args.iters,
             students=args.students,
-            lower_bound=args.lower_bound,
-            upper_bound=args.upper_bound,
+            lower_bound=lower_bound,
+            upper_bound=upper_bound,
             project_ratio=args.project_ratio,
             lecturer_ratio=args.lecturer_ratio,
             instance_folder=args.instance_folder,
