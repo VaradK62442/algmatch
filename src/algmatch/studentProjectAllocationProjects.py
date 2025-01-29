@@ -102,7 +102,7 @@ class StudentProjectAllocationProjectsMultiple:
 
 
     def _save_instance(self, filename: str) -> None:
-        S = SPAPIG(self.num_students, self.lower_bound, self.upper_bound)
+        S = SPAPIG(self.num_students, self.lower_bound, self.upper_bound, self.project_ratio, self.lecturer_ratio)
         S.generate_instance()
         S.write_instance_to_file(filename)
 
