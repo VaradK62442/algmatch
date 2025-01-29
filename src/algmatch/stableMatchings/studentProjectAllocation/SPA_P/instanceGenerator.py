@@ -9,14 +9,14 @@ import sys
 
 
 class SPAPIG:
-    def __init__(self, num_students, lower_bound, upper_bound, project_ratio, lecturer_ratio) -> None:
+    def __init__(self, num_students, lower_bound, upper_bound, num_projects, num_lecturers) -> None:
         
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
-        assert upper_bound <= int(math.ceil(num_students * project_ratio)), "Upper bound must be less than or equal to half the number of students."
+        assert upper_bound <= num_projects, "Upper bound must be less than or equal to the number of projects."
 
         self._num_students = num_students
-        self._num_projects = int(math.ceil(self._num_students * project_ratio))
-        self._num_lecturers = int(math.ceil(self._num_students * lecturer_ratio)) # assume |lecturers| < |projects|
+        self._num_projects = num_projects
+        self._num_lecturers = num_lecturers
 
         self._total_project_capacity = int(math.ceil(1.1 * self._num_students))
         self._li = lower_bound # lower bound of student preference list

@@ -58,8 +58,8 @@ class StudentProjectAllocationProjectsMultiple:
             students: int = 5,
             lower_bound: int = 1,
             upper_bound: int = 3,
-            project_ratio: float = 0.5,
-            lecturer_ratio: float = 0.2,
+            projects: int = 10,
+            lecturers: int = 5,
             instance_folder: str = "instances/",
             solutions_folder: str = "solutions/",
             output_flag: 0 | 1 = 1
@@ -71,23 +71,23 @@ class StudentProjectAllocationProjectsMultiple:
         :param students: int, optional, default=5, the number of students.
         :param lower_bound: int, optional, default=1, the lower bound of projects a student can rank.
         :param upper_bound: int, optional, default=3, the upper bound of projects a student can rank.
-        :param project_ratio: float, optional, default=0.5, the ratio of projects to students.
-        :param lecturer_ratio: float, optional, default=0.2, the ratio of lecturers to students.
+        :param projects: int, optional, default=10, the number of projects.
+        :param lecturers: int, optional, default=5, the number of lecturers.
         :param instance_folder: str, optional, default="instances/", the folder to save the instances to.
         :param solutions_folder: str, optional, default="solutions/", the folder to save the solutions to.
         :param output_flag: 0 or 1, optional, default=1, the flag to determine whether to output the Gurobi solver output.
         """
         
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
-        assert upper_bound <= int(math.ceil(students * project_ratio)), "Upper bound must be less than or equal to number of students * project ratio."
+        assert upper_bound <= projects, "Upper bound must be less than or equal to the number of projects."
 
         self.iters = iters
         self.num_students = students
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
 
-        self.project_ratio = project_ratio
-        self.lecturer_ratio = lecturer_ratio
+        self.projects = projects
+        self.lecturers = lecturers
 
         self.instance_folder = os.path.join(os.getcwd(), instance_folder)
         self.solutions_folder = os.path.join(os.getcwd(), solutions_folder)
@@ -102,7 +102,7 @@ class StudentProjectAllocationProjectsMultiple:
 
 
     def _save_instance(self, filename: str) -> None:
-        S = SPAPIG(self.num_students, self.lower_bound, self.upper_bound, self.project_ratio, self.lecturer_ratio)
+        S = SPAPIG(self.num_students, self.lower_bound, self.upper_bound, self.projects, self.lecturers)
         S.generate_instance()
         S.write_instance_to_file(filename)
 
