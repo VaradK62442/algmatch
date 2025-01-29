@@ -175,9 +175,19 @@ def main():
         parser.print_help()
         return
     
-    if args.multiple and any([args.filename, args.output]):
-        parser.print_help()
-        return
+    if args.multiple: 
+        if any([args.filename, args.output]):
+            parser.print_help()
+            return
+        
+        if not any([args.lower_bound, args.upper_bound, args.length]):
+            parser.print_help()
+            return
+        
+        if args.length:
+            if any([args.lower_bound, args.upper_bound]):
+                parser.print_help()
+                return
 
     if args.single:
         spa = StudentProjectAllocationProjectsSingle(
