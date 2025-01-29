@@ -158,7 +158,9 @@ def main():
         Run the SPA-P algorithm for multiple instances:
             python3 main.py --multiple --iters ITERS --students STUDENTS 
                             [--lower_bound LOWER_BOUND --upper_bound UPPER_BOUND | --length LENGTH] 
-                            --projects PROJECTS --lecturers LECTURERS --instance_folder INSTANCE_FOLDER --solutions_folder SOLUTIONS_FOLDER --output_flag OUTPUT_FLAG
+                            --projects PROJECTS --force_project_capacity CAPACITY
+                            --lecturers LECTURERS --force_lecturer_capacity CAPACITY
+                            --instance_folder INSTANCE_FOLDER --solutions_folder SOLUTIONS_FOLDER --output_flag OUTPUT_FLAG
         """
     
     parser = argparse.ArgumentParser(description="Run the SPA-P algorithm.", usage=help_msg())
@@ -172,9 +174,9 @@ def main():
 
     parser.add_argument("--iters", type=int, default=1, help="The number of iterations to run the SPA-P algorithm for.")
     parser.add_argument("--students", type=int, default=5, help="The number of students.")
-    parser.add_argument("--lower_bound", type=int, default=1, help="The lower bound of the number of projects a student can rank.")
-    parser.add_argument("--upper_bound", type=int, default=3, help="The upper bound of the number of projects a student can rank.")
-    parser.add_argument("--length", type=int, default=3, help="The fixed length of the number of projects a student can rank.")
+    parser.add_argument("--lower_bound", type=int, help="The lower bound of the number of projects a student can rank.")
+    parser.add_argument("--upper_bound", type=int, help="The upper bound of the number of projects a student can rank.")
+    parser.add_argument("--length", type=int, help="The fixed length of the number of projects a student can rank.")
     parser.add_argument("--projects", type=int, default=10, help="The number of projects.")
     parser.add_argument("--force_project_capacity", type=int, default=0, help="The capacity of all projects. If 0, capacity is random.")
     parser.add_argument("--lecturers", type=int, default=5, help="The number of lecturers.")
@@ -187,20 +189,24 @@ def main():
 
     if not any([args.single, args.multiple]) or all([args.single, args.multiple]):
         parser.print_help()
+        print("Please specify either --single or --multiple and not both.")
         return
     
-    if args.multiple: 
+    if args.multiple:
         if any([args.filename, args.output]):
             parser.print_help()
+            print("Please do not specify --filename or --output for multiple instances.")
             return
         
         if not any([args.lower_bound, args.upper_bound, args.length]):
             parser.print_help()
+            print("Please specify either --lower_bound and --upper_bound or --length for multiple instances and not both.")
             return
         
         if args.length:
             if any([args.lower_bound, args.upper_bound]):
                 parser.print_help()
+                print("Please specify either --lower_bound and --upper_bound or --length for multiple instances and not both.")
                 return
 
     if args.single:
@@ -222,8 +228,8 @@ def main():
             students=args.students,
             lower_bound=lower_bound,
             upper_bound=upper_bound,
-            project_ratio=args.project_ratio,
-            lecturer_ratio=args.lecturer_ratio,
+            projects=args.projects,
+            lecturers=args.lecturers,
             instance_folder=args.instance_folder,
             solutions_folder=args.solutions_folder,
             output_flag=args.output_flag
