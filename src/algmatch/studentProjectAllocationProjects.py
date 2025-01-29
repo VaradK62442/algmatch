@@ -4,7 +4,6 @@ Also provides class for running several iterations, as well as configuring diffe
 """
 
 import os
-import math
 import argparse
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerator import SPAPIG
@@ -30,7 +29,12 @@ class StudentProjectAllocationProjectsSingle:
         assert filename is not None, "Filename must be provided"
 
         self.filename = os.path.join(os.getcwd(), filename)
+
         self.output_file = os.path.join(os.getcwd(), output) if output is not None else None
+        if self.output_file:
+            if output.endswith('.txt'): self.delim = ' '
+            elif output.endswith('.csv'): self.delim = ','
+
         self.solver = GurobiSPAP(filename=filename, output_flag=output_flag)
 
 
@@ -43,7 +47,7 @@ class StudentProjectAllocationProjectsSingle:
         """
         self.solver.solve()
 
-        result = "\n".join([f"{s[1:]} {p[1:]}" for s, p in self.solver.matching.items()])
+        result = "\n".join([f"{s[1:]}{self.delim}{p[1:]}" for s, p in self.solver.matching.items()])
         print(result, file=None if self.output_file is None else open(self.output_file, 'w'))
 
         checker = StabilityChecker(self.solver)
@@ -64,7 +68,8 @@ class StudentProjectAllocationProjectsMultiple:
             lecturer_capacity: int = 0,
             instance_folder: str = "instances/",
             solutions_folder: str = "solutions/",
-            output_flag: 0 | 1 = 1
+            output_flag: 0 | 1 = 1,
+            file_extension: str = 'csv'
     ):
         """
         Run several iterations of the SPA-P algorithm.
@@ -82,6 +87,8 @@ class StudentProjectAllocationProjectsMultiple:
         
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
         assert upper_bound <= projects, "Upper bound must be less than or equal to the number of projects."
+
+        assert file_extension in ["csv", "txt"], "File extension must be either 'csv' or 'txt'."
 
         self.iters = iters
         self.num_students = students
@@ -103,6 +110,8 @@ class StudentProjectAllocationProjectsMultiple:
             os.makedirs(self.solutions_folder)
 
         self.output_flag = output_flag
+        self.file_extension = file_extension
+        self.delim = ',' if file_extension == "csv" else ' '
 
 
     def _save_instance(self, filename: str) -> None:
@@ -122,7 +131,7 @@ class StudentProjectAllocationProjectsMultiple:
     def _write_solution(self, matching: dict, filename: str) -> None:
         with open(filename, 'w') as f:
             for student in matching:
-                f.write(f"{student[1:]} {matching[student][1:]}\n")
+                f.write(f"{student[1:]}{self.delim}{matching[student][1:]}\n")
 
     
     def run(self) -> None:
@@ -132,7 +141,7 @@ class StudentProjectAllocationProjectsMultiple:
         print(f"Running {self.iters} iterations of SPA-P algorithm.")
 
         for i in range(self.iters):
-            filename = self.instance_folder + f"instance_{i}.txt"
+            filename = self.instance_folder + f"instance_{i}.{self.file_extension}"
             self._save_instance(filename)
 
             solver = GurobiSPAP(filename=filename, output_flag=self.output_flag)
@@ -141,7 +150,7 @@ class StudentProjectAllocationProjectsMultiple:
             is_stable = checker.check_stability()
 
             if is_stable:
-                self._write_solution(solver.matching, self.solutions_folder + f"solution_{i}.txt")
+                self._write_solution(solver.matching, self.solutions_folder + f"solution_{i}.{self.file_extension}")
             else:
                 print(f"Instance {i} is not stable.")
 
@@ -160,7 +169,8 @@ def main():
                             [--lower_bound LOWER_BOUND --upper_bound UPPER_BOUND | --length LENGTH] 
                             --projects PROJECTS --force_project_capacity CAPACITY
                             --lecturers LECTURERS --force_lecturer_capacity CAPACITY
-                            --instance_folder INSTANCE_FOLDER --solutions_folder SOLUTIONS_FOLDER --output_flag OUTPUT_FLAG
+                            --instance_folder INSTANCE_FOLDER --solutions_folder SOLUTIONS_FOLDER 
+                            --output_flag OUTPUT_FLAG --file_extension EXTENSION
         """
     
     parser = argparse.ArgumentParser(description="Run the SPA-P algorithm.", usage=help_msg())
@@ -184,6 +194,7 @@ def main():
     parser.add_argument("--instance_folder", type=str, default="instances/", help="The folder to save the instances to.")
     parser.add_argument("--solutions_folder", type=str, default="solutions/", help="The folder to save the solutions to.")
     parser.add_argument("--output_flag", type=int, default=1, help="The flag to determine whether to output the Gurobi solver output.")
+    parser.add_argument("--file_extension", type=str, default='csv', help="What type of file to write the output to.")
 
     args = parser.parse_args()
 
@@ -229,10 +240,13 @@ def main():
             lower_bound=lower_bound,
             upper_bound=upper_bound,
             projects=args.projects,
+            project_capacity=args.force_project_capacity,
             lecturers=args.lecturers,
+            lecturer_capacity=args.force_lecturer_capacity,
             instance_folder=args.instance_folder,
             solutions_folder=args.solutions_folder,
-            output_flag=args.output_flag
+            output_flag=args.output_flag,
+            file_extension=args.file_extension
         )
         spa.run()
 

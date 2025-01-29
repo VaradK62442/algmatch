@@ -93,20 +93,23 @@ class SPAPIG:
 
 
     def write_instance_to_file(self, filename: str) -> None:
+        if filename.endswith('.txt'): delim = ' '
+        elif filename.endswith('.csv'): delim = ','
+
         with open (filename, 'w') as f:
-            f.write(f"{self._num_students} {self._num_projects} {self._num_lecturers}\n")
+            f.write(delim.join(map(str, [self._num_students, self._num_projects, self._num_lecturers])) + '\n')
 
             # student index, preferences
             for student in self._sp:
-                f.write(f"{student[1:]} {' '.join([p[1:] for p in self._sp[student]])}\n")
+                f.write(delim.join(map(str, [student[1:], delim.join([p[1:] for p in self._sp[student]])]))+"\n")
 
             # project index, capacity, lecturer
             for project in self._plc:
-                f.write(f"{project[1:]} {self._plc[project][0]} {self._plc[project][1][1:]}\n")
+                f.write(delim.join(map(str, [project[1:], self._plc[project][0], self._plc[project][1][1:]])) + "\n")
 
             # lecturer index, capacity, projects
             for lecturer in self._lp:
-                f.write(f"{lecturer[1:]} {self._lp[lecturer][0]} {' '.join([p[1:] for p in self._lp[lecturer][1]])}\n")
+                f.write(delim.join(map(str, [lecturer[1:], self._lp[lecturer][0], delim.join([p[1:] for p in self._lp[lecturer][1]])])) + "\n")
 
 
 def main():
