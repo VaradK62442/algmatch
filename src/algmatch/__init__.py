@@ -9,3 +9,4 @@ from .stableMarriageProblem import StableMarriageProblem as SM
 from .studentProjectAllocation import StudentProjectAllocation as SPA
 from .studentProjectAllocationProjects import StudentProjectAllocationProjectsSingle as SPAP_Single
 from .studentProjectAllocationProjects import StudentProjectAllocationProjectsMultiple as SPAP_Multiple
+from .studentProjectAllocationProjects import instance_to_numpy as SPAP_instance_to_numpy, solution_to_numpy as SPAP_solution_to_numpy

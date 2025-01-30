@@ -10,6 +10,8 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerator i
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.SPAPSolver import GurobiSPAP
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.checkStability import StabilityChecker
 
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.utils import instance_to_numpy, solution_to_numpy
+
 
 class StudentProjectAllocationProjectsSingle:
     def __init__(

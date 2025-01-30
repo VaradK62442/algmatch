@@ -48,8 +48,37 @@ def instance_to_numpy(instance_filename: str):
     return instance
 
 
+def solution_to_numpy(solution_filename: str, project_size: int):
+    """
+    Function to take a solution of SPA-P defined in a file,
+    and turn it into a numpy array with the following structure:
+
+    Shape = (num_students, num_projects)
+    Each row corresponds to a student, and each column corresponds to a project.
+    Each entry is 1 if the student is assigned the corresponding project, and 0 otherwise.
+    """
+    r = FileReader(solution_filename, is_instance=False)
+
+    num_students = len(r.solution.keys())
+    num_projects = project_size
+
+    # create numpy array
+    solution = np.zeros((num_students, num_projects))
+
+    # fill in student preferences
+    for student in r.solution:
+        for project in r.solution[student][1:]:
+            if project != '': solution[int(student[1:])-1, int(project)-1] = 1
+            else: solution[int(student[1:])-1, int(project)-1] = 0
+
+    return solution
+
+
 def main():
-    res = instance_to_numpy("test.txt")
+    # res = instance_to_numpy("test.txt")
+    # pprint(res)
+
+    res = solution_to_numpy("solutions/solution_0.csv", 10)
     pprint(res)
 
 

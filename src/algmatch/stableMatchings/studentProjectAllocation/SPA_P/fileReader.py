@@ -6,17 +6,21 @@ from algmatch.abstractClasses.abstractReader import AbstractReader
 
 
 class FileReader(AbstractReader):
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: str, is_instance: bool = True) -> None:
         super().__init__(filename)
 
         if filename.endswith('.txt'): self.delim = ' '
         elif filename.endswith('.csv'): self.delim = ','
-        
-        self.students = {} # student -> [project preferences, {project: assigned?}]
-        self.projects = {} # project -> [capacity, lecturer, num students assigned]
-        self.lecturers = {} # lecturer -> [capacity, project preferences, num students assigned, worst project]
-        
-        self._read_data()
+
+        if is_instance:
+            self.students = {} # student -> [project preferences, {project: assigned?}]
+            self.projects = {} # project -> [capacity, lecturer, num students assigned]
+            self.lecturers = {} # lecturer -> [capacity, project preferences, num students assigned, worst project]
+            
+            self._read_data()
+
+        else:
+            self.solution = self._read_solution(filename)
 
 
     def _read_data(self) -> None:
@@ -47,3 +51,18 @@ class FileReader(AbstractReader):
                     0,
                     None
                 ]
+
+
+    def _read_solution(self, filename: str) -> dict[str, str]:
+        """
+        Read solution in either txt or csv format.
+        Return dictionary mapping students to assigned projects.
+        """
+        if filename.endswith('.csv'): delim = ','
+        elif filename.endswith('.txt'): delim = ' '
+
+        with open (filename, 'r') as f:
+            f = f.readlines()
+            return {
+                f"s{line[0]}": f"p{line[1]}" if line[1] else '' for line in [l.strip().split(delim) for l in f]
+            }
