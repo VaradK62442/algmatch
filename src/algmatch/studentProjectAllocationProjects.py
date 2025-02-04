@@ -83,7 +83,9 @@ class StudentProjectAllocationProjectsMultiple:
         :param lower_bound: int, optional, default=1, the lower bound of projects a student can rank.
         :param upper_bound: int, optional, default=3, the upper bound of projects a student can rank.
         :param projects: int, optional, default=10, the number of projects.
+        :param project_capacity: int, optional, default=0, the capacity of all projects. If 0, capacity is random.
         :param lecturers: int, optional, default=5, the number of lecturers.
+        :param lecturer_capacity: int, optional, default=0, the capacity of all lecturers. If 0, capacity is random.
         :param instance_folder: str, optional, default="instances/", the folder to save the instances to.
         :param solutions_folder: str, optional, default="solutions/", the folder to save the solutions to.
         :param output_flag: bool, optional, default=True, the flag to determine whether to output the Gurobi solver output.
