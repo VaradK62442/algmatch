@@ -18,7 +18,7 @@ class StudentProjectAllocationProjectsSingle:
             self, 
             filename: str | None = None, 
             output: str | None = None,
-            output_flag: 0 | 1 = 1
+            output_flag: bool = True
     ) -> None:
         """
         Initialise the SPA-P algorithm.
@@ -26,7 +26,7 @@ class StudentProjectAllocationProjectsSingle:
         :param filename: str, optional, default=None, the path to the file to read in the preferences from.      
         :param output: str, optional, default=None, the path to the file to write the output to. Will print to console if None.
 
-        :param output_flag: 0 or 1, optional, default=1, the flag to determine whether to output the Gurobi solver output.
+        :param output_flag: boolean, optional, default=True, the flag to determine whether to output the Gurobi solver output.
         """
         assert filename is not None, "Filename must be provided"
 
@@ -37,7 +37,7 @@ class StudentProjectAllocationProjectsSingle:
             if output.endswith('.txt'): self.delim = ' '
             elif output.endswith('.csv'): self.delim = ','
 
-        self.solver = GurobiSPAP(filename=filename, output_flag=output_flag)
+        self.solver = GurobiSPAP(filename=filename, output_flag=int(output_flag))
 
 
     def get_stable_matching(self) -> dict | str:
@@ -70,7 +70,7 @@ class StudentProjectAllocationProjectsMultiple:
             lecturer_capacity: int = 0,
             instance_folder: str = "instances/",
             solutions_folder: str = "solutions/",
-            output_flag: 0 | 1 = 1,
+            output_flag: bool = True,
             file_extension: str = 'csv'
     ):
         """
@@ -84,7 +84,7 @@ class StudentProjectAllocationProjectsMultiple:
         :param lecturers: int, optional, default=5, the number of lecturers.
         :param instance_folder: str, optional, default="instances/", the folder to save the instances to.
         :param solutions_folder: str, optional, default="solutions/", the folder to save the solutions to.
-        :param output_flag: 0 or 1, optional, default=1, the flag to determine whether to output the Gurobi solver output.
+        :param output_flag: bool, optional, default=True, the flag to determine whether to output the Gurobi solver output.
         """
         
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
@@ -111,7 +111,7 @@ class StudentProjectAllocationProjectsMultiple:
         if not os.path.exists(self.solutions_folder):
             os.makedirs(self.solutions_folder)
 
-        self.output_flag = output_flag
+        self.output_flag = int(output_flag)
         self.file_extension = file_extension
         self.delim = ',' if file_extension == "csv" else ' '
 
@@ -195,7 +195,7 @@ def main():
     parser.add_argument("--force_lecturer_capacity", type=int, default=0, help="The capacity of all lecturers. If 0, capacity is random.")
     parser.add_argument("--instance_folder", type=str, default="instances/", help="The folder to save the instances to.")
     parser.add_argument("--solutions_folder", type=str, default="solutions/", help="The folder to save the solutions to.")
-    parser.add_argument("--output_flag", type=int, default=1, help="The flag to determine whether to output the Gurobi solver output.")
+    parser.add_argument("--output_flag", action="store_true", help="The flag to determine whether to output the Gurobi solver output.")
     parser.add_argument("--file_extension", type=str, default='csv', help="What type of file to write the output to.")
 
     args = parser.parse_args()
