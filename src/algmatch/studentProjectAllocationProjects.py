@@ -36,6 +36,8 @@ class StudentProjectAllocationProjectsSingle:
         if self.output_file:
             if output.endswith('.txt'): self.delim = ' '
             elif output.endswith('.csv'): self.delim = ','
+        else:
+            self.delim = ',' # assume csv
 
         self.solver = GurobiSPAP(filename=filename, output_flag=int(output_flag))
 
