@@ -46,7 +46,7 @@ class HRTAbstract:
         assert st.lower() in ("super", "strong"), "Stability type must be either 'super' or 'strong'"
 
     def _get_worst_existing_resident(self, hospital):
-        existing_residents = self.M[hospital]["assigned"]
+        existing_residents = self.stable_matching["hospital_sided"][hospital]
 
         def rank_comparator(x):
             return -self.hospitals[hospital]["rank"][x]
@@ -58,8 +58,9 @@ class HRTAbstract:
         # stability must be checked with regards to the original lists prior to deletions  
         for resident, r_prefs in self.original_residents.items():
             preferred_hospitals = self.original_residents[resident]["list"]
-            if self.M[resident]["assigned"] is not None:
-                matched_hospital = self.M[resident]["assigned"]
+            matched_hospital = self.stable_matching["resident_sided"][resident]
+
+            if matched_hospital != "":
                 rank_matched_hospital = r_prefs["rank"][matched_hospital]
                 # every hospital that r_i prefers to their match or is indifferent between them
                 preferred_hospitals = r_prefs["list"][:rank_matched_hospital+1]  
@@ -75,7 +76,7 @@ class HRTAbstract:
                         h_prefs = self.original_hospitals[hospital]
                         rank_worst = h_prefs["rank"][worst_resident]
                         rank_resident = h_prefs["rank"][resident]
-                        if rank_resident >= rank_worst:
+                        if rank_resident <= rank_worst:
                             return False
         return True
     
@@ -169,7 +170,8 @@ class HRTAbstract:
         for resident in self.residents:
             hospital_set = self.M[resident]["assigned"]
             if hospital_set != set():
-                # If resident is multiply assigned then there's no sup.s.m, so we can choose any
+                # If resident is multiply assigned then there's no sup.s.m, 
+                # in which case we won't call this function, so we can use pop.
                 self.stable_matching["resident_sided"][resident] = hospital_set.pop()
 
     def save_hospital_sided(self) -> None:

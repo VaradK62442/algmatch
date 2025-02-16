@@ -49,24 +49,25 @@ class SMTAbstract:
         # stability must be checked with regards to the original lists prior to deletions  
         for man, m_prefs in self.original_men.items():
             preferred_women = self.original_men[man]["list"]
-            if self.M[man]["assigned"] is not None:
-                matched_woman = self.M[man]["assigned"]
+            matched_woman = self.stable_matching["man_sided"][man]
+
+            if matched_woman != "":
                 rank_matched_woman = m_prefs["rank"][matched_woman]
                 # every woman that m_i prefers to his matched partner or is indifferent between them
-                preferred_women = m_prefs["list"][:rank_matched_woman+1]  
+                preferred_women = m_prefs["list"][:rank_matched_woman+1]
                 # this includes his current partner so we remove her
-                preferred_women[-1].remove(matched_woman)                    
-        
+                preferred_women[-1].remove(matched_woman)
+
             for w_tie in preferred_women:
                 for woman in w_tie:
-                    existing_fiance = self.M[woman]["assigned"]
+                    existing_fiance = self.stable_matching["woman_sided"][woman]
                     if existing_fiance is None:
                         return False
                     else:
                         w_prefs = self.original_women[woman]
                         rank_fiance = w_prefs["rank"][existing_fiance]
                         rank_man = w_prefs["rank"][man]
-                        if rank_man >= rank_fiance:
+                        if rank_man <= rank_fiance:
                             return False
         return True
     
@@ -165,7 +166,7 @@ class SMTAbstract:
         for woman in self.women:
             man = self.M[woman]["assigned"]
             if man is not None:
-                self.stable_matching["woman_sided"][woman] = man[0]
+                self.stable_matching["woman_sided"][woman] = man
 
     def run(self) -> None:
         if self._while_loop():
