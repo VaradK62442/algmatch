@@ -45,10 +45,10 @@ class HRTSuperResidentOptimal(HRTAbstract):
 
         # Check Viability of Matching
         for r in self.residents:
-            if self.M[r]["assigned"] > 1:
+            if len(self.M[r]["assigned"]) > 1:
                 return False
         
-        for h in self.hospital:
+        for h in self.hospitals:
             capacity = self.hospitals[h]["capacity"]
             occupancy = len(self.M[h]["assigned"])
             if occupancy < capacity and self.been_full(h):
