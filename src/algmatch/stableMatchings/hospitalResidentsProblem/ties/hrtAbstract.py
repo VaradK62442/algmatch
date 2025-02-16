@@ -82,14 +82,101 @@ class HRTAbstract:
     def _check_strong_stability(self) -> bool:
         raise NotImplementedError("Strong stability checking isn't implemented")
 
+    def _get_pref_list(self, participant) -> list:
+        if participant in self.residents:
+            return self.residents[participant]["list"]
+        elif participant in self.hospitals:
+            return self.hospitals[participant]["list"]
+        else:
+            raise ValueError(f"{participant} is not a resident or a hospital")
+        
+    def _get_pref_ranks(self, participant) -> list:
+        if participant in self.residents:
+            return self.residents[participant]["rank"]
+        elif participant in self.hospitals:
+            return self.hospitals[participant]["rank"]
+        else:
+            raise ValueError(f"{participant} is not a resident or a hospital")
+
+    def _get_pref_length(self,person) -> int:
+        pref_list = self._get_pref_list(person)
+        total = sum([len(tie) for tie in pref_list])
+        return total
+
+    def _get_head(self,person) -> set:
+        pref_list = self._get_pref_list(person)
+        idx = 0
+        while idx < len(pref_list):
+            print(person, idx, len(pref_list), pref_list)
+            head = pref_list[idx]
+            if len(head) > 0:
+                return head
+            idx += 1
+        raise ValueError("Pref_list empty")
+    
+    def _get_tail(self,person) -> set:
+        pref_list = self._get_pref_list(person)
+        idx = len(pref_list)-1
+        while idx >= 0:
+            tail = pref_list[idx]
+            if len(tail) > 0:
+                return tail
+            idx -= 1
+        raise ValueError("Pref_list empty")
+    
+    def _engage(self, resident, hospital) -> None:
+        self.M[resident]["assigned"].add(hospital)
+        self.M[hospital]["assigned"].add(resident)
+
+    def _break_engagement(self, resident, hospital) -> None:
+        self.M[resident]["assigned"].discard(hospital)
+        self.M[hospital]["assigned"].discard(resident)
+
+    def _delete_pair(self, resident, hospital) -> None:
+        # allow either order of args
+        if resident in self.hospitals:
+            resident, hospital = hospital, resident
+        # TO-DO: speed this up iusing ranks
+        for tie in self.residents[resident]['list']:
+            tie.discard(hospital)
+        for tie in self.hospitals[hospital]['list']:
+            tie.discard(resident)
+
+    def _delete_tail(self,person) -> None:
+        tail = self._get_tail(person)
+        while len(tail) != 0:
+            deletion = tail.pop()
+            self._delete_pair(person, deletion)
+
+    def _break_all_engagements(self,person) -> None:
+        assignee_set = self.M[person]["assigned"]
+        while len(assignee_set) != 0:
+            assignee = assignee_set.pop()
+            self._break_engagement(person,assignee)
+
+    def _reject_lower_ranks(self,target,proposer) -> None:
+        rank_p = self._get_pref_ranks(target)[proposer]
+        for reject_tie in self._get_pref_list(target)[rank_p+1:]:
+            while len(reject_tie) != 0:
+                reject = reject_tie.pop()
+                self._break_engagement(target,reject)
+                self._delete_pair(target,reject)
+
     def _while_loop(self) -> bool:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
 
     def save_resident_sided(self) -> None:
-        raise NotImplementedError("Method save_resident_sided not yet implemented")
+        for resident in self.residents:
+            hospital_set = self.M[resident]["assigned"]
+            if hospital_set != set():
+                # If resident is multiply assigned then there's no sup.s.m, so we can pick any
+                self.stable_matching["resident_sided"][resident] = hospital_set[0]
 
     def save_hospital_sided(self) -> None:
-        raise NotImplementedError("MMethod save_hospital_sided not yet implemented")
+        for hospitals in self.hospitals:
+            resident_set = self.M[hospitals]["assigned"]
+            if resident_set != set():
+                self.stable_matching["hospital_sided"][hospitals] = resident_set
 
     def run(self) -> None:
         if self._while_loop():
