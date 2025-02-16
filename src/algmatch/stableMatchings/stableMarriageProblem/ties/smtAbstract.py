@@ -158,14 +158,14 @@ class SMTAbstract:
     def save_man_sided(self) -> None:
         for man in self.men:
             woman = self.M[man]["assigned"]
-            if woman != set():
+            if woman is not None:
                 self.stable_matching["man_sided"][man] = woman
 
     def save_woman_sided(self) -> None:
         for woman in self.women:
             man = self.M[woman]["assigned"]
-            if man != set():
-                self.stable_matching["woman_sided"][woman] = man
+            if man is not None:
+                self.stable_matching["woman_sided"][woman] = man[0]
 
     def run(self) -> None:
         if self._while_loop():
