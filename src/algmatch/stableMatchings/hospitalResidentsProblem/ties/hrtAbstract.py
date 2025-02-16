@@ -1,5 +1,5 @@
 """
-Stable Marriage Problem With Ties - Abstract class
+Hospital Residents Problem With Ties - Abstract class
 """
 
 from copy import deepcopy
@@ -61,9 +61,9 @@ class HRTAbstract:
             if self.M[resident]["assigned"] is not None:
                 matched_hospital = self.M[resident]["assigned"]
                 rank_matched_hospital = r_prefs["rank"][matched_hospital]
-                # every hospital that r_i prefers to his match or is indifferent between them
+                # every hospital that r_i prefers to their match or is indifferent between them
                 preferred_hospitals = r_prefs["list"][:rank_matched_hospital+1]  
-                # this includes his current match so we remove it
+                # this includes their current match so we remove it
                 preferred_hospitals[-1].remove(matched_hospital)      
         
             for h_tie in preferred_hospitals:
@@ -94,8 +94,8 @@ class HRTAbstract:
     def run(self) -> None:
         if self._while_loop():
             
-            self.save_man_sided()
-            self.save_woman_sided()
+            self.save_resident_sided()
+            self.save_hospital_sided()
 
             if self.stability_type == "super":
                 self.is_stable = self._check_super_stability()
