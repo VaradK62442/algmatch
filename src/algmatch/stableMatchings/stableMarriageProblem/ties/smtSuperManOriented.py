@@ -51,25 +51,7 @@ class SMTSuperManOriented(SMTAbstract):
         self.M = graph_maxer.get_max_matching()
 
         # check viability of matching
-        print(self.M)
         for w in self.women:
             if self.M[w]["assigned"] is None and self.proposed[w]:
                 return False
         return True
-
-instance = {
-    "men": {
-        1: [1, (2, 3)],
-        2: [(1, 3), 2],
-        3: [3, (2, 1)]
-    },
-    "women": {
-        1: [1, 2, 3],
-        2: [2, 1, 3],
-        3: [3, 1, 2]
-    }
-}
-
-smt_sup_mo = SMTSuperManOriented(dictionary=instance)
-print(smt_sup_mo.run()) 
-print(smt_sup_mo.is_stable)

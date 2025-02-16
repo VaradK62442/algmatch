@@ -64,19 +64,3 @@ class SMTSuperWomanOriented(SMTAbstract):
             if self.M[m]["assigned"] is None and self.proposed[m]:
                 return False
         return True
-
-instance = {
-    "men": {
-        1: [1, 2, 3],
-        2: [2, 1, 3],
-        3: [3, 2, 1]
-    },
-    "women": {
-        1: [1, 2, 3],
-        2: [2, 1, 3],
-        3: [3, 1, 2]
-    }
-}
-
-smt_sup_wo = SMTSuperWomanOriented(dictionary=instance)
-print(smt_sup_wo.run()) 
