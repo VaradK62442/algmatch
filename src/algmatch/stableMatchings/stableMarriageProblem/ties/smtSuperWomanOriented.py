@@ -5,7 +5,7 @@ Algorithm to produce M_z, the woman-optimal, man-pessimal super-stable matching,
 from algmatch.stableMatchings.stableMarriageProblem.ties.smtAbstract import SMTAbstract
 from algmatch.stableMatchings.stableMarriageProblem.ties.graphMax import GraphMax
 
-class SMTSuperWomanOptimal(SMTAbstract):
+class SMTSuperWomanOriented(SMTAbstract):
     def __init__(self,
                  filename: str | None = None,
                  dictionary: dict | None = None) -> None:
@@ -78,5 +78,5 @@ instance = {
     }
 }
 
-smt_sup_wo = SMTSuperWomanOptimal(dictionary=instance)
+smt_sup_wo = SMTSuperWomanOriented(dictionary=instance)
 print(smt_sup_wo.run()) 
