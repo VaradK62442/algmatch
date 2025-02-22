@@ -13,9 +13,6 @@ from algmatch.studentProjectAllocation import StudentProjectAllocation
 from tests.SPATests.utils.instanceGenerator import SPAInstanceGenerator
 
 
-FILENAME = 'instance.txt'
-
-
 def show_results(data):
     time1, time2, name1, name2, data, reps = data
     if len(data) == 4:
@@ -34,26 +31,29 @@ def show_results(data):
         Upper project bound: {upper}
         """
 
-    print(res + f"""
+    print(
+        res
+        + f"""
         Repetitions: {reps}
 
         {name1}-optimal solver:
-            average: {mean(time1)/1_000_000:.2f} ms
-            std.dev.: {stdev(time1)/1_000_000:.2f} ms
+            average: {mean(time1) / 1_000_000:.2f} ms
+            std.dev.: {stdev(time1) / 1_000_000:.2f} ms
         
         {name2}-optimal solver:
-            average: {mean(time2)/1_000_000:.2f} ms
-            std.dev.: {stdev(time2)/1_000_000:.2f} ms
-    """)
+            average: {mean(time2) / 1_000_000:.2f} ms
+            std.dev.: {stdev(time2) / 1_000_000:.2f} ms
+    """
+    )
 
 
-def time_solver(solver, filename, optimised_side):
-    optimal_solver = solver(filename=filename, optimisedSide=optimised_side)
+def time_solver(solver, dictionary, optimised_side):
+    optimal_solver = solver(dictionary=dictionary, optimisedSide=optimised_side)
     start = perf_counter_ns()
     optimal_solver.get_stable_matching()
     end = perf_counter_ns()
 
-    return end-start
+    return end - start
 
 
 def benchmark(IGData, IG, reps, solver, optimised_sides):
@@ -63,27 +63,42 @@ def benchmark(IGData, IG, reps, solver, optimised_sides):
     times2 = []
 
     for _ in range(reps):
-        bencher_ig.generate_instance_no_ties()
-        bencher_ig.write_instance_no_ties(FILENAME)
+        instance = bencher_ig.generate_instance_no_ties()
 
-        times1.append(time_solver(solver, FILENAME, optimised_sides[0]))
-        times2.append(time_solver(solver, FILENAME, optimised_sides[1]))
-
-        os.remove(FILENAME)
+        times1.append(time_solver(solver, instance, optimised_sides[0]))
+        times2.append(time_solver(solver, instance, optimised_sides[1]))
 
     show_results([times1, times2, optimised_sides[0], optimised_sides[1], IGData, reps])
 
 
 def main():
     print("### Timing HR:")
-    benchmark([75, 75, 75, 75], HRInstanceGenerator, 1_000, HospitalResidentsProblem, ["residents", "hospitals"])
+    benchmark(
+        [75, 75, 75, 75],
+        HRInstanceGenerator,
+        1_000,
+        HospitalResidentsProblem,
+        ["residents", "hospitals"],
+    )
 
     print("### Timing SM:")
-    benchmark([75, 75, 75, 75], SMInstanceGenerator, 1_000, StableMarriageProblem, ["men", "women"])
+    benchmark(
+        [75, 75, 75, 75],
+        SMInstanceGenerator,
+        1_000,
+        StableMarriageProblem,
+        ["men", "women"],
+    )
 
     print("### Timing SPA:")
-    benchmark([50, 20, 25], SPAInstanceGenerator, 1_000, StudentProjectAllocation, ["student", "lecturer"])
-    
+    benchmark(
+        [50, 20, 25],
+        SPAInstanceGenerator,
+        1_000,
+        StudentProjectAllocation,
+        ["students", "lecturers"],
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
