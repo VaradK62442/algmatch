@@ -61,8 +61,8 @@ spa_instance = {
     }
 }
 
-spa_student = SPA(dictionary=spa_instance, optimisedSide="student")
-spa_lecturer = SPA(dictionary=spa_instance, optimisedSide="lecturer")
+spa_student = SPA(dictionary=spa_instance, optimisedSide="students")
+spa_lecturer = SPA(dictionary=spa_instance, optimisedSide="lecturers")
 ```
 
 Getting the stable matchings:
