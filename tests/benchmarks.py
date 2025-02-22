@@ -1,5 +1,3 @@
-import os
-
 from statistics import stdev, mean
 from time import perf_counter_ns
 

@@ -7,13 +7,14 @@ from tests.HRTests.hrMultiVerifier import HRMultiVerifier as HR_MV
 from tests.SPATests.spasMultiVerifier import SPASMultiVerifier as SPAS_MV
 
 if __name__ == "__main__":
-
-    #====== Control Panel ======#
+    # ====== Control Panel ======#
     THREADS = 4
-    verifier_dict = {SM_MV : (5,5,0,5,10_000),
-                    HR_MV : (12,5,0,5,10_000),
-                    SPAS_MV : (5,0,3,10_000)}
-    #===========================#
+    verifier_dict = {
+        SM_MV: (5, 5, 0, 5, 10_000),
+        HR_MV: (12, 5, 0, 5, 10_000),
+        SPAS_MV: (5, 0, 3, 10_000),
+    }
+    # ===========================#
 
     for VerifierType, params in verifier_dict.items():
         start = perf_counter_ns()
@@ -30,17 +31,17 @@ if __name__ == "__main__":
             for v_t in v_threads:
                 v_t.start()
 
-            with tqdm(total=params[-1]*THREADS) as pbar:
+            with tqdm(total=params[-1] * THREADS) as pbar:
                 while any(thread.is_alive() for thread in v_threads):
                     sleep(0.25)
-                    pbar.n = verifier.result_dict['total']
+                    pbar.n = verifier.result_dict["total"]
                     pbar.last_print_n = pbar.n
                     pbar.update(0)
 
             for v_t in v_threads:
                 v_t.join()
-            
+
             end = perf_counter_ns()
-            print(f"\nFinal Runtime: {(end-start)/1000**3}s")
+            print(f"\nFinal Runtime: {(end - start) / 1000**3}s")
 
             verifier.show_results()

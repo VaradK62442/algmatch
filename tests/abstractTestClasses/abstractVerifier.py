@@ -1,7 +1,5 @@
 class AbstractVerifier:
-    def __init__(self, problem, sides,
-                 gen, gen_args, brute_force):
-        
+    def __init__(self, problem, sides, gen, gen_args, brute_force):
         self.Problem = problem
         self.sides = sides
         self.BruteForce = brute_force
@@ -15,10 +13,12 @@ class AbstractVerifier:
         # optimal and pessimal from man/resident/student side
 
         minmaxer = self.BruteForce(dictionary=self.current_instance)
-        optimal_solver = self.Problem(dictionary=self.current_instance,
-                                      optimisedSide=self.sides[0])
-        pessimal_solver = self.Problem(dictionary=self.current_instance,
-                                       optimisedSide=self.sides[1])
+        optimal_solver = self.Problem(
+            dictionary=self.current_instance, optimisedSide=self.sides[0]
+        )
+        pessimal_solver = self.Problem(
+            dictionary=self.current_instance, optimisedSide=self.sides[1]
+        )
 
         minmaxer.find_minmax_matchings()
         m_0 = optimal_solver.get_stable_matching()
@@ -29,11 +29,9 @@ class AbstractVerifier:
         if m_0 != minmaxer.minmax_matchings[0]:
             return False
         return True
-    
 
     def run(self):
         raise NotImplementedError("No method for processing instances")
-
 
     def show_results(self):
         raise NotImplementedError("No method for outputing the results")
