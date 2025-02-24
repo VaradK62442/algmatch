@@ -1,6 +1,9 @@
 import random
 
-from tests.abstractTestClasses.abstractInstanceGenerator import AbstractInstanceGenerator
+from tests.abstractTestClasses.abstractInstanceGenerator import (
+    AbstractInstanceGenerator,
+)
+
 
 class HRInstanceGenerator(AbstractInstanceGenerator):
     def __init__(self, residents, hospitals, lower_bound, upper_bound):
@@ -20,34 +23,38 @@ class HRInstanceGenerator(AbstractInstanceGenerator):
         self.no_residents = residents
         self.no_hospitals = hospitals
         self.li = lower_bound
-        self.lj = upper_bound 
+        self.lj = upper_bound
 
         self.residents = {}
         self.hospitals = {}
-        
+
         # lists of numbers that will be shuffled to get preferences
-        self.available_residents = [i+1 for i in range(self.no_residents)]
-        self.available_hospitals = [i+1 for i in range(self.no_hospitals)]
+        self.available_residents = [i + 1 for i in range(self.no_residents)]
+        self.available_hospitals = [i + 1 for i in range(self.no_hospitals)]
 
     def generate_instance_no_ties(self):
         # ====== RESET INSTANCE ======
-        self.instance = {"residents" : {i+1 : [] for i in range(self.no_residents)},
-                         "hospitals" : {i+1 : {"capacity":0,"preferences":[]} for i in range(self.no_hospitals)}}
+        self.instance = {
+            "residents": {i + 1: [] for i in range(self.no_residents)},
+            "hospitals": {
+                i + 1: {"capacity": 0, "preferences": []}
+                for i in range(self.no_hospitals)
+            },
+        }
 
-        # ====== RESIDENTS ======= 
+        # ====== RESIDENTS =======
         for res_list in self.instance["residents"].values():
             length = random.randint(self.li, self.lj)
             # we provide this many preferred hospitals at random
             random.shuffle(self.available_hospitals)
             res_list.extend(self.available_hospitals[:length])
 
-        # ====== HOSPITALS ======= 
+        # ====== HOSPITALS =======
         for hos_dict in self.instance["hospitals"].values():
             # random capacity; 1 <= capacity <= residents
-            hos_dict["capacity"] = random.randint(1,self.no_residents)
+            hos_dict["capacity"] = random.randint(1, self.no_residents)
             # we provide a random ordering of all residents
             random.shuffle(self.available_residents)
             hos_dict["list"] = self.available_residents[:]
-
 
         return self.instance

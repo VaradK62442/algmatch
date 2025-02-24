@@ -1,15 +1,15 @@
 from time import perf_counter_ns
 from tqdm import tqdm
 
-from tests.abstractTestClasses.abstractSingleVerifier import AbstractSingleVerifier as ASV
+from tests.abstractTestClasses.abstractSingleVerifier import (
+    AbstractSingleVerifier as ASV,
+)
 from tests.SPATests.spasVerifier import SPASAbstractVerifier as SPASAV
 
+
 class SPASSingleVerifier(SPASAV, ASV):
-    def __init__(self, total_students,
-                 lower_project_bound, upper_project_bound):
-        
-        SPASAV.__init__(self, total_students,
-                      lower_project_bound, upper_project_bound)
+    def __init__(self, total_students, lower_project_bound, upper_project_bound):
+        SPASAV.__init__(self, total_students, lower_project_bound, upper_project_bound)
         ASV.__init__(self)
 
     def show_results(self):
@@ -23,6 +23,7 @@ class SPASSingleVerifier(SPASAV, ASV):
             Incorrect: {self._incorrect_count}
               """)
 
+
 def main():
     TOTAL_STUDENTS = 5
     LOWER_PROJECT_BOUND = 3
@@ -31,15 +32,17 @@ def main():
 
     start = perf_counter_ns()
 
-    verifier = SPASSingleVerifier(TOTAL_STUDENTS, LOWER_PROJECT_BOUND, UPPER_PROJECT_BOUND)
+    verifier = SPASSingleVerifier(
+        TOTAL_STUDENTS, LOWER_PROJECT_BOUND, UPPER_PROJECT_BOUND
+    )
     for _ in tqdm(range(REPETITIONS)):
         verifier.run()
 
     end = perf_counter_ns()
-    print(f"\nFinal Runtime: {(end-start)/1000**3}s")
+    print(f"\nFinal Runtime: {(end - start) / 1000**3}s")
 
     verifier.show_results()
-    
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

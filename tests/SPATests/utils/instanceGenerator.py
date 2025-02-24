@@ -1,16 +1,21 @@
 import random
 from math import ceil
 
-from tests.abstractTestClasses.abstractInstanceGenerator import AbstractInstanceGenerator
+from tests.abstractTestClasses.abstractInstanceGenerator import (
+    AbstractInstanceGenerator,
+)
+
 
 class SPAInstanceGenerator(AbstractInstanceGenerator):
     def __init__(self, students, lower_bound, upper_bound):
         if type(students) is not int or students <= 0:
             raise ValueError("number of residents must be a postive integer")
-        
+
         self.no_students = students
-        self.no_projects = int(ceil(0.5*self.no_students))
-        self.no_lecturers = int(ceil(0.2*self.no_students))  # assume number of lecturers <= number of projects
+        self.no_projects = int(ceil(0.5 * self.no_students))
+        self.no_lecturers = int(
+            ceil(0.2 * self.no_students)
+        )  # assume number of lecturers <= number of projects
 
         if type(lower_bound) is not int or type(upper_bound) is not int:
             raise ValueError("Bound must be integers.")
@@ -21,8 +26,9 @@ class SPAInstanceGenerator(AbstractInstanceGenerator):
         if lower_bound > upper_bound:
             raise ValueError("Lower bound is greater than upper bound")
 
-        
-        self.tpc = int(ceil(1.2*self.no_students))  # assume total project capacity >= number of projects
+        self.tpc = int(
+            ceil(1.2 * self.no_students)
+        )  # assume total project capacity >= number of projects
         self.li = lower_bound  # lower bound of the student's preference list
         self.lj = upper_bound  # upper bound of the student's preference list
 
@@ -31,16 +37,26 @@ class SPAInstanceGenerator(AbstractInstanceGenerator):
         self.lecturers = {}
 
         # lists of numbers that will be shuffled to get preferences
-        self.available_students = [i+1 for i in range(self.no_students)]
-        self.available_projects = [i+1 for i in range(self.no_projects)]
-        
+        self.available_students = [i + 1 for i in range(self.no_students)]
+        self.available_projects = [i + 1 for i in range(self.no_projects)]
+
     def generate_instance_no_ties(self):
         # ====== BLANKS ======
-        self.students = {i+1 : [] for i in range(self.no_students)}
+        self.students = {i + 1: [] for i in range(self.no_students)}
         # in order to do a trick on this dictionary below, we need project ids to start at 0
-        self.projects = {i: {"capacity": 1, "lecturer": ""} for i in range(self.no_projects)}
-        self.lecturers = {i+1: {"capacity": 0, "preferences": [], "max_proj_uquota": 0, "sum_proj_uquota": 0} for i in range(self.no_lecturers)}
-        
+        self.projects = {
+            i: {"capacity": 1, "lecturer": ""} for i in range(self.no_projects)
+        }
+        self.lecturers = {
+            i + 1: {
+                "capacity": 0,
+                "preferences": [],
+                "max_proj_uquota": 0,
+                "sum_proj_uquota": 0,
+            }
+            for i in range(self.no_lecturers)
+        }
+
         # ====== STUDENTS ======
         for student in self.students:
             length = random.randint(self.li, self.lj)
@@ -63,7 +79,7 @@ class SPAInstanceGenerator(AbstractInstanceGenerator):
             project_lecturer_map[i] = lecturer
         random.shuffle(project_lecturer_map)
 
-        # assign remaining projects    
+        # assign remaining projects
         lecturer_list = list(self.lecturers.keys())
         for project in project_lecturer_map:
             if project_lecturer_map[project] == 0:
@@ -102,8 +118,8 @@ class SPAInstanceGenerator(AbstractInstanceGenerator):
             del l_data["sum_proj_uquota"]
 
         # shift projects back up one
-        for i in range(self.no_projects,0,-1):
-            self.projects[i] = self.projects[i-1].copy()
+        for i in range(self.no_projects, 0, -1):
+            self.projects[i] = self.projects[i - 1].copy()
         del self.projects[0]
 
         self.instance["students"] = self.students

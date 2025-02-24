@@ -4,9 +4,9 @@ from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
 from tests.SMTests.utils.instanceGenerator import SMInstanceGenerator
 from tests.SMTests.utils.minmaxSMs import MMSMS
 
+
 class SMAbstractVerifier(AbstractVerifier):
-    def __init__(self, total_men, total_women,
-                 lower_bound, upper_bound):
+    def __init__(self, total_men, total_women, lower_bound, upper_bound):
         """
         It takes argument as follows (set in init):
             number of men
@@ -20,8 +20,7 @@ class SMAbstractVerifier(AbstractVerifier):
         self._lower_bound = lower_bound
         self._upper_bound = upper_bound
 
-        generator_args = (total_men, total_women,
-                          lower_bound, upper_bound)
+        generator_args = (total_men, total_women, lower_bound, upper_bound)
 
         AbstractVerifier.__init__(
             self,
@@ -29,5 +28,5 @@ class SMAbstractVerifier(AbstractVerifier):
             ("men", "women"),
             SMInstanceGenerator,
             generator_args,
-            MMSMS
+            MMSMS,
         )
