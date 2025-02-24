@@ -113,19 +113,17 @@ class SPAPIG:
 
 
 def main():
-    try:
-        students = int(sys.argv[1])
-        lower_bound = int(sys.argv[2])
-        upper_bound = int(sys.argv[3])
-        output_file = sys.argv[4]
-
-    except (IndexError, ValueError):
-        print("Usage: python instanceGenerator.py <num_students[int]> <lower_bound[int]> <upper_bound[int]> <output_file>")
-        sys.exit(1)
-
-    S = SPAPIG(students, lower_bound, upper_bound)
+    S = SPAPIG(
+        num_students=3,
+        lower_bound=2,
+        upper_bound=2,
+        num_projects=6,
+        num_lecturers=3,
+        force_project_capacity=1
+    )
     S.generate_instance()
-    S.write_instance_to_file(output_file)
+    S.write_instance_to_file('test.csv')
+
 
 if __name__ == "__main__":
     main()
