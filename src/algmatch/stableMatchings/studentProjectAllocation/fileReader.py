@@ -25,7 +25,7 @@ class FileReader(AbstractReader):
 
         try:
             self.no_students, self.no_projects, self.no_lecturers = map(int, file[0].split())
-        except ValueError:
+        except (ValueError, IndexError):
             raise ParticipantQuantityError()
 
         # build students dictionary

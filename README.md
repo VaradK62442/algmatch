@@ -4,6 +4,8 @@ A package containing various two-sided matching algorithms.
 - SM: Stable Marriage (both man and woman optimal)
 - HR: Hospital Residents (both residents and hospital optimal)
 - SPA-S: Student Project Allocation with lecturer preferences over students (both student and lecturer optimal)
+- SPA-P: Student Project Allocation with lecturer preferences over projects (requires Gurobi)
+    - for usage, see [this](https://github.com/VaradK62442/algmatch/blob/main/SPAP_Usage.ipynb) notebook.
 
 Requires Python 3.10 or later.
 
@@ -15,16 +17,16 @@ Simply run `pip install algmatch`.
 
 # Usage
 
-To import a specific algorithm, use `from algmatch import <algorithm>`, e.g. `from algmatch import SPA` or `from algmatch import StudentProjectAllocation`.
+To import a specific algorithm, use `from algmatch import <algorithm>`, e.g. `from algmatch import SPAS` or `from algmatch import StudentProjectAllocation`.
 Create a file or dictionary with your instance, following the guidelines in the [`DATA_FORMAT_GUIDELINES`](https://github.com/VaradK62442/algmatch/tree/v1.0.1/DATA_FORMAT_GUIDELINES) folder.
 For example, 
 
 Importing data:
 
 ```python
-from algmatch import HR, SM, SPA
+from algmatch import HR, SM, SPAS
 
-spa_instance = {
+spas_instance = {
     'students': {
         1: [1, 2],
         2: [2, 3],
@@ -61,21 +63,21 @@ spa_instance = {
     }
 }
 
-spa_student = SPA(dictionary=spa_instance, optimisedSide="student")
-spa_lecturer = SPA(dictionary=spa_instance, optimisedSide="lecturer")
+spas_student = SPAS(dictionary=spas_instance, optimisedSide="students")
+spas_lecturer = SPAS(dictionary=spas_instance, optimisedSide="lecturers")
 ```
 
 Getting the stable matchings:
 
 ```python
-spa_student_stable_matching = spa_student.get_stable_matching()
-spa_lecturer_stable_matching = spa_lecturer.get_stable_matching()
+spas_2_student_stable_matching = spas_2_student.get_stable_matching()
+spas_2_lecturer_stable_matching = spas_2_lecturer.get_stable_matching()
 
-print("SPA student stable matching:")
-print(spa_student_stable_matching)
+print("SPA 2 student stable matching:")
+print(spas_2_student_stable_matching)
 
-print("SPA lecturer stable matching:")
-print(spa_lecturer_stable_matching)
+print("SPA 2 lecturer stable matching:")
+print(spas_2_lecturer_stable_matching)
 ```
 
 ```
@@ -90,7 +92,7 @@ See more example usage [here](https://github.com/VaradK62442/algmatch/blob/v1.0.
 # Further details
 
 - All algorithms check for blocking pairs and return a stable matching if no blocking pair is found, and None otherwise
-- All algorithms implemented have verification testing
+- All algorithms implemented (barring SPA-P) have verification testing
   - Tested by producing random instances
   - File to brute force all stable matchings
   - Check algorithm is generating correct stable matchings
