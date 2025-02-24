@@ -1,4 +1,4 @@
-from algmatch.stableMatchings.hospitalResidentsProblem.hrAbstract import HRAbstract
+from algmatch.stableMatchings.hospitalResidentsProblem.noTies.hrAbstract import HRAbstract
 
 
 class MMSMS(HRAbstract):

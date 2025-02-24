@@ -1,4 +1,4 @@
-from algmatch.stableMatchings.stableMarriageProblem.smAbstract import SMAbstract
+from algmatch.stableMatchings.stableMarriageProblem.noTies.smAbstract import SMAbstract
 
 
 class MMSMS(SMAbstract):
