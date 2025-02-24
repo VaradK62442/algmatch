@@ -92,7 +92,7 @@ See more example usage [here](https://github.com/VaradK62442/algmatch/blob/v1.0.
 # Further details
 
 - All algorithms check for blocking pairs and return a stable matching if no blocking pair is found, and None otherwise
-- Most algorithms implemented have verification testing
+- All algorithms implemented (barring SPA-P) have verification testing
   - Tested by producing random instances
   - File to brute force all stable matchings
   - Check algorithm is generating correct stable matchings
