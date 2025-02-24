@@ -6,7 +6,7 @@ Also provides class for running several iterations, as well as configuring diffe
 import os
 import argparse
 
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerator import SPAPIG
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.randomInstanceGenerator import SPAPIG_Random as SPAPIG
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.SPAPSolver import GurobiSPAP
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.checkStability import StabilityChecker
 
