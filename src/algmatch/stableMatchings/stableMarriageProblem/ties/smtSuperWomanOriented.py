@@ -30,15 +30,6 @@ class SMTSuperWomanOriented(SMTAbstract):
         if self._get_pref_length(woman) == 0:
             self.unassigned_women.discard(woman)
 
-    def end_while_loop(self) -> bool:
-        for w in self.women:
-            if len(self.M[w]["assigned"]) == 0:
-                continue
-            if self._get_pref_length(w) > 0:
-                continue
-            return False
-        return True
- 
     def _while_loop(self) -> bool:
         while len(self.unassigned_women) != 0:
 
