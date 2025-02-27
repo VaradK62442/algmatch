@@ -20,6 +20,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+ip_model = ["gurobipy"]
+
 [project.urls]
 Homepage = "https://github.com/VaradK62442/algmatch"
 Issues = "https://github.com/VaradK62442/algmatch/issues"
