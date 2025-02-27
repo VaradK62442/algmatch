@@ -2,7 +2,7 @@ from multiprocessing import Manager, Process
 from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
-from tests.HRTests.hrVerifier import HRAbstractVerifier as HRAV
+from tests.HRTests.HR.hrVerifier import HRAbstractVerifier as HRAV
 from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
 
 

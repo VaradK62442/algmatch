@@ -2,7 +2,7 @@ from multiprocessing import Manager, Process
 from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
-from tests.SMTests.smVerifier import SMAbstractVerifier as SMAV
+from tests.SMTests.SM.smVerifier import SMAbstractVerifier as SMAV
 from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
 
 

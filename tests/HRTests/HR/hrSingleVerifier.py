@@ -4,7 +4,7 @@ from tqdm import tqdm
 from tests.abstractTestClasses.abstractSingleVerifier import (
     AbstractSingleVerifier as ASV,
 )
-from tests.HRTests.hrVerifier import HRAbstractVerifier as HRAV
+from tests.HRTests.HR.hrVerifier import HRAbstractVerifier as HRAV
 
 
 class HRSingleVerifier(HRAV, ASV):

@@ -1,4 +1,6 @@
-from algmatch.stableMatchings.hospitalResidentsProblem.noTies.hrAbstract import HRAbstract
+from algmatch.stableMatchings.hospitalResidentsProblem.noTies.hrAbstract import (
+    HRAbstract,
+)
 
 
 class ESMS(HRAbstract):

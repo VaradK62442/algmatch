@@ -4,7 +4,7 @@ from tqdm import tqdm
 from tests.abstractTestClasses.abstractSingleVerifier import (
     AbstractSingleVerifier as ASV,
 )
-from tests.SMTests.smVerifier import SMAbstractVerifier as SMAV
+from tests.SMTests.SM.smVerifier import SMAbstractVerifier as SMAV
 
 
 class SMSingleVerifier(SMAV, ASV):
