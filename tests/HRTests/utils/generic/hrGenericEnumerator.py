@@ -11,7 +11,12 @@ class HRGenericEnumerator:
         self.resident_order_comparator = lambda r: int(r[1:])
 
     def has_stability(self) -> bool:
+        # Link to problem description
         raise NotImplementedError("Enumerators need to link to a stability definition.")
+
+    def trial_order(self, resident) -> str:
+        # generator for an order of hosptials in preference list
+        raise NotImplementedError("Enumerators need to describe the order of matching.")
 
     def hospital_is_full(self, h) -> bool:
         return self.hospitals[h]["capacity"] == len(self.M[h]["assigned"])
@@ -51,7 +56,7 @@ class HRGenericEnumerator:
 
         else:
             resident = "r" + str(i)
-            for hospital in self.residents[resident]["list"]:
+            for hospital in self.trial_order(resident):
                 if hospital not in self.full_hospitals:
                     self.add_pair(resident, hospital)
                     self.choose(i + 1)

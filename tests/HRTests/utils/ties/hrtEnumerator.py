@@ -4,7 +4,7 @@ from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtAbstract import (
 from tests.HRTests.utils.generic.hrGenericEnumerator import HRGenericEnumerator
 
 
-class HREnumerator(HRTAbstract, HRGenericEnumerator):
+class HRTEnumerator(HRTAbstract, HRGenericEnumerator):
     def __init__(self, dictionary, stability_type):
         HRTAbstract.__init__(self, dictionary=dictionary, stability_type=stability_type)
         HRGenericEnumerator.__init__(self)
@@ -16,3 +16,8 @@ class HREnumerator(HRTAbstract, HRGenericEnumerator):
             return self._check_strong_stability()
         else:
             raise ValueError("Stability type is neither 'super' or 'strong'")
+
+    def trial_order(self, resident):
+        for tie in self.residents[resident]["list"]:
+            for hospital in tie:
+                yield hospital
