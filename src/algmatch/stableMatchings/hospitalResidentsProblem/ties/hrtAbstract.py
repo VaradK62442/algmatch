@@ -71,7 +71,7 @@ class HRTAbstract:
             preferred_hospitals = self.original_residents[resident]["list"]
             matched_hospital = self.M[resident]["assigned"]
 
-            if matched_hospital != "":
+            if matched_hospital is not None:
                 rank_matched_hospital = r_prefs["rank"][matched_hospital]
                 # every hospital that r_i prefers to their match or is indifferent between them
                 preferred_hospitals = r_prefs["list"][: rank_matched_hospital + 1]
