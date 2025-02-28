@@ -64,11 +64,12 @@ class SMTAbstract:
                 rank_matched_woman = m_prefs["rank"][matched_woman]
                 # every woman that m_i prefers to his matched partner or is indifferent between them
                 preferred_women = m_prefs["list"][: rank_matched_woman + 1]
-                # this includes his current partner so we remove her
-                preferred_women[-1].remove(matched_woman)
 
             for w_tie in preferred_women:
                 for woman in w_tie:
+                    if woman == matched_woman:
+                        continue
+
                     existing_fiance = self.M[woman]["assigned"]
                     if existing_fiance is None:
                         return False

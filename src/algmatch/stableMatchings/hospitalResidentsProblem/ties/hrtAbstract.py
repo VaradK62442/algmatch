@@ -75,11 +75,12 @@ class HRTAbstract:
                 rank_matched_hospital = r_prefs["rank"][matched_hospital]
                 # every hospital that r_i prefers to their match or is indifferent between them
                 preferred_hospitals = r_prefs["list"][: rank_matched_hospital + 1]
-                # this includes their current match so we remove it
-                preferred_hospitals[-1].remove(matched_hospital)
 
             for h_tie in preferred_hospitals:
                 for hospital in h_tie:
+                    if hospital == matched_hospital:
+                        continue
+
                     worst_resident = self._get_worst_existing_resident(hospital)
                     if worst_resident is None:
                         return False
