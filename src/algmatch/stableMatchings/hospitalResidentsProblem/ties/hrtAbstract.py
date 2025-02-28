@@ -55,7 +55,7 @@ class HRTAbstract:
         )
 
     def _get_worst_existing_resident(self, hospital):
-        existing_residents = self.stable_matching["hospital_sided"][hospital]
+        existing_residents = self.M[hospital]["assigned"]
 
         if len(existing_residents) == 0:
             return None
@@ -69,7 +69,7 @@ class HRTAbstract:
         # stability must be checked with regards to the original lists prior to deletions
         for resident, r_prefs in self.original_residents.items():
             preferred_hospitals = self.original_residents[resident]["list"]
-            matched_hospital = self.stable_matching["resident_sided"][resident]
+            matched_hospital = self.M[resident]["assigned"]
 
             if matched_hospital != "":
                 rank_matched_hospital = r_prefs["rank"][matched_hospital]

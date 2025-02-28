@@ -5,22 +5,29 @@ Stable Marriage Problem With Ties - Abstract class
 from copy import deepcopy
 import os
 
-from algmatch.stableMatchings.stableMarriageProblem.ties.smtPreferenceInstance import SMTPreferenceInstance
+from algmatch.stableMatchings.stableMarriageProblem.ties.smtPreferenceInstance import (
+    SMTPreferenceInstance,
+)
 
 
 class SMTAbstract:
-    def __init__(self,
-                 filename: str | None = None,
-                 dictionary: dict | None = None,
-                 stability_type: str = None) -> None:
-        
-        assert filename is not None or dictionary is not None, "Either filename or dictionary must be provided"
-        assert not (filename is not None and dictionary is not None), "Only one of filename or dictionary must be provided"
-        
+    def __init__(
+        self,
+        filename: str | None = None,
+        dictionary: dict | None = None,
+        stability_type: str = None,
+    ) -> None:
+        assert filename is not None or dictionary is not None, (
+            "Either filename or dictionary must be provided"
+        )
+        assert not (filename is not None and dictionary is not None), (
+            "Only one of filename or dictionary must be provided"
+        )
+
         self._assert_valid_stability_type(stability_type)
         self.stability_type = stability_type.lower()
 
-        if filename is not None:    
+        if filename is not None:
             assert os.path.isfile(filename), f"File {filename} does not exist"
             self._reader = SMTPreferenceInstance(filename=filename)
 
@@ -33,34 +40,36 @@ class SMTAbstract:
         self.original_men = deepcopy(self.men)
         self.original_women = deepcopy(self.women)
 
-        self.M = {} # provisional matching
+        self.M = {}  # provisional matching
         self.stable_matching = {
             "man_sided": {m: "" for m in self.men},
-            "woman_sided": {w: "" for w in self.women}
+            "woman_sided": {w: "" for w in self.women},
         }
         self.is_stable = False
 
     def _assert_valid_stability_type(self, st) -> None:
         assert st is not None, "Select a stability type - either 'super' or 'strong'"
         assert type(st) is str, "Stability type is not str'"
-        assert st.lower() in ("super", "strong"), "Stability type must be either 'super' or 'strong'"
+        assert st.lower() in ("super", "strong"), (
+            "Stability type must be either 'super' or 'strong'"
+        )
 
-    def _check_super_stability(self) -> bool:      
-        # stability must be checked with regards to the original lists prior to deletions  
+    def _check_super_stability(self) -> bool:
+        # stability must be checked with regards to the original lists prior to deletions
         for man, m_prefs in self.original_men.items():
             preferred_women = self.original_men[man]["list"]
-            matched_woman = self.stable_matching["man_sided"][man]
+            matched_woman = self.M[man]["assigned"]
 
             if matched_woman != "":
                 rank_matched_woman = m_prefs["rank"][matched_woman]
                 # every woman that m_i prefers to his matched partner or is indifferent between them
-                preferred_women = m_prefs["list"][:rank_matched_woman+1]
+                preferred_women = m_prefs["list"][: rank_matched_woman + 1]
                 # this includes his current partner so we remove her
                 preferred_women[-1].remove(matched_woman)
 
             for w_tie in preferred_women:
                 for woman in w_tie:
-                    existing_fiance = self.stable_matching["woman_sided"][woman]
+                    existing_fiance = self.M[woman]["assigned"]
                     if existing_fiance is None:
                         return False
                     else:
@@ -70,19 +79,19 @@ class SMTAbstract:
                         if rank_man <= rank_fiance:
                             return False
         return True
-    
+
     def _check_strong_stability(self) -> bool:
         raise NotImplementedError("Strong stability checking isn't implemented")
 
-    def _get_pref_list(self,person) -> list:
+    def _get_pref_list(self, person) -> list:
         if person in self.men:
             return self.men[person]["list"]
         elif person in self.women:
             return self.women[person]["list"]
         else:
             raise ValueError(f"{person} is not a man or a woman")
-        
-    def _get_pref_ranks(self,person) -> dict:
+
+    def _get_pref_ranks(self, person) -> dict:
         if person in self.men:
             return self.men[person]["rank"]
         elif person in self.women:
@@ -90,12 +99,12 @@ class SMTAbstract:
         else:
             raise ValueError(f"{person} is not a man or a woman")
 
-    def _get_pref_length(self,person) -> int:
+    def _get_pref_length(self, person) -> int:
         pref_list = self._get_pref_list(person)
         total = sum([len(tie) for tie in pref_list])
         return total
 
-    def _get_head(self,person) -> set:
+    def _get_head(self, person) -> set:
         pref_list = self._get_pref_list(person)
         idx = 0
         while idx < len(pref_list):
@@ -104,17 +113,17 @@ class SMTAbstract:
                 return head
             idx += 1
         raise ValueError("Pref_list empty")
-    
-    def _get_tail(self,person) -> set:
+
+    def _get_tail(self, person) -> set:
         pref_list = self._get_pref_list(person)
-        idx = len(pref_list)-1
+        idx = len(pref_list) - 1
         while idx >= 0:
             tail = pref_list[idx]
             if len(tail) > 0:
                 return tail
             idx -= 1
         raise ValueError("Pref_list empty")
-    
+
     def _engage(self, man, woman) -> None:
         self.M[man]["assigned"].add(woman)
         self.M[woman]["assigned"].add(man)
@@ -123,35 +132,35 @@ class SMTAbstract:
         self.M[man]["assigned"].discard(woman)
         self.M[woman]["assigned"].discard(man)
 
-    def _delete_pair(self,man,woman) -> None:
+    def _delete_pair(self, man, woman) -> None:
         # allow either order of args
         if man in self.women:
             man, woman = woman, man
         # TO-DO: speed this up iusing ranks
-        for tie in self.men[man]['list']:
+        for tie in self.men[man]["list"]:
             tie.discard(woman)
-        for tie in self.women[woman]['list']:
+        for tie in self.women[woman]["list"]:
             tie.discard(man)
 
-    def _delete_tail(self,person) -> None:
+    def _delete_tail(self, person) -> None:
         tail = self._get_tail(person)
         while len(tail) != 0:
             deletion = tail.pop()
             self._delete_pair(person, deletion)
 
-    def _break_all_engagements(self,person) -> None:
+    def _break_all_engagements(self, person) -> None:
         assignee_set = self.M[person]["assigned"]
         while len(assignee_set) != 0:
             assignee = assignee_set.pop()
-            self._break_engagement(person,assignee)
+            self._break_engagement(person, assignee)
 
-    def _reject_lower_ranks(self,target,proposer) -> None:
+    def _reject_lower_ranks(self, target, proposer) -> None:
         rank_p = self._get_pref_ranks(target)[proposer]
-        for reject_tie in self._get_pref_list(target)[rank_p+1:]:
+        for reject_tie in self._get_pref_list(target)[rank_p + 1 :]:
             while len(reject_tie) != 0:
                 reject = reject_tie.pop()
-                self._break_engagement(target,reject)
-                self._delete_pair(target,reject)
+                self._break_engagement(target, reject)
+                self._delete_pair(target, reject)
 
     def _while_loop(self) -> bool:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
@@ -170,7 +179,6 @@ class SMTAbstract:
 
     def run(self) -> None:
         if self._while_loop():
-            
             self.save_man_sided()
             self.save_woman_sided()
 
