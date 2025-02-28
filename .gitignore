@@ -3,3 +3,4 @@ dist/
 test*
 !tests/
 results/
+.vscode
