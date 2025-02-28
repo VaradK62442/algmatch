@@ -5,22 +5,29 @@ Hospital Residents Problem With Ties - Abstract class
 from copy import deepcopy
 import os
 
-from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtPreferenceInstance import HRTPreferenceInstance
+from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtPreferenceInstance import (
+    HRTPreferenceInstance,
+)
 
 
 class HRTAbstract:
-    def __init__(self,
-                 filename: str | None = None,
-                 dictionary: dict | None = None,
-                 stability_type: str = None) -> None:
-        
-        assert filename is not None or dictionary is not None, "Either filename or dictionary must be provided"
-        assert not (filename is not None and dictionary is not None), "Only one of filename or dictionary must be provided"
-        
+    def __init__(
+        self,
+        filename: str | None = None,
+        dictionary: dict | None = None,
+        stability_type: str = None,
+    ) -> None:
+        assert filename is not None or dictionary is not None, (
+            "Either filename or dictionary must be provided"
+        )
+        assert not (filename is not None and dictionary is not None), (
+            "Only one of filename or dictionary must be provided"
+        )
+
         self._assert_valid_stability_type(stability_type)
         self.stability_type = stability_type.lower()
 
-        if filename is not None:    
+        if filename is not None:
             assert os.path.isfile(filename), f"File {filename} does not exist"
             self._reader = HRTPreferenceInstance(filename=filename)
 
@@ -33,29 +40,33 @@ class HRTAbstract:
         self.original_residents = deepcopy(self.residents)
         self.original_hosptials = deepcopy(self.hospitals)
 
-        self.M = {} # provisional matching
+        self.M = {}  # provisional matching
         self.stable_matching = {
             "resident_sided": {r: "" for r in self.residents},
-            "hospital_sided": {h: set() for h in self.hospitals}
+            "hospital_sided": {h: set() for h in self.hospitals},
         }
         self.is_stable = False
 
     def _assert_valid_stability_type(self, st) -> None:
         assert st is not None, "Select a stability type - either 'super' or 'strong'"
         assert type(st) is str, "Stability type is not str'"
-        assert st.lower() in ("super", "strong"), "Stability type must be either 'super' or 'strong'"
+        assert st.lower() in ("super", "strong"), (
+            "Stability type must be either 'super' or 'strong'"
+        )
 
     def _get_worst_existing_resident(self, hospital):
         existing_residents = self.stable_matching["hospital_sided"][hospital]
 
+        if len(existing_residents) == 0:
+            return None
+
         def rank_comparator(x):
             return -self.hospitals[hospital]["rank"][x]
-        worst_resident = min(existing_residents, key = rank_comparator)
 
-        return worst_resident
-    
-    def _check_super_stability(self) -> bool:      
-        # stability must be checked with regards to the original lists prior to deletions  
+        return min(existing_residents, key=rank_comparator)
+
+    def _check_super_stability(self) -> bool:
+        # stability must be checked with regards to the original lists prior to deletions
         for resident, r_prefs in self.original_residents.items():
             preferred_hospitals = self.original_residents[resident]["list"]
             matched_hospital = self.stable_matching["resident_sided"][resident]
@@ -63,10 +74,10 @@ class HRTAbstract:
             if matched_hospital != "":
                 rank_matched_hospital = r_prefs["rank"][matched_hospital]
                 # every hospital that r_i prefers to their match or is indifferent between them
-                preferred_hospitals = r_prefs["list"][:rank_matched_hospital+1]  
+                preferred_hospitals = r_prefs["list"][: rank_matched_hospital + 1]
                 # this includes their current match so we remove it
-                preferred_hospitals[-1].remove(matched_hospital)      
-        
+                preferred_hospitals[-1].remove(matched_hospital)
+
             for h_tie in preferred_hospitals:
                 for hospital in h_tie:
                     worst_resident = self._get_worst_existing_resident(hospital)
@@ -79,7 +90,7 @@ class HRTAbstract:
                         if rank_resident <= rank_worst:
                             return False
         return True
-    
+
     def _check_strong_stability(self) -> bool:
         raise NotImplementedError("Strong stability checking isn't implemented")
 
@@ -90,7 +101,7 @@ class HRTAbstract:
             return self.hospitals[participant]["list"]
         else:
             raise ValueError(f"{participant} is not a resident or a hospital")
-        
+
     def _get_pref_ranks(self, participant) -> list:
         if participant in self.residents:
             return self.residents[participant]["rank"]
@@ -99,12 +110,12 @@ class HRTAbstract:
         else:
             raise ValueError(f"{participant} is not a resident or a hospital")
 
-    def _get_pref_length(self,person) -> int:
+    def _get_pref_length(self, person) -> int:
         pref_list = self._get_pref_list(person)
         total = sum([len(tie) for tie in pref_list])
         return total
 
-    def _get_head(self,person) -> set:
+    def _get_head(self, person) -> set:
         pref_list = self._get_pref_list(person)
         idx = 0
         while idx < len(pref_list):
@@ -114,17 +125,17 @@ class HRTAbstract:
                 return head
             idx += 1
         raise ValueError("Pref_list empty")
-    
-    def _get_tail(self,person) -> set:
+
+    def _get_tail(self, person) -> set:
         pref_list = self._get_pref_list(person)
-        idx = len(pref_list)-1
+        idx = len(pref_list) - 1
         while idx >= 0:
             tail = pref_list[idx]
             if len(tail) > 0:
                 return tail
             idx -= 1
         raise ValueError("Pref_list empty")
-    
+
     def _engage(self, resident, hospital) -> None:
         self.M[resident]["assigned"].add(hospital)
         self.M[hospital]["assigned"].add(resident)
@@ -138,30 +149,30 @@ class HRTAbstract:
         if resident in self.hospitals:
             resident, hospital = hospital, resident
         # TO-DO: speed this up iusing ranks
-        for tie in self.residents[resident]['list']:
+        for tie in self.residents[resident]["list"]:
             tie.discard(hospital)
-        for tie in self.hospitals[hospital]['list']:
+        for tie in self.hospitals[hospital]["list"]:
             tie.discard(resident)
 
-    def _delete_tail(self,person) -> None:
+    def _delete_tail(self, person) -> None:
         tail = self._get_tail(person)
         while len(tail) != 0:
             deletion = tail.pop()
             self._delete_pair(person, deletion)
 
-    def _break_all_engagements(self,person) -> None:
+    def _break_all_engagements(self, person) -> None:
         assignee_set = self.M[person]["assigned"]
         while len(assignee_set) != 0:
             assignee = assignee_set.pop()
-            self._break_engagement(person,assignee)
+            self._break_engagement(person, assignee)
 
-    def _reject_lower_ranks(self,target,proposer) -> None:
+    def _reject_lower_ranks(self, target, proposer) -> None:
         rank_p = self._get_pref_ranks(target)[proposer]
-        for reject_tie in self._get_pref_list(target)[rank_p+1:]:
+        for reject_tie in self._get_pref_list(target)[rank_p + 1 :]:
             while len(reject_tie) != 0:
                 reject = reject_tie.pop()
-                self._break_engagement(target,reject)
-                self._delete_pair(target,reject)
+                self._break_engagement(target, reject)
+                self._delete_pair(target, reject)
 
     def _while_loop(self) -> bool:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
@@ -170,7 +181,7 @@ class HRTAbstract:
         for resident in self.residents:
             hospital_set = self.M[resident]["assigned"]
             if hospital_set != set():
-                # If resident is multiply assigned then there's no sup.s.m, 
+                # If resident is multiply assigned then there's no sup.s.m,
                 # in which case we won't call this function, so we can use pop.
                 self.stable_matching["resident_sided"][resident] = hospital_set.pop()
 
@@ -182,7 +193,6 @@ class HRTAbstract:
 
     def run(self) -> None:
         if self._while_loop():
-            
             self.save_resident_sided()
             self.save_hospital_sided()
 
