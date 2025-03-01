@@ -11,44 +11,23 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.
 
 
 class SPAPIG_Random(AbstractInstanceGenerator):
-    def _assign_project_lecturer(self, project, lecturer):
-        self._plc[project][1] = lecturer
-        self._lp[lecturer][1].append(project)
-        self._lp[lecturer][3] += self._plc[project][0] # track sum of all c_j
-        if self._plc[project][0] > self._lp[lecturer][2]: # track max of all c_j
-            self._lp[lecturer][2] = self._plc[project][0]
-
-
-    def generate_instance(self):
-        """
-        Generates a random instance for the SPA-P problem.
-        """
-        # PROJECTS
-        project_list = list(self._plc.keys())
-        if self._force_project_capacity:
-            for project in self._plc:
-                self._plc[project][0] = self._force_project_capacity
-        else:
-            # randomly assign remaining project capacities
-            for _ in range(self._total_project_capacity - self._num_projects):
-                    self._plc[random.choice(project_list)][0] += 1
-
-        # STUDENTS
+    def _generate_students(self):
         for student in self._sp:
             length = random.randint(self._li, self._lj) # randomly decide length of preference list
-            projects_copy = project_list[:]
+            projects_copy = self._project_list[:]
             for _ in range(length):
                 p = random.choice(projects_copy)
                 projects_copy.remove(p) # avoid picking same project twice
                 self._sp[student].append(p)
+    
 
-        # LECTURERS
+    def _generate_lecturers(self):
         lecturer_list = list(self._lp.keys())
         
         # number of projects lecturer can offer is between 1 and ceil(|projects| / |lecturers|)
         # done to ensure even distribution of projects amongst lecturers
         upper_bound = math.floor(self._num_projects / self._num_lecturers)
-        projects_copy = project_list[:]
+        projects_copy = self._project_list[:]
 
         for lecturer in self._lp:
             num_projects = random.randint(1, upper_bound)
