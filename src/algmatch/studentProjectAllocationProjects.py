@@ -6,11 +6,13 @@ Also provides class for running several iterations, as well as configuring diffe
 import os
 import argparse
 
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.abstractInstanceGenerator import AbstractInstanceGenerator as SPAPIG_Abstract
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.randomInstanceGenerator import SPAPIG_Random
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.euclideanInstanceGenerator import SPAPIG_Euclidean
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.reverseEuclideanInstanceGenerator import SPAPIG_ReverseEuclidean
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.expectationsEuclideanInstanceGenerator import SPAPIG_ExpectationsEuclidean
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators import (
+    AbstractInstanceGenerator as SPAPIG_Abstract,
+    SPAPIG_Random,
+    SPAPIG_Euclidean,
+    SPAPIG_ReverseEuclidean,
+    SPAPIG_ExpectationsEuclidean,
+)
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.SPAPSolver import GurobiSPAP
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.checkStability import StabilityChecker
