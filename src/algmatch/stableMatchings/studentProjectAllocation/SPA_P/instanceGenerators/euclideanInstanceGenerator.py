@@ -13,14 +13,10 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.
 class SPAPIG_Euclidean(AbstractInstanceGenerator):
     def __init__(
             self,
-            num_students,
-            lower_bound,
-            upper_bound,
-            num_projects,
-            num_lecturers,
             num_dimensions=5,
+            **kwargs,
     ):
-        super().__init__(num_students, lower_bound, upper_bound, num_projects, num_lecturers)
+        super().__init__(**kwargs)
         self._num_dimesions = num_dimensions
         self.to_project_string = lambda x: f'p{x+1}'
 
@@ -38,44 +34,43 @@ class SPAPIG_Euclidean(AbstractInstanceGenerator):
                         self._project_points - student_point,
                         axis=1
                     )
-                )
+                )[:random.randint(self._li, self._lj)]
             ))
     
 
     def _generate_lecturers(self):
-        upper_bound_lecturers = math.floor(self._num_projects / self._num_lecturers)
+        lecturer_list = list(self._lp.keys())
+
+        upper_bound_lecturers = self._num_projects // self._num_lecturers
         project_list = list(self._plc.keys())
 
-        lecturer_num_projects = {}
-        total_projects = 0
-
-        for lec in self._lp:
+        for lecturer in self._lp:
             num_projects = random.randint(1, upper_bound_lecturers)
-            lecturer_num_projects[lec] = num_projects
-            total_projects += num_projects
+            for _ in range(num_projects):
+                p = random.choice(project_list)
+                project_list.remove(p)
+                self._assign_project_lecturer(p, lecturer)
 
         # while some projects are unassigned
-        while total_projects < self._num_projects:
-            lec = random.choice(self._lp.keys())
-            lecturer_num_projects[lec] += 1
-            total_projects += 1
+        while project_list:
+            p = random.choice(project_list)
+            project_list.remove(p)
+            lecturer = random.choice(lecturer_list)
+            self._assign_project_lecturer(p, lecturer)
 
-        for i in range(self._num_lecturers):
-            for p in list(map(
+        # decide ordered preference and capacity
+        for i, lecturer in enumerate(self._lp):
+            ordered_project_list = list(map(
                 self.to_project_string,
                 np.argsort(
                     np.linalg.norm(
                         self._project_points - self._lecturer_points[i],
                         axis=1
                     )
-                )[:lecturer_num_projects[lec]]
-            )):
-                p = random.choice(project_list)
-                project_list.remove(p)
-                self._assign_project_lecturer(p, f'l{i+1}')
+                )
+            ))
+            self._lp[lecturer][1] = [p for p in ordered_project_list if p in self._lp[lecturer][1]]
 
-        # decide capacity
-        for i, lecturer in enumerate(self._lp):
             if self._force_lecturer_capacity:
                 self._lp[lecturer][0] = self._force_lecturer_capacity
             else:
