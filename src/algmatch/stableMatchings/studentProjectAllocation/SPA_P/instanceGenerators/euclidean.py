@@ -26,14 +26,15 @@ class SPAPIG_Euclidean(AbstractInstanceGenerator):
         return np.random.uniform(0, 1, (num_points, self._num_dimesions))
 
 
+    def _distance_function(self, points, point):
+        return np.linalg.norm(points - point, axis=1)
+
+
     def _get_ordered_list(self, points_list, idx, length=None):
         return list(map(
             self.to_project_string,
             np.argsort(
-                np.linalg.norm(
-                    self._project_points - points_list[idx],
-                    axis=1
-                )
+                self._distance_function(self._project_points, points_list[idx])
             )[:length]
         ))
 
