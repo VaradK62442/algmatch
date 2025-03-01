@@ -6,7 +6,10 @@ Also provides class for running several iterations, as well as configuring diffe
 import os
 import argparse
 
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.randomInstanceGenerator import SPAPIG_Random as SPAPIG
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.abstractInstanceGenerator import AbstractInstanceGenerator as SPAPIG_Abstract
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.randomInstanceGenerator import SPAPIG_Random
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.euclideanInstanceGenerator import SPAPIG_Euclidean
+
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.SPAPSolver import GurobiSPAP
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.checkStability import StabilityChecker
 
@@ -73,7 +76,8 @@ class StudentProjectAllocationProjectsMultiple:
             instance_folder: str = "instances/",
             solutions_folder: str = "solutions/",
             output_flag: bool = True,
-            file_extension: str = 'csv'
+            file_extension: str = 'csv',
+            instance_generator: SPAPIG_Abstract = SPAPIG_Random,
     ):
         """
         Run several iterations of the SPA-P algorithm.
@@ -89,6 +93,8 @@ class StudentProjectAllocationProjectsMultiple:
         :param instance_folder: str, optional, default="instances/", the folder to save the instances to.
         :param solutions_folder: str, optional, default="solutions/", the folder to save the solutions to.
         :param output_flag: bool, optional, default=True, the flag to determine whether to output the Gurobi solver output.
+        :param file_extension: str, optional, default='csv', what type of file to save instances and solutions to.
+        :param instance_generator: SPAPIG_Abstract, optional, default=SPAPIG_Random, what instance generator to use.
         """
         
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
@@ -119,16 +125,18 @@ class StudentProjectAllocationProjectsMultiple:
         self.file_extension = file_extension
         self.delim = ',' if file_extension == "csv" else ' '
 
+        self.IG = instance_generator
+
 
     def _save_instance(self, filename: str) -> None:
-        S = SPAPIG(
-            self.num_students, 
-            self.lower_bound, 
-            self.upper_bound, 
-            self.projects, 
-            self.lecturers, 
-            self.project_capacity, 
-            self.lecturer_capacity
+        S: SPAPIG_Abstract = self.IG(
+            num_students=self.num_students, 
+            lower_bound=self.lower_bound, 
+            upper_bound=self.upper_bound, 
+            num_projects=self.projects, 
+            num_lecturers=self.lecturers, 
+            force_project_capacity=self.project_capacity, 
+            force_lecturer_capacity=self.lecturer_capacity
         )
         S.generate_instance()
         S.write_instance_to_file(filename)
@@ -176,7 +184,7 @@ def main():
                             --projects PROJECTS --force_project_capacity CAPACITY
                             --lecturers LECTURERS --force_lecturer_capacity CAPACITY
                             --instance_folder INSTANCE_FOLDER --solutions_folder SOLUTIONS_FOLDER 
-                            --output_flag OUTPUT_FLAG --file_extension EXTENSION
+                            --output_flag OUTPUT_FLAG --file_extension EXTENSION --instance_generator GENERATOR_NAME
         """
     
     parser = argparse.ArgumentParser(description="Run the SPA-P algorithm.", usage=help_msg())
@@ -201,6 +209,7 @@ def main():
     parser.add_argument("--solutions_folder", type=str, default="solutions/", help="The folder to save the solutions to.")
     parser.add_argument("--output_flag", action="store_true", help="The flag to determine whether to output the Gurobi solver output.")
     parser.add_argument("--file_extension", type=str, default='csv', help="What type of file to write the output to.")
+    parser.add_argument("--instance_generator", type=str, default='random', help="The instance generator to use.")
 
     args = parser.parse_args()
 
@@ -225,6 +234,20 @@ def main():
                 parser.print_help()
                 print("Please specify either --lower_bound and --upper_bound or --length for multiple instances and not both.")
                 return
+            
+    valid_instance_generators = {
+        'random': SPAPIG_Random,
+        'euclidean': SPAPIG_Euclidean
+    }
+
+    if args.instance_generator not in valid_instance_generators:
+        parser.print_help()
+        print("Please specify a valid instance generator name.")
+        print(f"Valid instance generator names:")
+        [print(f"\t> {elt}") for elt in valid_instance_generators.keys()]
+        return
+    
+    instance_generator = valid_instance_generators[args.instance_generator]
 
     if args.single:
         spa = StudentProjectAllocationProjectsSingle(
@@ -252,7 +275,8 @@ def main():
             instance_folder=args.instance_folder,
             solutions_folder=args.solutions_folder,
             output_flag=args.output_flag,
-            file_extension=args.file_extension
+            file_extension=args.file_extension,
+            instance_generator=instance_generator
         )
         spa.run()
 
