@@ -5,7 +5,7 @@ Student Project Allocation with Student and Lecturer preferences over projects
 
 import numpy as np
 
-from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.euclideanInstanceGenerator import SPAPIG_Euclidean
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.euclidean import SPAPIG_Euclidean
 
 
 class SPAPIG_ExpectationsEuclidean(SPAPIG_Euclidean):

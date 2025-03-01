@@ -1,5 +1,5 @@
-from .abstractInstanceGenerator import AbstractInstanceGenerator
-from .randomInstanceGenerator import SPAPIG_Random
-from .euclideanInstanceGenerator import SPAPIG_Euclidean
-from .reverseEuclideanInstanceGenerator import SPAPIG_ReverseEuclidean
-from .expectationsEuclideanInstanceGenerator import SPAPIG_ExpectationsEuclidean
+from .abstract import AbstractInstanceGenerator as SPAPIG_Abstract
+from .random import SPAPIG_Random
+from .euclidean import SPAPIG_Euclidean
+from .reverse import SPAPIG_ReverseEuclidean
+from .expectations import SPAPIG_ExpectationsEuclidean
