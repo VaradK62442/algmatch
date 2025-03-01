@@ -24,9 +24,9 @@ class AbstractInstanceGenerator(ABC):
         self._li = lower_bound # lower bound of student preference list
         self._lj = upper_bound # upper bound of student preference list
 
-        self._sp = {f's{i}' : [] for i in range(1, self._num_students+1)} # student -> [project preferences]
-        self._plc = {f'p{i}' : [1, ''] for i in range(1, self._num_projects+1)} # project -> [capacity, lecturer]
-        self._lp = {f'l{i}' : [0, [], 0, 0] for i in range(1, self._num_lecturers+1)} # lecturer -> [capacity, project preferences, max of all c_j, sum of all c_j]
+        self._sp = {f's{i}': [] for i in range(1, self._num_students + 1)} # student -> [project preferences]
+        self._plc = {f'p{i}': [1, ''] for i in range(1, self._num_projects + 1)} # project -> [capacity, lecturer]
+        self._lp = {f'l{i}': [0, [], 0, 0] for i in range(1, self._num_lecturers + 1)} # lecturer -> [capacity, project preferences, max of all c_j, sum of all c_j]
 
 
     def _assign_project_lecturer(self, project, lecturer):
@@ -48,7 +48,7 @@ class AbstractInstanceGenerator(ABC):
         else:
             # randomly assign remaining project capacities
             for _ in range(self._total_project_capacity - self._num_projects):
-                    self._plc[random.choice(project_list)][0] += 1
+                self._plc[random.choice(project_list)][0] += 1
 
 
     @abstractmethod
@@ -66,7 +66,7 @@ class AbstractInstanceGenerator(ABC):
         """
         raise NotImplementedError
 
-    
+
     def generate_instance(self) -> None:
         """
         Generates a random instance for the SPA-P problem.
@@ -84,12 +84,12 @@ class AbstractInstanceGenerator(ABC):
         if filename.endswith('.txt'): delim = ' '
         elif filename.endswith('.csv'): delim = ','
 
-        with open (filename, 'w') as f:
+        with open(filename, 'w') as f:
             f.write(delim.join(map(str, [self._num_students, self._num_projects, self._num_lecturers])) + '\n')
 
             # student index, preferences
             for student in self._sp:
-                f.write(delim.join(map(str, [student[1:], delim.join([p[1:] for p in self._sp[student]])]))+"\n")
+                f.write(delim.join(map(str, [student[1:], delim.join([p[1:] for p in self._sp[student]])])) + "\n")
 
             # project index, capacity, lecturer
             for project in self._plc:

@@ -19,11 +19,11 @@ class SPAPIG_Random(AbstractInstanceGenerator):
                 p = random.choice(project_list)
                 project_list.remove(p) # avoid picking same project twice
                 self._sp[student].append(p)
-    
+
 
     def _generate_lecturers(self):
         lecturer_list = list(self._lp.keys())
-        
+
         # number of projects lecturer can offer is between 1 and ceil(|projects| / |lecturers|)
         # done to ensure even distribution of projects amongst lecturers
         upper_bound = math.floor(self._num_projects / self._num_lecturers)
@@ -66,6 +66,7 @@ def main():
     S = SPAPIG_Random(students, lower_bound, upper_bound)
     S.generate_instance()
     S.write_instance_to_file(output_file)
+
 
 if __name__ == "__main__":
     main()
