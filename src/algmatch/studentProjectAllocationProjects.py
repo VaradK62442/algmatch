@@ -9,6 +9,7 @@ import argparse
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.abstractInstanceGenerator import AbstractInstanceGenerator as SPAPIG_Abstract
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.randomInstanceGenerator import SPAPIG_Random
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.euclideanInstanceGenerator import SPAPIG_Euclidean
+from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.reverseEuclideanInstanceGenerator import SPAPIG_ReverseEuclidean
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.SPAPSolver import GurobiSPAP
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.checkStability import StabilityChecker
@@ -237,7 +238,8 @@ def main():
             
     valid_instance_generators = {
         'random': SPAPIG_Random,
-        'euclidean': SPAPIG_Euclidean
+        'euclidean': SPAPIG_Euclidean,
+        'reverse_euclidean': SPAPIG_ReverseEuclidean,
     }
 
     if args.instance_generator not in valid_instance_generators:
