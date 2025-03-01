@@ -7,7 +7,7 @@ import os
 import argparse
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators import (
-    AbstractInstanceGenerator as SPAPIG_Abstract,
+    SPAPIG_Abstract,
     SPAPIG_Random,
     SPAPIG_Euclidean,
     SPAPIG_ReverseEuclidean,
