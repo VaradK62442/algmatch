@@ -50,23 +50,3 @@ class SPAPIG_Random(AbstractInstanceGenerator):
                 self._lp[lecturer][0] = self._force_lecturer_capacity
             else:
                 self._lp[lecturer][0] = random.randint(self._lp[lecturer][2], self._lp[lecturer][3])
-
-
-def main():
-    try:
-        students = int(sys.argv[1])
-        lower_bound = int(sys.argv[2])
-        upper_bound = int(sys.argv[3])
-        output_file = sys.argv[4]
-
-    except (IndexError, ValueError):
-        print("Usage: python instanceGenerator.py <num_students[int]> <lower_bound[int]> <upper_bound[int]> <output_file>")
-        sys.exit(1)
-
-    S = SPAPIG_Random(students, lower_bound, upper_bound)
-    S.generate_instance()
-    S.write_instance_to_file(output_file)
-
-
-if __name__ == "__main__":
-    main()
