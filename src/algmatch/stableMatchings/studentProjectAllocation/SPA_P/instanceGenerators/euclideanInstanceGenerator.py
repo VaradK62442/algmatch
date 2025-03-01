@@ -78,9 +78,12 @@ class SPAPIG_Euclidean(AbstractInstanceGenerator):
                 self._lp[lecturer][0] = random.randint(self._lp[lecturer][2], self._lp[lecturer][3])
 
 
-    def generate_instance(self):
+    def sample_all_points(self):
         self._student_points = self._sample_points(self._num_students)
         self._project_points = self._sample_points(self._num_projects)
         self._lecturer_points = self._sample_points(self._num_lecturers)
 
+
+    def generate_instance(self):
+        self.sample_all_points()
         super().generate_instance()
