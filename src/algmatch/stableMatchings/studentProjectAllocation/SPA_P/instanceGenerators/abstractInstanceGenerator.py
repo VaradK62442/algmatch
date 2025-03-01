@@ -41,14 +41,14 @@ class AbstractInstanceGenerator(ABC):
         """
         Generates projects for the SPA-P problem.
         """
-        self._project_list = list(self._plc.keys())
+        project_list = list(self._plc.keys())
         if self._force_project_capacity:
             for project in self._plc:
                 self._plc[project][0] = self._force_project_capacity
         else:
             # randomly assign remaining project capacities
             for _ in range(self._total_project_capacity - self._num_projects):
-                    self._plc[random.choice(self._project_list)][0] += 1
+                    self._plc[random.choice(project_list)][0] += 1
 
 
     @abstractmethod
