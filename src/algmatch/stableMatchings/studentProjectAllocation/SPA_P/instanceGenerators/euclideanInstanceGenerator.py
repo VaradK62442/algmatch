@@ -12,9 +12,11 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.
 class SPAPIG_Euclidean(AbstractInstanceGenerator):
     def __init__(
             self,
-            num_dimensions=5,
+            num_dimensions = 5,
             **kwargs,
     ):
+        assert num_dimensions > 0, "Number of dimensions must be greater than 0."
+
         super().__init__(**kwargs)
         self._num_dimesions = num_dimensions
         self.to_project_string = lambda x: f'p{x+1}'
@@ -22,19 +24,27 @@ class SPAPIG_Euclidean(AbstractInstanceGenerator):
 
     def _sample_points(self, num_points: int):
         return np.random.uniform(0, 1, (num_points, self._num_dimesions))
+    
+
+    def _get_ordered_list(self, points_list, idx, length=None):
+        return list(map(
+            self.to_project_string,
+            np.argsort(
+                np.linalg.norm(
+                    self._project_points - points_list[idx],
+                    axis=1
+                )
+            )[:length]
+        ))
 
 
     def _generate_students(self):
-        for i, student_point in enumerate(self._student_points):
-            self._sp[f's{i+1}'] = list(map(
-                self.to_project_string,
-                np.argsort(
-                    np.linalg.norm(
-                        self._project_points - student_point,
-                        axis=1
-                    )
-                )[:random.randint(self._li, self._lj)]
-            ))
+        for i in range(self._num_students):
+            self._sp[f's{i+1}'] = self._get_ordered_list(
+                self._student_points,
+                i,
+                random.randint(self._li, self._lj)
+            )
 
 
     def _generate_lecturers(self):
@@ -59,15 +69,7 @@ class SPAPIG_Euclidean(AbstractInstanceGenerator):
 
         # decide ordered preference and capacity
         for i, lecturer in enumerate(self._lp):
-            ordered_project_list = list(map(
-                self.to_project_string,
-                np.argsort(
-                    np.linalg.norm(
-                        self._project_points - self._lecturer_points[i],
-                        axis=1
-                    )
-                )
-            ))
+            ordered_project_list = self._get_ordered_list(self._lecturer_points, i)
             self._lp[lecturer][1] = [p for p in ordered_project_list if p in self._lp[lecturer][1]]
 
             if self._force_lecturer_capacity:
