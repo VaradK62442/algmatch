@@ -4,3 +4,4 @@ from .euclidean import SPAPIG_Euclidean
 from .reverse import SPAPIG_ReverseEuclidean
 from .expectations import SPAPIG_ExpectationsEuclidean
 from .fame import SPAPIG_FameEuclidean
+from .attributes import SPAPIG_Attributes

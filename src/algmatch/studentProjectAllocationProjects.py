@@ -13,6 +13,7 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators 
     SPAPIG_ReverseEuclidean,
     SPAPIG_ExpectationsEuclidean,
     SPAPIG_FameEuclidean,
+    SPAPIG_Attributes,
 )
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.SPAPSolver import GurobiSPAP
@@ -244,6 +245,7 @@ def main():
         'reverse_euclidean': SPAPIG_ReverseEuclidean,
         'expectations_euclidean': SPAPIG_ExpectationsEuclidean,
         'fame_euclidean': SPAPIG_FameEuclidean,
+        'attributes': SPAPIG_Attributes,
     }
 
     if args.instance_generator not in valid_instance_generators:
