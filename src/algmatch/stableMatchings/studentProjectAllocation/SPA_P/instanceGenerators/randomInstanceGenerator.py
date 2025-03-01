@@ -5,7 +5,6 @@ Student Project Allocation with Student and Lecturer preferences over projects
 
 import random
 import math
-import sys
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.abstractInstanceGenerator import AbstractInstanceGenerator
 

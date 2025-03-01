@@ -24,7 +24,7 @@ class SPAPIG_Euclidean(AbstractInstanceGenerator):
 
     def _sample_points(self, num_points: int):
         return np.random.uniform(0, 1, (num_points, self._num_dimesions))
-    
+
 
     def _get_ordered_list(self, points_list, idx, length=None):
         return list(map(
