@@ -1,20 +1,17 @@
-from tests.HRTests.utils.generic.hrGenericBase import HRGenericBase
+from tests.HRTests.utils.generic.hrGenericBruteForcer import HRGenericBruteForcer
 
 
 class HRGenericEnumerator:
     def __init__(self):
-        HRGenericBase.__init__(self)
+        HRGenericBruteForcer.__init__(self)
 
     def add_pair(self, resident, hospital) -> None:
-        self.M[resident]["assigned"] = hospital
-        self.M[hospital]["assigned"].add(resident)
-
+        HRGenericBruteForcer.add_pair(resident, hospital)
         if self.hospital_is_full(hospital):
             self.full_hospitals.add(hospital)
 
     def delete_pair(self, resident, hospital) -> None:
-        self.M[resident]["assigned"] = None
-        self.M[hospital]["assigned"].remove(resident)
+        HRGenericBruteForcer.delete_pair(resident, hospital)
         self.full_hospitals.discard(hospital)
 
     def choose(self, i=1) -> None:
@@ -28,7 +25,9 @@ class HRGenericEnumerator:
             for hospital in self.resident_trial_order(resident):
                 if hospital not in self.full_hospitals:
                     self.add_pair(resident, hospital)
+
                     self.choose(i + 1)
+                    
                     self.delete_pair(resident, hospital)
             # case where the resident is unassigned
             self.choose(i + 1)

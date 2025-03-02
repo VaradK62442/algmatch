@@ -1,4 +1,4 @@
-class HRGenericBase:
+class HRGenericBruteForcer:
     def __init__(self):
         self.M = {r: {"assigned": None} for r in self.residents} | {
             h: {"assigned": set()} for h in self.hospitals
@@ -12,6 +12,14 @@ class HRGenericBase:
 
     def hospital_is_full(self, h):
         return self.hospitals[h]["capacity"] == len(self.M[h]["assigned"])
+
+    def add_pair(self, resident, hospital):
+        self.M[resident]["assigned"] = hospital
+        self.M[hospital]["assigned"].add(resident)
+
+    def delete_pair(self, resident, hospital):
+        self.M[resident]["assigned"] = None
+        self.M[hospital]["assigned"].remove(resident)
 
     def save_matching(self):
         stable_matching = {"resident_sided": {}, "hospital_sided": {}}

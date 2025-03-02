@@ -1,17 +1,9 @@
-from tests.HRTests.utils.generic.hrGenericBase import HRGenericBase
+from tests.HRTests.utils.generic.hrGenericBruteForcer import HRGenericBruteForcer
 
 
-class HRGenricMinmaxer(HRGenericBase):
+class HRGenricMinmaxer(HRGenericBruteForcer):
     def __init__(self):
-        HRGenericBase.__init__(self)
-
-    def add_pair(self, resident, hospital):
-        self.M[resident]["assigned"] = hospital
-        self.M[hospital]["assigned"].add(resident)
-
-    def delete_pair(self, resident, hospital):
-        self.M[resident]["assigned"] = None
-        self.M[hospital]["assigned"].remove(resident)
+        HRGenericBruteForcer.__init__(self)
 
     def resident_choose(self, i=1):
         # if every resident is assigned
