@@ -38,7 +38,7 @@ class HRTAbstract:
         self.hospitals = self._reader.hospitals
 
         self.original_residents = deepcopy(self.residents)
-        self.original_hosptials = deepcopy(self.hospitals)
+        self.original_hospitals = deepcopy(self.hospitals)
 
         self.M = {}  # provisional matching
         self.stable_matching = {
