@@ -31,10 +31,10 @@ class SMGenericBruteForcer:
         # Link to problem description
         raise NotImplementedError("Enumerators need to link to a stability definition.")
 
-    def resident_trial_order(self, resident) -> str:
+    def man_trial_order(self, man) -> str:
         # generator for an order of hosptials in preference list
         raise NotImplementedError("Enumerators need to describe the order of matching.")
 
-    def hospital_trial_order(self, hospital) -> str:
+    def woman_trial_order(self, woman) -> str:
         # generator for an order of hosptials in preference list
         raise NotImplementedError("Enumerators need to describe the order of matching.")

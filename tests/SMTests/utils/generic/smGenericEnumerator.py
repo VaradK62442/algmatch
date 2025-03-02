@@ -14,7 +14,7 @@ class SMGenericEnumerator(SMGenericBruteForcer):
 
         else:
             man = "m" + str(i)
-            for woman in self.men[man]["list"]:
+            for woman in self.man_trial_order(man):
                 # avoid the multiple assignment of women
                 if self.M[woman]["assigned"] is None:
                     self.add_pair(man, woman)
