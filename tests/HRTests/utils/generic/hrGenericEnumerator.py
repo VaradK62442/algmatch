@@ -6,12 +6,12 @@ class HRGenericEnumerator(HRGenericBruteForcer):
         HRGenericBruteForcer.__init__(self)
 
     def add_pair(self, resident, hospital) -> None:
-        HRGenericBruteForcer.add_pair(resident, hospital)
+        HRGenericBruteForcer.add_pair(self, resident, hospital)
         if self.hospital_is_full(hospital):
             self.full_hospitals.add(hospital)
 
     def delete_pair(self, resident, hospital) -> None:
-        HRGenericBruteForcer.delete_pair(resident, hospital)
+        HRGenericBruteForcer.delete_pair(self, resident, hospital)
         self.full_hospitals.discard(hospital)
 
     def choose(self, i=1) -> None:

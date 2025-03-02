@@ -22,7 +22,7 @@ class HRGenericMinmaxer(HRGenericBruteForcer):
                         self.full_hospitals.add(hospital)
 
                     self.resident_choose(i + 1)
-                    if len(self.minmax_matchings) == 1:
+                    if len(self.stable_matching_list) == 1:
                         return
 
                     self.delete_pair(resident, hospital)
@@ -45,7 +45,7 @@ class HRGenericMinmaxer(HRGenericBruteForcer):
                     self.add_pair(resident, hospital)
 
                     self.hospital_choose(i + 1)
-                    if len(self.minmax_matchings) == 2:
+                    if len(self.stable_matching_list) == 2:
                         return
 
                     self.delete_pair(resident, hospital)

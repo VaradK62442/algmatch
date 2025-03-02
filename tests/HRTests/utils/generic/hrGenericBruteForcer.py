@@ -4,7 +4,7 @@ class HRGenericBruteForcer:
             h: {"assigned": set()} for h in self.hospitals
         }
         self.full_hospitals = set()
-        self.all_stable_matchings = []
+        self.stable_matching_list = []
 
         # This lets us order residents in the stable matching by number.
         # We cannot use 'sorted' without this key because that uses lexial order.
@@ -34,7 +34,7 @@ class HRGenericBruteForcer:
             stable_matching["hospital_sided"][hospital] = sorted(
                 self.M[hospital]["assigned"], key=self.resident_order_comparator
             )
-        self.minmax_matchings.append(stable_matching)
+        self.stable_matching_list.append(stable_matching)
 
     def has_stability(self) -> bool:
         # Link to problem description
