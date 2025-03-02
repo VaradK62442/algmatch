@@ -1,7 +1,7 @@
 from tests.HRTests.utils.generic.hrGenericBruteForcer import HRGenericBruteForcer
 
 
-class HRGenricMinmaxer(HRGenericBruteForcer):
+class HRGenericMinmaxer(HRGenericBruteForcer):
     def __init__(self):
         HRGenericBruteForcer.__init__(self)
 

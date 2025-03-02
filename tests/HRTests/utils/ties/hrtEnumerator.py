@@ -17,7 +17,7 @@ class HRTEnumerator(HRTAbstract, HRGenericEnumerator):
         else:
             raise ValueError("Stability type is neither 'super' or 'strong'")
 
-    def trial_order(self, resident):
+    def resident_trial_order(self, resident):
         for tie in self.residents[resident]["list"]:
             for hospital in tie:
                 yield hospital

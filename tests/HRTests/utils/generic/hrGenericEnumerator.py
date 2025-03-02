@@ -1,7 +1,7 @@
 from tests.HRTests.utils.generic.hrGenericBruteForcer import HRGenericBruteForcer
 
 
-class HRGenericEnumerator:
+class HRGenericEnumerator(HRGenericBruteForcer):
     def __init__(self):
         HRGenericBruteForcer.__init__(self)
 
@@ -27,7 +27,7 @@ class HRGenericEnumerator:
                     self.add_pair(resident, hospital)
 
                     self.choose(i + 1)
-                    
+
                     self.delete_pair(resident, hospital)
             # case where the resident is unassigned
             self.choose(i + 1)

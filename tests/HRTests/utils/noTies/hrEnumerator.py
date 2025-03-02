@@ -12,6 +12,6 @@ class HREnumerator(HRAbstract, HRGenericEnumerator):
     def has_stability(self) -> bool:
         return self._check_stability()
 
-    def trial_order(self, resident):
+    def resident_trial_order(self, resident):
         for hospital in self.residents[resident]["list"]:
             yield hospital
