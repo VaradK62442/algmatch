@@ -9,7 +9,7 @@ class SMGenericEnumerator(SMGenericBruteForcer):
         # if every man is assigned
         if i > len(self.men):
             # if stable add to solutions list
-            if self._check_stability():
+            if self.has_stability():
                 self.save_matching()
 
         else:

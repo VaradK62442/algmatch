@@ -9,7 +9,7 @@ class HRGenericMinmaxer(HRGenericBruteForcer):
         # if every resident is assigned
         if i > len(self.residents):
             # if stable add to solutions list
-            if self._check_stability():
+            if self.has_stability():
                 self.save_matching()
 
         else:
@@ -34,7 +34,7 @@ class HRGenericMinmaxer(HRGenericBruteForcer):
         # if every resident is assigned
         if i > len(self.hospitals):
             # if stable add to solutions list
-            if self._check_stability():
+            if self.has_stability():
                 self.save_matching()
 
         else:
