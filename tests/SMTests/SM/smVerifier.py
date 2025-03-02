@@ -2,7 +2,7 @@ from algmatch.stableMarriageProblem import StableMarriageProblem
 
 from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
 from tests.SMTests.utils.noTies.instanceGenerator import SMInstanceGenerator
-from tests.SMTests.utils.noTies.minmaxSMs import MMSMS
+from tests.SMTests.utils.noTies.smMinmaxer import SMMinmaxer
 
 
 class SMAbstractVerifier(AbstractVerifier):
@@ -28,5 +28,5 @@ class SMAbstractVerifier(AbstractVerifier):
             ("men", "women"),
             SMInstanceGenerator,
             generator_args,
-            MMSMS,
+            SMMinmaxer,
         )
