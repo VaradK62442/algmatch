@@ -2,15 +2,15 @@ from multiprocessing import Manager, Process
 from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
-from tests.SMTests.SM.smVerifier import SMAbstractVerifier as SMAV
+from tests.SMTests.SM.smVerifier import SMVerifier as SMV
 from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
 
 
-class SMMultiVerifier(SMAV, AMV):
+class SMMultiVerifier(SMV, AMV):
     def __init__(
         self, total_men, total_women, lower_bound, upper_bound, reps, result_dict
     ):
-        SMAV.__init__(self, total_men, total_women, lower_bound, upper_bound)
+        SMV.__init__(self, total_men, total_women, lower_bound, upper_bound)
         AMV.__init__(self, reps, result_dict)
 
     def show_results(self):

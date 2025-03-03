@@ -4,12 +4,12 @@ from tqdm import tqdm
 from tests.abstractTestClasses.abstractSingleVerifier import (
     AbstractSingleVerifier as ASV,
 )
-from tests.SMTests.SM.smVerifier import SMAbstractVerifier as SMAV
+from tests.SMTests.SM.smVerifier import SMVerifier as SMV
 
 
-class SMSingleVerifier(SMAV, ASV):
+class SMSingleVerifier(SMV, ASV):
     def __init__(self, total_men, total_women, lower_bound, upper_bound):
-        SMAV.__init__(self, total_men, total_women, lower_bound, upper_bound)
+        SMV.__init__(self, total_men, total_women, lower_bound, upper_bound)
         ASV.__init__(self)
 
     def show_results(self):

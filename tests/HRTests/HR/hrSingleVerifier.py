@@ -4,12 +4,12 @@ from tqdm import tqdm
 from tests.abstractTestClasses.abstractSingleVerifier import (
     AbstractSingleVerifier as ASV,
 )
-from tests.HRTests.HR.hrVerifier import HRAbstractVerifier as HRAV
+from tests.HRTests.HR.hrVerifier import HRVerifier as HRV
 
 
-class HRSingleVerifier(HRAV, ASV):
+class HRSingleVerifier(HRV, ASV):
     def __init__(self, total_residents, total_hospitals, lower_bound, upper_bound):
-        HRAV.__init__(self, total_residents, total_hospitals, lower_bound, upper_bound)
+        HRV.__init__(self, total_residents, total_hospitals, lower_bound, upper_bound)
         ASV.__init__(self)
 
     def show_results(self):

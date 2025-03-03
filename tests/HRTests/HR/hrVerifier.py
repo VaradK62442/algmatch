@@ -5,7 +5,7 @@ from tests.HRTests.utils.noTies.instanceGenerator import HRInstanceGenerator
 from tests.HRTests.utils.noTies.hrMinmaxer import HRMinmaxer
 
 
-class HRAbstractVerifier(AbstractVerifier):
+class HRVerifier(AbstractVerifier):
     def __init__(self, total_residents, total_hospitals, lower_bound, upper_bound):
         """
         It takes argument as follows (set in init):

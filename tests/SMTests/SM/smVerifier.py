@@ -5,7 +5,7 @@ from tests.SMTests.utils.noTies.instanceGenerator import SMInstanceGenerator
 from tests.SMTests.utils.noTies.smMinmaxer import SMMinmaxer
 
 
-class SMAbstractVerifier(AbstractVerifier):
+class SMVerifier(AbstractVerifier):
     def __init__(self, total_men, total_women, lower_bound, upper_bound):
         """
         It takes argument as follows (set in init):

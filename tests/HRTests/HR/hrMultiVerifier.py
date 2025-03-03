@@ -2,11 +2,12 @@ from multiprocessing import Manager, Process
 from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
-from tests.HRTests.HR.hrVerifier import HRAbstractVerifier as HRAV
+
 from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
+from tests.HRTests.HR.hrVerifier import HRVerifier as HRV
 
 
-class HRMultiVerifier(HRAV, AMV):
+class HRMultiVerifier(HRV, AMV):
     def __init__(
         self,
         total_residents,
@@ -16,7 +17,7 @@ class HRMultiVerifier(HRAV, AMV):
         reps,
         result_dict,
     ):
-        HRAV.__init__(self, total_residents, total_hospitals, lower_bound, upper_bound)
+        HRV.__init__(self, total_residents, total_hospitals, lower_bound, upper_bound)
         AMV.__init__(self, reps, result_dict)
 
     def show_results(self):
