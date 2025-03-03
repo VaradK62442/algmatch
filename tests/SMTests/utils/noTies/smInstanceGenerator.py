@@ -7,12 +7,6 @@ class SMInstanceGenerator(SMGenericGenerator):
     def __init__(self, men, women, lower_bound, upper_bound):
         SMGenericGenerator.__init__(self, men, women, lower_bound, upper_bound)
 
-    def generate_instance(self):
-        self._reset_instance()
-        self._generate_men_lists()
-        self._generate_women_lists()
-        return self.instance
-
     def _generate_men_lists(self):
         for man_list in self.instance["men"].values():
             length = random.randint(self.li, self.lj)

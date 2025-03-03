@@ -1,4 +1,9 @@
-class SMGenericGenerator:
+from tests.abstractTestClasses.GeneratorInterface import (
+    GeneratorInterface,
+)
+
+
+class SMGenericGenerator(GeneratorInterface):
     def __init__(self, men, women, lower_bound, upper_bound):
         self.no_men = men
         self.no_women = women
@@ -33,3 +38,21 @@ class SMGenericGenerator:
             "men": {i + 1: [] for i in range(self.no_men)},
             "women": {i + 1: [] for i in range(self.no_women)},
         }
+
+    def generate_instance(self):
+        self._reset_instance()
+        self._generate_men_lists()
+        self._generate_women_lists()
+        return self.instance
+
+    def _generate_men_lists(self):
+        """
+        Generates the men's preference lists for the instance.
+        """
+        raise NotImplementedError("Method not implemented by subclass.")
+
+    def _generate_women_lists(self):
+        """
+        Generates the women's preference lists for the instance.
+        """
+        raise NotImplementedError("Method not implemented by subclass.")
