@@ -5,6 +5,7 @@ Also provides class for running several iterations, as well as configuring diffe
 
 import os
 import argparse
+from tqdm import tqdm
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators import (
     SPAPIG_Abstract,
@@ -158,7 +159,7 @@ class StudentProjectAllocationProjectsMultiple:
         """
         print(f"Running {self.iters} iterations of SPA-P algorithm.")
 
-        for i in range(self.iters):
+        for i in tqdm(range(self.iters)):
             filename = self.instance_folder + f"instance_{i}.{self.file_extension}"
             self._save_instance(filename)
 

@@ -1,6 +1,6 @@
 """
-Abstract Instance Generators
-Student Project Allocation with Lecturer preferences over projects (SPA-P).
+Abstract Instance Generator for SPA-P
+Student Project Allocation with Student and Lecturer preferences over projects
 """
 
 from abc import ABC, abstractmethod

@@ -1,5 +1,5 @@
 """
-Program to generate an instance of SPA-P
+Program to generate an instance of SPA-P - Random
 Student Project Allocation with Student and Lecturer preferences over projects
 """
 
