@@ -1,7 +1,7 @@
 from algmatch.hospitalResidentsProblem import HospitalResidentsProblem
 
 from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
-from tests.HRTests.utils.noTies.instanceGenerator import HRInstanceGenerator
+from tests.HRTests.utils.noTies.hrInstanceGenerator import HRInstanceGenerator
 from tests.HRTests.utils.noTies.hrMinmaxer import HRMinmaxer
 
 
