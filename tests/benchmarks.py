@@ -46,7 +46,7 @@ def show_results(data):
 
 
 def time_solver(solver, dictionary, optimised_side):
-    optimal_solver = solver(dictionary=dictionary, optimisedSide=optimised_side)
+    optimal_solver = solver(dictionary=dictionary, optimised_side=optimised_side)
     start = perf_counter_ns()
     optimal_solver.get_stable_matching()
     end = perf_counter_ns()

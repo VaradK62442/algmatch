@@ -2,10 +2,15 @@
 Algorithm to produce the resident-optimal, hospital-pessimal stable matching.
 """
 
-from algmatch.stableMatchings.hospitalResidentsProblem.noTies.hrAbstract import HRAbstract
+from algmatch.stableMatchings.hospitalResidentsProblem.noTies.hrAbstract import (
+    HRAbstract,
+)
+
 
 class HRHospitalOptimal(HRAbstract):
-    def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
+    def __init__(
+        self, filename: str | None = None, dictionary: dict | None = None
+    ) -> None:
         super().__init__(filename=filename, dictionary=dictionary)
 
         self.undersub_hospitals = set()
@@ -22,10 +27,10 @@ class HRHospitalOptimal(HRAbstract):
         self.M[resident]["assigned"] = hospital
         self.M[hospital]["assigned"].add(resident)
 
-    def _delete_pair(self, resident, hospital):         
-        self.residents[resident]['list'].remove(hospital)
-        self.hospitals[hospital]['list'].remove(resident)
-        if len(self.hospitals[hospital]['list']) ==  0:
+    def _delete_pair(self, resident, hospital):
+        self.residents[resident]["list"].remove(hospital)
+        self.hospitals[hospital]["list"].remove(resident)
+        if len(self.hospitals[hospital]["list"]) == 0:
             self.undersub_hospitals.discard(hospital)
 
     def _break_assignment(self, resident, hospital):
@@ -34,12 +39,11 @@ class HRHospitalOptimal(HRAbstract):
         if self.get_first_unassigned_resident(hospital) is not None:
             self.undersub_hospitals.add(hospital)
 
-    def get_first_unassigned_resident(self,hospital):
+    def get_first_unassigned_resident(self, hospital):
         for resident in self.hospitals[hospital]["list"]:
             if resident not in self.M[hospital]["assigned"]:
                 return resident
         return None
-        
 
     def _while_loop(self):
         while len(self.undersub_hospitals) != 0:
@@ -52,14 +56,13 @@ class HRHospitalOptimal(HRAbstract):
                 h_prime = self.M[r]["assigned"]
 
                 if h_prime is not None:
-                    self._break_assignment(r,h_prime)
-                self._assign_pair(r,h)
-                
+                    self._break_assignment(r, h_prime)
+                self._assign_pair(r, h)
 
                 rank_h = self.residents[r]["rank"][h]
-                for reject in self.residents[r]["list"][rank_h+1:]:
+                for reject in self.residents[r]["list"][rank_h + 1 :]:
                     self._delete_pair(r, reject)
-                
+
                 # See if the hospital can make another offer
                 # If yes, loop. If no, next hospital.
                 occupancy += 1

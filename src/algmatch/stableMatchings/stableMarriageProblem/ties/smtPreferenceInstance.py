@@ -1,15 +1,23 @@
 """
 Store preference lists for Stable Marriage stable matching algorithm.
 """
+
 from itertools import product
 
-from algmatch.abstractClasses.abstractPreferenceInstanceWithTies import AbstractPreferenceInstanceWithTies
+from algmatch.abstractClasses.abstractPreferenceInstanceWithTies import (
+    AbstractPreferenceInstanceWithTies,
+)
 from algmatch.stableMatchings.stableMarriageProblem.ties.fileReader import FileReader
-from algmatch.stableMatchings.stableMarriageProblem.ties.dictionaryReader import DictionaryReader
+from algmatch.stableMatchings.stableMarriageProblem.ties.dictionaryReader import (
+    DictionaryReader,
+)
 from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
+
 class SMTPreferenceInstance(AbstractPreferenceInstanceWithTies):
-    def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
+    def __init__(
+        self, filename: str | None = None, dictionary: dict | None = None
+    ) -> None:
         super().__init__(filename, dictionary)
         self.check_preference_lists()
         self.clean_unacceptable_pairs()
@@ -27,24 +35,22 @@ class SMTPreferenceInstance(AbstractPreferenceInstanceWithTies):
 
     def check_preference_lists(self) -> None:
         for m, m_prefs in self.men.items():
-
             if self.any_repetitions(m_prefs["list"]):
-                raise PrefRepError("man",m)
-            
+                raise PrefRepError("man", m)
+
             for w_tie in m_prefs["list"]:
                 for w in w_tie:
                     if w not in self.women:
-                        raise PrefNotFoundError("man",m,w)
-            
-        for w, w_prefs in self.women.items():
+                        raise PrefNotFoundError("man", m, w)
 
+        for w, w_prefs in self.women.items():
             if self.any_repetitions(w_prefs["list"]):
-                raise PrefRepError("woman",w)
-            
+                raise PrefRepError("woman", w)
+
             for m_tie in w_prefs["list"]:
                 for m in m_tie:
                     if m not in self.men:
-                        raise PrefNotFoundError("woman",w,m)
+                        raise PrefNotFoundError("woman", w, m)
 
     def clean_unacceptable_pairs(self) -> None:
         for m, w in product(self.men, self.women):
@@ -72,19 +78,17 @@ class SMTPreferenceInstance(AbstractPreferenceInstanceWithTies):
                 if set() in w_list:
                     w_list.remove(set())
 
-
     def set_up_rankings(self):
-
         for m in self.men:
             ranking = {}
             for i, tie in enumerate(self.men[m]["list"]):
                 # there are no reps, all comprehensions are disjoint
-                ranking |= {woman : i for woman in tie}
+                ranking |= {woman: i for woman in tie}
             self.men[m]["rank"] = ranking
-            
+
         for w in self.women:
             ranking = {}
             for i, tie in enumerate(self.women[w]["list"]):
                 # there are no reps, all comprehensions are disjoint
-                ranking |= {man : i for man in tie}
+                ranking |= {man: i for man in tie}
             self.women[w]["rank"] = ranking

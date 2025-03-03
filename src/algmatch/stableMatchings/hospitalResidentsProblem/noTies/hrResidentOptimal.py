@@ -2,10 +2,15 @@
 Algorithm to produce the resident-optimal, hospital-pessimal stable matching.
 """
 
-from algmatch.stableMatchings.hospitalResidentsProblem.noTies.hrAbstract import HRAbstract
+from algmatch.stableMatchings.hospitalResidentsProblem.noTies.hrAbstract import (
+    HRAbstract,
+)
+
 
 class HRResidentOptimal(HRAbstract):
-    def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
+    def __init__(
+        self, filename: str | None = None, dictionary: dict | None = None
+    ) -> None:
         super().__init__(filename=filename, dictionary=dictionary)
 
         self.unassigned_residents = set()
@@ -22,10 +27,10 @@ class HRResidentOptimal(HRAbstract):
         self.M[resident]["assigned"] = hospital
         self.M[hospital]["assigned"].add(resident)
 
-    def _delete_pair(self, resident, hospital):         
-        self.residents[resident]['list'].remove(hospital)
-        self.hospitals[hospital]['list'].remove(resident)
-        if len(self.residents[resident]['list']) ==  0:
+    def _delete_pair(self, resident, hospital):
+        self.residents[resident]["list"].remove(hospital)
+        self.hospitals[hospital]["list"].remove(resident)
+        if len(self.residents[resident]["list"]) == 0:
             self.unassigned_residents.discard(resident)
 
     def _break_assignment(self, resident, hospital):
@@ -33,13 +38,14 @@ class HRResidentOptimal(HRAbstract):
         self.M[hospital]["assigned"].remove(resident)
         if len(self.residents[resident]["list"]) > 0:
             self.unassigned_residents.add(resident)
-    
+
     def _get_worst_existing_resident(self, hospital):
         existing_residents = self.M[hospital]["assigned"]
 
         def rank_comparator(x):
             return -self.hospitals[hospital]["rank"][x]
-        worst_resident = min(existing_residents, key = rank_comparator)
+
+        worst_resident = min(existing_residents, key=rank_comparator)
 
         return worst_resident
 
@@ -48,14 +54,14 @@ class HRResidentOptimal(HRAbstract):
             r = self.unassigned_residents.pop()
             h = self.residents[r]["list"][0]
 
-            self._assign_pair(r,h)
-            
+            self._assign_pair(r, h)
+
             capacity = self.hospitals[h]["capacity"]
             occupancy = len(self.M[h]["assigned"])
 
             if occupancy > capacity:
                 r_worst = self._get_worst_existing_resident(h)
-                self._break_assignment(r_worst,h)
+                self._break_assignment(r_worst, h)
                 occupancy -= 1
 
             if occupancy == capacity:

@@ -14,10 +14,10 @@ class AbstractVerifier:
 
         minmaxer = self.BruteForce(dictionary=self.current_instance)
         optimal_solver = self.Problem(
-            dictionary=self.current_instance, optimisedSide=self.sides[0]
+            dictionary=self.current_instance, optimised_side=self.sides[0]
         )
         pessimal_solver = self.Problem(
-            dictionary=self.current_instance, optimisedSide=self.sides[1]
+            dictionary=self.current_instance, optimised_side=self.sides[1]
         )
 
         minmaxer.find_minmax_matchings()

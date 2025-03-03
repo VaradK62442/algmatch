@@ -3,7 +3,12 @@ Class to read in a file of preferences for the Stable Marriage Problem stable ma
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.errors.ReaderErrors import IDMisformatError, RepeatIDError, PrefListMisformatError
+from algmatch.errors.ReaderErrors import (
+    IDMisformatError,
+    RepeatIDError,
+    PrefListMisformatError,
+)
+
 
 class DictionaryReader(AbstractReader):
     def __init__(self, dictionary: dict) -> None:
@@ -23,20 +28,21 @@ class DictionaryReader(AbstractReader):
                         man = f"m{k}"
                         if man in self.men:
                             raise RepeatIDError("man", k)
-                        
+
                         for i in v:
                             # if not int, must be a tie list
-                            if type(i) is not int and not all(type(j) is int for j in i):
+                            if type(i) is not int and not all(
+                                type(j) is int for j in i
+                            ):
                                 raise PrefListMisformatError("man", k, i)
                         preferences = []
                         for i, elt in enumerate(v):
-                            if isinstance(elt,int):
+                            if isinstance(elt, int):
                                 tie = set()
                                 tie.add(f"w{elt}")
                             else:
                                 tie = {f"w{j}" for j in elt}
                             preferences.append(tie)
-
 
                         self.men[man] = {"list": preferences, "rank": {}}
 
@@ -47,14 +53,16 @@ class DictionaryReader(AbstractReader):
                         woman = f"w{k}"
                         if woman in self.women:
                             raise RepeatIDError("woman", k)
-                        
+
                         for i in v:
                             # if not int, must be a tie list
-                            if type(i) is not int and not all(type(j) is int for j in i):
+                            if type(i) is not int and not all(
+                                type(j) is int for j in i
+                            ):
                                 raise PrefListMisformatError("woman", k, i)
                         preferences = []
                         for i, elt in enumerate(v):
-                            if isinstance(elt,int):
+                            if isinstance(elt, int):
                                 tie = set()
                                 tie.add(f"m{elt}")
                             else:

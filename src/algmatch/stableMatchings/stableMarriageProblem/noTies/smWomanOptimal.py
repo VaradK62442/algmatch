@@ -4,8 +4,11 @@ Algorithm to produce M_z, the woman-optimal, man-pessimal stable matching, where
 
 from algmatch.stableMatchings.stableMarriageProblem.noTies.smAbstract import SMAbstract
 
+
 class SMWomanOptimal(SMAbstract):
-    def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
+    def __init__(
+        self, filename: str | None = None, dictionary: dict | None = None
+    ) -> None:
         super().__init__(filename=filename, dictionary=dictionary)
 
         self.unassigned_women = set()
@@ -18,10 +21,10 @@ class SMWomanOptimal(SMAbstract):
                 self.unassigned_women.add(woman)
             self.M[woman] = {"assigned": None}
 
-    def _delete_pair(self, man, woman):         
-        self.men[man]['list'].remove(woman)
-        self.women[woman]['list'].remove(man)
-        if len(self.women[woman]['list']) ==  0:
+    def _delete_pair(self, man, woman):
+        self.men[man]["list"].remove(woman)
+        self.women[woman]["list"].remove(man)
+        if len(self.women[woman]["list"]) == 0:
             self.unassigned_women.discard(woman)
 
     def _engage(self, man, woman):
@@ -32,7 +35,7 @@ class SMWomanOptimal(SMAbstract):
         self.M[woman]["assigned"] = None
         if len(self.women[woman]["list"]) > 0:
             self.unassigned_women.add(woman)
- 
+
     def _while_loop(self):
         while len(self.unassigned_women) != 0:
             w = self.unassigned_women.pop()
@@ -41,8 +44,8 @@ class SMWomanOptimal(SMAbstract):
 
             if p is not None:
                 self._free_up(p)
-            self._engage(m,w)
+            self._engage(m, w)
 
             rank_w = self.men[m]["rank"][w]
-            for reject in self.men[m]["list"][rank_w+1:]:
-                self._delete_pair(m,reject)
+            for reject in self.men[m]["list"][rank_w + 1 :]:
+                self._delete_pair(m, reject)

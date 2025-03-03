@@ -3,7 +3,13 @@ Class to read in a file of preferences for the Hospitals/Residents Problem stabl
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.errors.ReaderErrors import ParticipantQuantityError, CapacityError, IDMisformatError, RepeatIDError, PrefListMisformatError
+from algmatch.errors.ReaderErrors import (
+    ParticipantQuantityError,
+    CapacityError,
+    IDMisformatError,
+    RepeatIDError,
+    PrefListMisformatError,
+)
 
 
 class FileReader(AbstractReader):
@@ -14,11 +20,11 @@ class FileReader(AbstractReader):
     def _read_data(self) -> None:
         self.no_residents = 0
         self.no_hospitals = 0
-        self.residents = {}                
+        self.residents = {}
         self.hospitals = {}
         cur_line = 1
-        
-        with open(self.data, 'r') as file:
+
+        with open(self.data, "r") as file:
             file = file.read().splitlines()
 
         try:
@@ -27,41 +33,47 @@ class FileReader(AbstractReader):
             raise ParticipantQuantityError()
 
         # build residents dictionary
-        for elt in file[1:self.no_residents+1]:
+        for elt in file[1 : self.no_residents + 1]:
             cur_line += 1
             entry = elt.split()
 
             if not entry or not entry[0].isdigit():
-                raise IDMisformatError("resident",cur_line,line=True)
+                raise IDMisformatError("resident", cur_line, line=True)
             resident = f"r{entry[0]}"
             if resident in self.residents:
-                raise RepeatIDError("resident",cur_line,line=True)
+                raise RepeatIDError("resident", cur_line, line=True)
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise PrefListMisformatError("resident",cur_line,i,line=True)
+                    raise PrefListMisformatError("resident", cur_line, i, line=True)
             preferences = [f"h{i}" for i in entry[1:]]
 
             self.residents[resident] = {"list": preferences, "rank": {}}
 
         # build hospitals dictionary
-        for elt in file[self.no_residents+1:self.no_residents+self.no_hospitals+1]:
+        for elt in file[
+            self.no_residents + 1 : self.no_residents + self.no_hospitals + 1
+        ]:
             cur_line += 1
             entry = elt.split()
 
             if not entry or not entry[0].isdigit():
-                raise IDMisformatError("hospital",cur_line,line=True)
+                raise IDMisformatError("hospital", cur_line, line=True)
             hospital = f"h{entry[0]}"
             if hospital in self.hospitals:
-                raise RepeatIDError("hospital",cur_line,line=True)
+                raise RepeatIDError("hospital", cur_line, line=True)
 
             if not entry[1].isdigit():
-                raise CapacityError("hospital",cur_line,line=True)
+                raise CapacityError("hospital", cur_line, line=True)
             capacity = int(entry[1])
 
             for i in entry[2:]:
                 if not i.isdigit():
-                    raise PrefListMisformatError("hospital",cur_line,i,line=True)
+                    raise PrefListMisformatError("hospital", cur_line, i, line=True)
             preferences = [f"r{i}" for i in entry[2:]]
 
-            self.hospitals[hospital] = {"capacity": capacity, "list": preferences, "rank": {}}
+            self.hospitals[hospital] = {
+                "capacity": capacity,
+                "list": preferences,
+                "rank": {},
+            }

@@ -3,7 +3,12 @@ Class to read in a file of preferences for the Stable Marriage Problem stable ma
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.errors.ReaderErrors import IDMisformatError, RepeatIDError, PrefListMisformatError
+from algmatch.errors.ReaderErrors import (
+    IDMisformatError,
+    RepeatIDError,
+    PrefListMisformatError,
+)
+
 
 class DictionaryReader(AbstractReader):
     def __init__(self, dictionary: dict) -> None:
@@ -23,7 +28,7 @@ class DictionaryReader(AbstractReader):
                         man = f"m{k}"
                         if man in self.men:
                             raise RepeatIDError("man", k)
-                        
+
                         for i in v:
                             if type(i) is not int:
                                 raise PrefListMisformatError("man", k, i)
@@ -38,10 +43,10 @@ class DictionaryReader(AbstractReader):
                         woman = f"w{k}"
                         if woman in self.women:
                             raise RepeatIDError("woman", k)
-                        
+
                         for i in v:
                             if type(i) is not int:
-                                 raise PrefListMisformatError("woman", k, i)
+                                raise PrefListMisformatError("woman", k, i)
                         preferences = [f"m{i}" for i in v]
 
                         self.women[woman] = {"list": preferences, "rank": {}}

@@ -3,7 +3,12 @@ Class to read in a dictionary of preferences for the Hospital/Residents Problem 
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.errors.ReaderErrors import CapacityError, IDMisformatError, RepeatIDError, PrefListMisformatError
+from algmatch.errors.ReaderErrors import (
+    CapacityError,
+    IDMisformatError,
+    RepeatIDError,
+    PrefListMisformatError,
+)
 
 
 class DictionaryReader(AbstractReader):
@@ -20,14 +25,14 @@ class DictionaryReader(AbstractReader):
                 case "residents":
                     for k, v in value.items():
                         if type(k) is not int:
-                            raise IDMisformatError("resident",k)
+                            raise IDMisformatError("resident", k)
                         resident = f"r{k}"
                         if resident in self.residents:
-                            raise RepeatIDError("resident",k)
-                        
+                            raise RepeatIDError("resident", k)
+
                         for i in v:
                             if type(i) is not int:
-                                raise PrefListMisformatError("resident",k,i)
+                                raise PrefListMisformatError("resident", k, i)
                         preferences = [f"h{i}" for i in v]
 
                         self.residents[resident] = {"list": preferences, "rank": {}}
@@ -39,14 +44,18 @@ class DictionaryReader(AbstractReader):
                         hospital = f"h{k}"
                         if hospital in self.hospitals:
                             raise RepeatIDError("hospital", k)
-                        
+
                         if type(v["capacity"]) is not int:
-                            raise CapacityError("hospital",k)
+                            raise CapacityError("hospital", k)
                         capacity = v["capacity"]
-                        
+
                         for i in v["preferences"]:
                             if type(i) is not int:
-                                raise PrefListMisformatError("hospital",k,i)
+                                raise PrefListMisformatError("hospital", k, i)
                         preferences = [f"r{i}" for i in v["preferences"]]
 
-                        self.hospitals[hospital] = {"capacity": capacity, "list": preferences, "rank": {}}
+                        self.hospitals[hospital] = {
+                            "capacity": capacity,
+                            "list": preferences,
+                            "rank": {},
+                        }

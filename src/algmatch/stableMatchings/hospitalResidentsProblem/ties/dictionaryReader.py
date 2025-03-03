@@ -7,8 +7,9 @@ from algmatch.errors.ReaderErrors import (
     CapacityError,
     IDMisformatError,
     PrefListMisformatError,
-    RepeatIDError
+    RepeatIDError,
 )
+
 
 class DictionaryReader(AbstractReader):
     def __init__(self, dictionary: dict) -> None:
@@ -28,20 +29,21 @@ class DictionaryReader(AbstractReader):
                         resident = f"r{k}"
                         if resident in self.residents:
                             raise RepeatIDError("resident", k)
-                        
+
                         for i in v:
                             # if not int, must be a tie list
-                            if type(i) is not int and not all(type(j) is int for j in i):
+                            if type(i) is not int and not all(
+                                type(j) is int for j in i
+                            ):
                                 raise PrefListMisformatError("resident", k, i)
                         preferences = []
                         for i, elt in enumerate(v):
-                            if isinstance(elt,int):
+                            if isinstance(elt, int):
                                 tie = set()
                                 tie.add(f"h{elt}")
                             else:
                                 tie = {f"h{j}" for j in elt}
                             preferences.append(tie)
-
 
                         self.residents[resident] = {"list": preferences, "rank": {}}
 
@@ -52,22 +54,28 @@ class DictionaryReader(AbstractReader):
                         hospital = f"h{k}"
                         if hospital in self.hospitals:
                             raise RepeatIDError("hospital", k)
-                        
+
                         if type(v["capacity"]) is not int:
-                            raise CapacityError("hospital",k)
+                            raise CapacityError("hospital", k)
                         capacity = v["capacity"]
-                        
+
                         for i in v["preferences"]:
                             # if not int, must be a tie list
-                            if type(i) is not int and not all(type(j) is int for j in i):
+                            if type(i) is not int and not all(
+                                type(j) is int for j in i
+                            ):
                                 raise PrefListMisformatError("hospital", k, i)
                         preferences = []
                         for i, elt in enumerate(v["preferences"]):
-                            if isinstance(elt,int):
+                            if isinstance(elt, int):
                                 tie = set()
                                 tie.add(f"r{elt}")
                             else:
                                 tie = {f"r{j}" for j in elt}
                             preferences.append(tie)
 
-                        self.hospitals[hospital] = {"capacity": capacity, "list": preferences, "rank": {}}
+                        self.hospitals[hospital] = {
+                            "capacity": capacity,
+                            "list": preferences,
+                            "rank": {},
+                        }

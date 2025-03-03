@@ -8,7 +8,7 @@ class GraphMax:
             if not visited[v]:
                 visited[v] = True
                 if v not in self.matching or self.bpm(self.matching[v], visited):
-                    self.matching[v] = {"assigned":u}
+                    self.matching[v] = {"assigned": u}
                     return
 
     def get_max_matching(self):
