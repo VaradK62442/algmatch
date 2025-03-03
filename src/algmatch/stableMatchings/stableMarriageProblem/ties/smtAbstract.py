@@ -47,6 +47,7 @@ class SMTAbstract:
         }
         self.is_stable = False
 
+    @staticmethod
     def _assert_valid_stability_type(self, st) -> None:
         assert st is not None, "Select a stability type - either 'super' or 'strong'"
         assert type(st) is str, "Stability type is not str'"

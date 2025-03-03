@@ -7,6 +7,12 @@ from .studentProjectAllocationProjects import StudentProjectAllocationProjectsMu
 from .hospitalResidentsProblem import HospitalResidentsProblem as HR
 from .stableMarriageProblem import StableMarriageProblem as SM
 from .studentProjectAllocation import StudentProjectAllocation as SPAS
-from .studentProjectAllocationProjects import StudentProjectAllocationProjectsSingle as SPAP_Single
-from .studentProjectAllocationProjects import StudentProjectAllocationProjectsMultiple as SPAP_Multiple
+from .studentProjectAllocationProjects import (
+    StudentProjectAllocationProjectsSingle as SPAP_Single,
+)
+from .studentProjectAllocationProjects import (
+    StudentProjectAllocationProjectsMultiple as SPAP_Multiple,
+)
 from .studentProjectAllocationProjects import utils as SPAP_utils
+
+from .stableMarriageProblemWithTies import StableMarriageProblemWithTies as SMT
