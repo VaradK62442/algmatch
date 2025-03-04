@@ -20,4 +20,4 @@ class HRInstanceGenerator(HRGenericGenerator):
             hos_dict["capacity"] = random.randint(1, self.no_residents)
             # we provide a random ordering of all residents
             random.shuffle(self.available_residents)
-            hos_dict["list"] = self.available_residents[:]
+            hos_dict["preferences"].extend(self.available_residents)
