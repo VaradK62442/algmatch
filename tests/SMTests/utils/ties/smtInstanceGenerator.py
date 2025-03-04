@@ -3,9 +3,9 @@ import random
 from tests.SMTests.utils.generic.smGenericGenerator import SMGenericGenerator
 
 
-class SMTInstanceGenerator:
+class SMTInstanceGenerator(SMGenericGenerator):
     def __init__(self, men, women, lower_bound, upper_bound):
-        SMGenericGenerator.__init__(self, men, women, lower_bound, upper_bound)
+        super().__init__(men, women, lower_bound, upper_bound)
         self.tie_density = 0  # default to none
 
     def set_tie_density(self, tie_density):
@@ -17,8 +17,11 @@ class SMTInstanceGenerator:
             random.shuffle(self.available_women)
 
             length = random.randint(self.li, self.lj)
-            man_list = [[self.available_women[0]]]
-            for woman in self.available_women[:length]:
+            if length == 0:
+                continue
+
+            man_list.append([self.available_women[0]])
+            for woman in self.available_men[1:length]:
                 if random.uniform(0, 1) < self.tie_density:
                     man_list[-1].append(woman)
                 else:
@@ -29,8 +32,11 @@ class SMTInstanceGenerator:
             random.shuffle(self.available_men)
 
             length = random.randint(self.li, self.lj)
-            woman_list = [[self.available_men[0]]]
-            for man in self.available_men[:length]:
+            if length == 0:
+                continue
+
+            woman_list.append([self.available_men[0]])
+            for man in self.available_men[1:length]:
                 if random.uniform(0, 1) < self.tie_density:
                     woman_list[-1].append(man)
                 else:
