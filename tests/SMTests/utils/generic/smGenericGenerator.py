@@ -1,9 +1,9 @@
-from tests.abstractTestClasses.GeneratorInterface import (
-    GeneratorInterface,
+from tests.abstractTestClasses.genericGeneratorInterface import (
+    GenericGeneratorInterface,
 )
 
 
-class SMGenericGenerator(GeneratorInterface):
+class SMGenericGenerator(GenericGeneratorInterface):
     def __init__(self, men, women, lower_bound, upper_bound):
         self.no_men = men
         self.no_women = women

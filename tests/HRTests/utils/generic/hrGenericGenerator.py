@@ -1,9 +1,9 @@
-from tests.abstractTestClasses.GeneratorInterface import (
-    GeneratorInterface,
+from tests.abstractTestClasses.genericGeneratorInterface import (
+    GenericGeneratorInterface,
 )
 
 
-class HRGenericGenerator(GeneratorInterface):
+class HRGenericGenerator(GenericGeneratorInterface):
     def __init__(self, residents, hospitals, lower_bound, upper_bound):
         self.no_residents = residents
         self.no_hospitals = hospitals

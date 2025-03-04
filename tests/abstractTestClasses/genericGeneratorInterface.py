@@ -1,4 +1,4 @@
-class GeneratorInterface:
+class GenericGeneratorInterface:
     def generate_instance():
         """
         Generates an valid instance of a particular problem. e.g. SM, HRT.
