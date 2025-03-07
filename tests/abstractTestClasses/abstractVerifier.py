@@ -7,12 +7,12 @@ class AbstractVerifier:
         self.current_instance = {}
 
     def generate_instance(self):
-        self.current_instance = self.gen.generate_instance_no_ties()
+        self.current_instance = self.gen.generate_instance()
 
     def verify_instance(self):
         # optimal and pessimal from man/resident/student side
 
-        minmaxer = self.BruteForce(dictionary=self.current_instance)
+        bruteforcer = self.BruteForce(dictionary=self.current_instance)
         optimal_solver = self.Problem(
             dictionary=self.current_instance, optimised_side=self.sides[0]
         )
@@ -20,13 +20,13 @@ class AbstractVerifier:
             dictionary=self.current_instance, optimised_side=self.sides[1]
         )
 
-        minmaxer.find_minmax_matchings()
+        bruteforcer.find_minmax_matchings()
         m_0 = optimal_solver.get_stable_matching()
         m_z = pessimal_solver.get_stable_matching()
 
-        if m_z != minmaxer.minmax_matchings[-1]:
+        if m_z != bruteforcer.stable_matching_list[-1]:
             return False
-        if m_0 != minmaxer.minmax_matchings[0]:
+        if m_0 != bruteforcer.stable_matching_list[0]:
             return False
         return True
 

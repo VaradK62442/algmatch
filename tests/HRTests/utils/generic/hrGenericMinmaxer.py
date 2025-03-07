@@ -41,7 +41,7 @@ class HRGenericMinmaxer(HRGenericBruteForcer):
             hospital = "h" + str(i)
             for resident in self.hospital_trial_order(hospital):
                 # avoid the over-filling of hospitals
-                if self.M["resident"] is not None:
+                if self.M[resident]["assigned"] is not None:
                     self.add_pair(resident, hospital)
 
                     self.hospital_choose(i + 1)

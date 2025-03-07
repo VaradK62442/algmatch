@@ -2,7 +2,7 @@ from algmatch.stableMatchings.stableMarriageProblem.noTies.smAbstract import SMA
 from tests.SMTests.utils.generic.smGenericMinmaxer import SMGenericMinmaxer
 
 
-class SMEnumerator(SMAbstract, SMGenericMinmaxer):
+class SMMinmaxer(SMAbstract, SMGenericMinmaxer):
     def __init__(self, dictionary):
         SMAbstract.__init__(self, dictionary=dictionary)
         SMGenericMinmaxer.__init__(self)
