@@ -30,12 +30,12 @@ class SPAPIG_Euclidean(AbstractInstanceGenerator):
         return np.linalg.norm(points - point, axis=1)
 
 
-    def _get_ordered_list(self, points_list, idx, length=None):
+    def _get_ordered_list(self, points_list, idx, length=None, reverse=False):
         return list(map(
             self.to_project_string,
             np.argsort(
                 self._distance_function(self._project_points, points_list[idx])
-            )[:length]
+            )[::-1 if reverse else 1][:length]
         ))
 
 

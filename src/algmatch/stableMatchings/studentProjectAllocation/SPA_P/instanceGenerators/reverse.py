@@ -23,9 +23,13 @@ class SPAPIG_ReverseEuclidean(SPAPIG_Euclidean):
 
 
     def _get_ordered_list(self, points_list, idx, length=None):
-        return super()._get_ordered_list(points_list, idx, length)[
-            ::-1 if idx < (len(points_list) * self._prop) // 1 else 1
-        ]
+        reverse = idx < (len(points_list) * self._prop) // 1
+        return super()._get_ordered_list(
+            points_list,
+            idx,
+            length=length,
+            reverse=reverse,
+        )
 
 
     def _generate_students(self):
