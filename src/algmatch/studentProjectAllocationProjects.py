@@ -251,15 +251,6 @@ def main():
         'attributes': SPAPIG_Attributes,
     }
 
-    if args.instance_generator not in valid_instance_generators:
-        parser.print_help()
-        print("Please specify a valid instance generator name.")
-        print(f"Valid instance generator names:")
-        [print(f"\t> {elt}") for elt in valid_instance_generators.keys()]
-        return
-    
-    instance_generator = valid_instance_generators[args.instance_generator]
-
     if args.single:
         spa = StudentProjectAllocationProjectsSingle(
             filename=args.filename,
@@ -273,6 +264,15 @@ def main():
             lower_bound, upper_bound = args.length, args.length
         else:
             lower_bound, upper_bound = args.lower_bound, args.upper_bound
+
+        if args.instance_generator not in valid_instance_generators:
+            parser.print_help()
+            print("Please specify a valid instance generator name.")
+            print(f"Valid instance generator names:")
+            [print(f"\t> {elt}") for elt in valid_instance_generators.keys()]
+            return
+        
+        instance_generator = valid_instance_generators[args.instance_generator]
 
         spa = StudentProjectAllocationProjectsMultiple(
             iters=args.iters,
