@@ -24,6 +24,10 @@ class AbstractInstanceGenerator(ABC):
         self._li = lower_bound # lower bound of student preference list
         self._lj = upper_bound # upper bound of student preference list
 
+        self._reset_instance()
+
+
+    def _reset_instance(self):
         self._sp = {f's{i}': [] for i in range(1, self._num_students + 1)} # student -> [project preferences]
         self._plc = {f'p{i}': [1, ''] for i in range(1, self._num_projects + 1)} # project -> [capacity, lecturer]
         self._lp = {f'l{i}': [0, [], 0, 0] for i in range(1, self._num_lecturers + 1)} # lecturer -> [capacity, project preferences, max of all c_j, sum of all c_j]
@@ -72,6 +76,7 @@ class AbstractInstanceGenerator(ABC):
         Generates a random instance for the SPA-P problem.
         Stores details in self._sp, self._plc, self._lp.
         """
+        self._reset_instance()
         self._generate_projects()
         self._generate_students()
         self._generate_lecturers()

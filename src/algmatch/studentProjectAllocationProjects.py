@@ -71,6 +71,7 @@ class StudentProjectAllocationProjectsSingle:
 class StudentProjectAllocationProjectsMultiple:
     def __init__(
             self,
+            instance_generator: SPAPIG_Abstract,
             iters: int = 1,
             students: int = 5,
             lower_bound: int = 1,
@@ -83,11 +84,11 @@ class StudentProjectAllocationProjectsMultiple:
             solutions_folder: str = "solutions/",
             output_flag: bool = True,
             file_extension: str = 'csv',
-            instance_generator: SPAPIG_Abstract = SPAPIG_Random,
     ):
         """
         Run several iterations of the SPA-P algorithm.
 
+        :param instance_generator: SPAPIG_Abstract, optional, default=SPAPIG_Random, what instance generator to use.
         :param iters: int, optional, default=1, the number of iterations to run the SPA-P algorithm for.
         :param students: int, optional, default=5, the number of students.
         :param lower_bound: int, optional, default=1, the lower bound of projects a student can rank.
@@ -100,7 +101,6 @@ class StudentProjectAllocationProjectsMultiple:
         :param solutions_folder: str, optional, default="solutions/", the folder to save the solutions to.
         :param output_flag: bool, optional, default=True, the flag to determine whether to output the Gurobi solver output.
         :param file_extension: str, optional, default='csv', what type of file to save instances and solutions to.
-        :param instance_generator: SPAPIG_Abstract, optional, default=SPAPIG_Random, what instance generator to use.
         """
         
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
@@ -135,17 +135,8 @@ class StudentProjectAllocationProjectsMultiple:
 
 
     def _save_instance(self, filename: str) -> None:
-        S: SPAPIG_Abstract = self.IG(
-            num_students=self.num_students, 
-            lower_bound=self.lower_bound, 
-            upper_bound=self.upper_bound, 
-            num_projects=self.projects, 
-            num_lecturers=self.lecturers, 
-            force_project_capacity=self.project_capacity, 
-            force_lecturer_capacity=self.lecturer_capacity
-        )
-        S.generate_instance()
-        S.write_instance_to_file(filename)
+        self.IG.generate_instance()
+        self.IG.write_instance_to_file(filename)
 
 
     def _write_solution(self, matching: dict, filename: str) -> None:
@@ -272,9 +263,18 @@ def main():
             [print(f"\t> {elt}") for elt in valid_instance_generators.keys()]
             return
         
-        instance_generator = valid_instance_generators[args.instance_generator]
+        instance_generator = valid_instance_generators[args.instance_generator](
+            num_students=args.students,
+            lower_bound=lower_bound,
+            upper_bound=upper_bound,
+            num_projects=args.projects,
+            force_project_capacity=args.force_project_capacity,
+            num_lecturers=args.lecturers,
+            force_lecturer_capacity=args.force_lecturer_capacity
+        )
 
         spa = StudentProjectAllocationProjectsMultiple(
+            instance_generator=instance_generator,
             iters=args.iters,
             students=args.students,
             lower_bound=lower_bound,
@@ -286,8 +286,7 @@ def main():
             instance_folder=args.instance_folder,
             solutions_folder=args.solutions_folder,
             output_flag=args.output_flag,
-            file_extension=args.file_extension,
-            instance_generator=instance_generator
+            file_extension=args.file_extension
         )
         spa.run()
 
