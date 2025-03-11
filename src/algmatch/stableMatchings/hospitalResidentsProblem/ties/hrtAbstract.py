@@ -137,11 +137,11 @@ class HRTAbstract:
             idx -= 1
         raise ValueError("Pref_list empty")
 
-    def _engage(self, resident, hospital) -> None:
+    def _assign(self, resident, hospital) -> None:
         self.M[resident]["assigned"].add(hospital)
         self.M[hospital]["assigned"].add(resident)
 
-    def _break_engagement(self, resident, hospital) -> None:
+    def _break_assignment(self, resident, hospital) -> None:
         self.M[resident]["assigned"].discard(hospital)
         self.M[hospital]["assigned"].discard(resident)
 
@@ -159,20 +159,21 @@ class HRTAbstract:
         tail = self._get_tail(person)
         while len(tail) != 0:
             deletion = tail.pop()
+            self._break_assignment(person, deletion)
             self._delete_pair(person, deletion)
 
-    def _break_all_engagements(self, person) -> None:
+    def _break_all_assignments(self, person) -> None:
         assignee_set = self.M[person]["assigned"]
         while len(assignee_set) != 0:
             assignee = assignee_set.pop()
-            self._break_engagement(person, assignee)
+            self._break_assignment(person, assignee)
 
     def _reject_lower_ranks(self, target, proposer) -> None:
         rank_p = self._get_pref_ranks(target)[proposer]
         for reject_tie in self._get_pref_list(target)[rank_p + 1 :]:
             while len(reject_tie) != 0:
                 reject = reject_tie.pop()
-                self._break_engagement(target, reject)
+                self._break_assignment(target, reject)
                 self._delete_pair(target, reject)
 
     def _while_loop(self) -> bool:

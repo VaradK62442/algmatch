@@ -26,17 +26,27 @@ class HRTSuperResidentOptimal(HRTAbstract):
         for hospital in self.hospitals:
             self.M[hospital] = {"assigned": set()}
 
+    def _delete_pair(self, resident, hospital):
+        super()._delete_pair(resident, hospital)
+        if self._get_pref_length(resident) == 0:
+            self.unassigned_residents.discard(resident)
+
+    def _break_assignment(self, resident, hospital):
+        super()._break_assignment(resident, hospital)
+        if self._get_pref_length(resident) > 0:
+            self.unassigned_residents.add(resident)
+
     def _while_loop(self) -> bool:
         while len(self.unassigned_residents) != 0:
             r = self.unassigned_residents.pop()
             h_tie = self._get_head(r)
             for h in h_tie:
-                self._engage(r, h)
+                self._assign(r, h)
 
                 capacity = self.hospitals[h]["capacity"]
                 occupancy = len(self.M[h]["assigned"])
                 if occupancy > capacity:
-                    self._empty_tail(h, r)
+                    self._delete_tail(h, r)
 
                 occupancy = len(self.M[h]["assigned"])
                 if occupancy == capacity:
