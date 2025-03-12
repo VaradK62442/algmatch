@@ -7,7 +7,7 @@ from tests.SMTests.utils.generic.smGenericGenerator import SMGenericGenerator
 class SMTInstanceGenerator(SMGenericGenerator, AbstractTieGenerator):
     def __init__(self, men, women, lower_bound, upper_bound):
         SMGenericGenerator.__init__(self, men, women, lower_bound, upper_bound)
-        AbstractTieGenerator.__init__()
+        AbstractTieGenerator.__init__(self)
 
     def _generate_men_lists(self):
         for man_list in self.instance["men"].values():
