@@ -5,8 +5,8 @@ from tests.HRTests.utils.generic.hrGenericMinmaxer import HRGenericMinmaxer
 
 
 class HRTMinmaxer(HRTAbstract, HRGenericMinmaxer):
-    def __init__(self, dictionary):
-        HRTAbstract.__init__(self, dictionary=dictionary)
+    def __init__(self, dictionary, stability_type):
+        HRTAbstract.__init__(self, dictionary=dictionary, stability_type=stability_type)
         HRGenericMinmaxer.__init__(self)
 
     def has_stability(self) -> bool:

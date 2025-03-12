@@ -22,7 +22,7 @@ class HRTInstanceGenerator(HRGenericGenerator, AbstractTieGenerator):
             )
 
     def _generate_hospitals_lists(self):
-        for hos_dict in self.instance["residents"].values():
+        for hos_dict in self.instance["hospitals"].values():
             random.shuffle(self.available_hospitals)
 
             hos_dict["capacity"] = random.randint(1, self.no_residents)
