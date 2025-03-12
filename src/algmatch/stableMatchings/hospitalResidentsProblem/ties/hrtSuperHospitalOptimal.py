@@ -7,7 +7,7 @@ from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtAbstract import (
 )
 
 
-class HRTSuperResidentOptimal(HRTAbstract):
+class HRTSuperHospitalOptimal(HRTAbstract):
     def __init__(
         self, filename: str | None = None, dictionary: dict | None = None
     ) -> None:

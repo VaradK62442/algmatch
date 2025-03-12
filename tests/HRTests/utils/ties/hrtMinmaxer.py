@@ -23,6 +23,6 @@ class HRTMinmaxer(HRTAbstract, HRGenericMinmaxer):
                 yield hospital
 
     def hospital_trial_order(self, hospital):
-        for tie in self.hopsitals[hospital]["list"]:
+        for tie in self.hospitals[hospital]["list"]:
             for resident in tie:
                 yield resident

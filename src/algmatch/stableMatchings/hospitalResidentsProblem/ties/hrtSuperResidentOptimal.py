@@ -62,7 +62,7 @@ class HRTSuperResidentOptimal(HRTAbstract):
         for h in self.hospitals:
             capacity = self.hospitals[h]["capacity"]
             occupancy = len(self.M[h]["assigned"])
-            if occupancy < capacity and self.been_full(h):
+            if occupancy < capacity and self.been_full[h]:
                 return False
 
         return True
