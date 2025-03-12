@@ -7,7 +7,7 @@ from tests.abstractTestClasses.abstractSingleVerifier import (
 from tests.SMTests.SMTSuper.smtSuperVerifier import SMTSuperVerifier as SMTSuperV
 
 
-class SMSingleVerifier(SMTSuperV, ASV):
+class SMTSingleVerifier(SMTSuperV, ASV):
     def __init__(self, total_men, total_women, lower_bound, upper_bound):
         SMTSuperV.__init__(self, total_men, total_women, lower_bound, upper_bound)
         ASV.__init__(self)
@@ -35,7 +35,7 @@ def main():
 
     start = perf_counter_ns()
 
-    verifier = SMSingleVerifier(
+    verifier = SMTSingleVerifier(
         TOTAL_MEN, TOTAL_WOMEN, LOWER_LIST_BOUND, UPPER_LIST_BOUND
     )
     for _ in tqdm(range(REPETITIONS)):

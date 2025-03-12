@@ -4,7 +4,7 @@ from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtAbstract import (
 from tests.HRTests.utils.generic.hrGenericMinmaxer import HRGenericMinmaxer
 
 
-class HRMinmaxer(HRTAbstract, HRGenericMinmaxer):
+class HRTMinmaxer(HRTAbstract, HRGenericMinmaxer):
     def __init__(self, dictionary):
         HRTAbstract.__init__(self, dictionary=dictionary)
         HRGenericMinmaxer.__init__(self)
