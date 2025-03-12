@@ -56,35 +56,6 @@ class HRTSuperHospitalOptimal(HRTAbstract):
 
         # Check Viability of Matching
         for r in self.residents:
-            if len(self.M[r]["assigned"]) > 1:
-                return False
-
-        for h in self.hospitals:
-            capacity = self.hospitals[h]["capacity"]
-            occupancy = len(self.M[h]["assigned"])
-            if occupancy < capacity and self.been_full(h):
-                return False
-
-    def _while_loop(self) -> bool:
-        while len(self.unassigned_residents) != 0:
-            r = self.unassigned_residents.pop()
-            h_tie = self._get_head(r)
-            for h in h_tie:
-                self._assign(r, h)
-
-                capacity = self.hospitals[h]["capacity"]
-                occupancy = len(self.M[h]["assigned"])
-                if occupancy > capacity:
-                    self._delete_tail(h)
-
-                occupancy = len(self.M[h]["assigned"])
-                if occupancy == capacity:
-                    self.been_full[h] = True
-                    r_worst = self._get_worst_existing_resident(h)
-                    self._reject_lower_ranks(h, r_worst)
-
-        # Check Viability of Matching
-        for r in self.residents:
             if len(self.M[r]["assigned"]) == 0 and self.been_assigned[r]:
                 return False
 
