@@ -47,7 +47,8 @@ class HRTAbstract:
         }
         self.is_stable = False
 
-    def _assert_valid_stability_type(self, st) -> None:
+    @staticmethod
+    def _assert_valid_stability_type(st) -> None:
         assert st is not None, "Select a stability type - either 'super' or 'strong'"
         assert type(st) is str, "Stability type is not str'"
         assert st.lower() in ("super", "strong"), (
@@ -65,20 +66,31 @@ class HRTAbstract:
 
         return min(existing_residents, key=rank_comparator)
 
+    def _get_worst_matched_hospital(self, resident):
+        matched_hospitals = self.M[resident]["assigned"]
+
+        if len(matched_hospitals) == 0:
+            return None
+
+        def rank_comparator(x):
+            return -self.residents[resident]["rank"][x]
+
+        return min(matched_hospitals, key=rank_comparator)
+
     def _check_super_stability(self) -> bool:
         # stability must be checked with regards to the original lists prior to deletions
         for resident, r_prefs in self.original_residents.items():
             preferred_hospitals = self.original_residents[resident]["list"]
-            matched_hospital = self.M[resident]["assigned"]
+            worst_matched_hospital = self._get_worst_matched_hospital(resident)
 
-            if matched_hospital is not None:
-                rank_matched_hospital = r_prefs["rank"][matched_hospital]
+            if worst_matched_hospital is not None:
+                rank_worst_matched_hospital = r_prefs["rank"][worst_matched_hospital]
                 # every hospital that r_i prefers to their match or is indifferent between them
-                preferred_hospitals = r_prefs["list"][: rank_matched_hospital + 1]
+                preferred_hospitals = r_prefs["list"][: rank_worst_matched_hospital + 1]
 
             for h_tie in preferred_hospitals:
                 for hospital in h_tie:
-                    if hospital == matched_hospital:
+                    if hospital == worst_matched_hospital:
                         continue
 
                     worst_resident = self._get_worst_existing_resident(hospital)
@@ -120,7 +132,6 @@ class HRTAbstract:
         pref_list = self._get_pref_list(person)
         idx = 0
         while idx < len(pref_list):
-            print(person, idx, len(pref_list), pref_list)
             head = pref_list[idx]
             if len(head) > 0:
                 return head
