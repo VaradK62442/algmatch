@@ -10,6 +10,13 @@ class HRTMinmaxer(HRTAbstract, HRGenericMinmaxer):
         HRGenericMinmaxer.__init__(self)
 
     def has_stability(self) -> bool:
+        for person in self.M:
+            p_assigned = self.M[person]["assigned"]
+            if p_assigned is None:
+                self.M[person]["assigned"] = set()
+            elif isinstance(p_assigned, str):
+                self.M[person]["assigned"] = set([p_assigned])
+
         if self.stability_type == "super":
             return self._check_super_stability()
         elif self.stability_type == "strong":
