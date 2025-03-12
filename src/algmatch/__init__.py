@@ -16,3 +16,4 @@ from .studentProjectAllocationProjects import (
 from .studentProjectAllocationProjects import utils as SPAP_utils
 
 from .stableMarriageProblemWithTies import StableMarriageProblemWithTies as SMT
+from .hospitalResidentsProblemWithTies import HospitalResidentsProblemWithTies as HRT

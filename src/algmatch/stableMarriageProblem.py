@@ -36,9 +36,9 @@ class StableMarriageProblem:
         )
 
         if optimised_side == "men":
-            self.sm = SMManOptimal(filename=filename, dictionary=dictionary)
+            self.sm_alg = SMManOptimal(filename=filename, dictionary=dictionary)
         else:
-            self.sm = SMWomanOptimal(filename=filename, dictionary=dictionary)
+            self.sm_alg = SMWomanOptimal(filename=filename, dictionary=dictionary)
 
     def get_stable_matching(self) -> dict | None:
         """
@@ -46,7 +46,7 @@ class StableMarriageProblem:
 
         :return: dict, the stable matching for this instance
         """
-        self.sm.run()
-        if self.sm.is_stable:
-            return self.sm.stable_matching
+        self.sm_alg.run()
+        if self.sm_alg.is_stable:
+            return self.sm_alg.stable_matching
         return None

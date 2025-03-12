@@ -40,9 +40,9 @@ class StudentProjectAllocation:
         )
 
         if optimised_side == "students":
-            self.spa = SPAStudentOptimal(filename=filename, dictionary=dictionary)
+            self.spa_alg = SPAStudentOptimal(filename=filename, dictionary=dictionary)
         else:
-            self.spa = SPALecturerOptimal(filename=filename, dictionary=dictionary)
+            self.spa_alg = SPALecturerOptimal(filename=filename, dictionary=dictionary)
 
     def get_stable_matching(self) -> dict | None:
         """
@@ -50,7 +50,7 @@ class StudentProjectAllocation:
 
         :return: dict, the stable matching.
         """
-        self.spa.run()
-        if self.spa.is_stable:
-            return self.spa.stable_matching
+        self.spa_alg.run()
+        if self.spa_alg.is_stable:
+            return self.spa_alg.stable_matching
         return None

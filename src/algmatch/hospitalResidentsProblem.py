@@ -20,7 +20,7 @@ class HospitalResidentsProblem:
         optimised_side: str = "residents",
     ) -> None:
         """
-        Initialise the Stable Marriage Problem algorithm.
+        Initialise the Hospital Residents Problem algorithms.
 
         :param filename: str, optional, default=None, the path to the file to read in the preferences from.
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
@@ -36,9 +36,9 @@ class HospitalResidentsProblem:
         )
 
         if optimised_side == "residents":
-            self.hr = HRResidentOptimal(filename=filename, dictionary=dictionary)
+            self.hr_alg = HRResidentOptimal(filename=filename, dictionary=dictionary)
         else:
-            self.hr = HRHospitalOptimal(filename=filename, dictionary=dictionary)
+            self.hr_alg = HRHospitalOptimal(filename=filename, dictionary=dictionary)
 
     def get_stable_matching(self) -> dict | None:
         """
@@ -46,7 +46,7 @@ class HospitalResidentsProblem:
 
         :return: dict, the stable matching for this instance
         """
-        self.hr.run()
-        if self.hr.is_stable:
-            return self.hr.stable_matching
+        self.hr_alg.run()
+        if self.hr_alg.is_stable:
+            return self.hr_alg.stable_matching
         return None
