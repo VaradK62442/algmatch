@@ -27,6 +27,8 @@ class SMTSuperManOriented(SMTAbstract):
 
     def _delete_pair(self, man, woman) -> None:
         super()._delete_pair(man, woman)
+        if man in self.women:
+            man, woman = woman, man
         if self._get_pref_length(man) == 0:
             self.unassigned_men.discard(man)
 

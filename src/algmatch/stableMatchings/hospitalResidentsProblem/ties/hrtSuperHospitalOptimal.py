@@ -28,11 +28,15 @@ class HRTSuperHospitalOptimal(HRTAbstract):
 
     def _delete_pair(self, resident, hospital):
         super()._delete_pair(resident, hospital)
+        if resident in self.hospitals:
+            resident, hospital = hospital, resident
         if self._get_pref_length(hospital) == 0:
             self.undersub_hospitals.discard(hospital)
 
     def _break_assignment(self, resident, hospital):
         super()._break_assignment(resident, hospital)
+        if resident in self.hospitals:
+            resident, hospital = hospital, resident
         if self._get_pref_length(hospital) == 0:
             self.undersub_hospitals.add(hospital)
 

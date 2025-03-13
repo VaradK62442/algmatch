@@ -28,11 +28,15 @@ class HRTSuperResidentOptimal(HRTAbstract):
 
     def _delete_pair(self, resident, hospital):
         super()._delete_pair(resident, hospital)
+        if resident in self.hospitals:
+            resident, hospital = hospital, resident
         if self._get_pref_length(resident) == 0:
             self.unassigned_residents.discard(resident)
 
     def _break_assignment(self, resident, hospital):
         super()._break_assignment(resident, hospital)
+        if resident in self.hospitals:
+            resident, hospital = hospital, resident
         if self._get_pref_length(resident) > 0:
             self.unassigned_residents.add(resident)
 
