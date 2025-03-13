@@ -41,9 +41,9 @@ class HRGenericBruteForcer:
         raise NotImplementedError("Enumerators need to link to a stability definition.")
 
     def resident_trial_order(self, resident) -> str:
-        # generator for an order of hosptials in preference list
+        # generator for an order of residentsin preference list
         raise NotImplementedError("Enumerators need to describe the order of matching.")
 
     def hospital_trial_order(self, hospital) -> str:
-        # generator for an order of hosptials in preference list
+        # generator for an order of hospitals in preference list
         raise NotImplementedError("Enumerators need to describe the order of matching.")
