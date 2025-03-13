@@ -35,13 +35,14 @@ class HRGenericMinmaxer(HRGenericBruteForcer):
         if i > len(self.hospitals):
             # if stable add to solutions list
             if self.has_stability():
+                print("hos found")
                 self.save_matching()
 
         else:
             hospital = "h" + str(i)
             for resident in self.hospital_trial_order(hospital):
                 # avoid the over-filling of hospitals
-                if self.M[resident]["assigned"] is not None:
+                if self.M[resident]["assigned"] is None:
                     self.add_pair(resident, hospital)
 
                     self.hospital_choose(i + 1)
@@ -49,8 +50,8 @@ class HRGenericMinmaxer(HRGenericBruteForcer):
                         return
 
                     self.delete_pair(resident, hospital)
-            # case where the resident is unassigned
-            self.resident_choose(i + 1)
+            # case where the hospital is empty
+            self.hospital_choose(i + 1)
 
     def setup_M(self):
         self.M.clear()
