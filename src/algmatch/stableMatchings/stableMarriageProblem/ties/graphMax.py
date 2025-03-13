@@ -16,4 +16,9 @@ class GraphMax:
         for u in self.G:
             visited = {v: False for v in self.G}
             self.bpm(u, visited)
+
+        for u in self.G:
+            if u not in self.matching:
+                self.matching[u] = {"assigned": None}
+
         return self.matching
