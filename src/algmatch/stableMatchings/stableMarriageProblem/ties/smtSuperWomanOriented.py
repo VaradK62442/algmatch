@@ -17,10 +17,10 @@ class SMTSuperWomanOriented(SMTAbstract):
         self.unassigned_women = set()
         self.proposed = {m: False for m in self.men}
 
-        for man, prefs in self.men.items():
+        for man in self.men:
             self.M[man] = {"assigned": set()}
 
-        for woman in self.women:
+        for woman, prefs in self.women.items():
             if len(prefs["list"]) > 0:
                 self.unassigned_women.add(woman)
             self.M[woman] = {"assigned": set()}
