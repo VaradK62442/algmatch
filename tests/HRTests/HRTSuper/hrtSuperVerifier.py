@@ -2,7 +2,7 @@ from algmatch.hospitalResidentsProblemWithTies import HospitalResidentsProblemWi
 
 from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
 from tests.HRTests.utils.ties.hrtInstanceGenerator import HRTInstanceGenerator
-from tests.HRTests.utils.ties.hrtMinmaxer import HRTMinmaxer
+from tests.HRTests.utils.ties.hrtEnumerator import HRTEnumerator
 
 
 class HRTSuperVerifier(AbstractVerifier):
@@ -28,6 +28,6 @@ class HRTSuperVerifier(AbstractVerifier):
             ("residents", "hospitals"),
             HRTInstanceGenerator,
             generator_args,
-            HRTMinmaxer,
+            HRTEnumerator,
             "super",
         )
