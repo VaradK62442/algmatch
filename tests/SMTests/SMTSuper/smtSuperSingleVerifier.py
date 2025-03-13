@@ -1,3 +1,4 @@
+import numpy as np
 from time import perf_counter_ns
 from tqdm import tqdm
 
@@ -29,17 +30,27 @@ def main():
     n = 5
     TOTAL_MEN = n
     TOTAL_WOMEN = n
-    LOWER_LIST_BOUND = n
+    LOWER_LIST_BOUND = 0
     UPPER_LIST_BOUND = n
-    REPETITIONS = 40_000
+    TIE_DENSITY_STEPS = 10
+    REPS_PER_TDS = 10
+
+    td_step_size = 1 / TIE_DENSITY_STEPS
+    td_values = np.arange(0, 1 + td_step_size / 2, td_step_size)
 
     start = perf_counter_ns()
 
     verifier = SMTSingleVerifier(
         TOTAL_MEN, TOTAL_WOMEN, LOWER_LIST_BOUND, UPPER_LIST_BOUND
     )
-    for _ in tqdm(range(REPETITIONS)):
-        verifier.run()
+
+    for td in td_values:
+        print("-" * 18)
+        print(f"With Tie Density: {td}")
+
+        verifier.gen.set_tie_density(1)
+        for _ in tqdm(range(REPS_PER_TDS)):
+            verifier.run()
 
     end = perf_counter_ns()
     print(f"\nFinal Runtime: {(end - start) / 1000**3}s")
