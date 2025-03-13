@@ -6,7 +6,7 @@ from tests.SMTests.SMTSuper.smtSuperVerifier import SMTSuperVerifier as SMTSuper
 from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
 
 
-class SMTMultiVerifier(SMTSuperV, AMV):
+class SMTSuperMultiVerifier(SMTSuperV, AMV):
     def __init__(
         self, total_men, total_women, lower_bound, upper_bound, reps, result_dict
     ):
@@ -39,7 +39,7 @@ def main():
 
     with Manager() as manager:
         result_dict = manager.dict()
-        verifier = SMTMultiVerifier(
+        verifier = SMTSuperMultiVerifier(
             TOTAL_MEN,
             TOTAL_WOMEN,
             LOWER_LIST_BOUND,
