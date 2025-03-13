@@ -35,7 +35,7 @@ class AbstractVerifier:
                 dictionary=self.current_instance, optimised_side=self.sides[1]
             )
 
-        bruteforcer.find_minmax_matchings()
+        bruteforcer.find_stable_matchings()
         m_0 = optimal_solver.get_stable_matching()
         m_z = pessimal_solver.get_stable_matching()
 

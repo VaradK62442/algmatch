@@ -33,5 +33,5 @@ class HRGenericEnumerator(HRGenericBruteForcer):
             self.choose(i + 1)
 
     # alias with more readable name
-    def find_all_stable_matchings(self) -> None:
+    def find_stable_matchings(self) -> None:
         self.choose()

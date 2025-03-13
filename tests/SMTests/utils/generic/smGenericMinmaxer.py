@@ -55,7 +55,7 @@ class SMGenericMinmaxer(SMGenericBruteForcer):
         self.M.update({m: {"assigned": None} for m in self.men})
         self.M.update({w: {"assigned": None} for w in self.women})
 
-    def find_minmax_matchings(self):
+    def find_stable_matchings(self):
         self.setup_M()
         self.man_choose()
 

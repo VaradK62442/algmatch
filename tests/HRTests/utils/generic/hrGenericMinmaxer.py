@@ -58,7 +58,7 @@ class HRGenericMinmaxer(HRGenericBruteForcer):
         self.M.update({r: {"assigned": None} for r in self.residents})
         self.M.update({h: {"assigned": set()} for h in self.hospitals})
 
-    def find_minmax_matchings(self):
+    def find_stable_matchings(self):
         self.setup_M()
         self.resident_choose()
 
