@@ -32,6 +32,13 @@ class SMTSuperWomanOriented(SMTAbstract):
         if self._get_pref_length(woman) == 0:
             self.unassigned_women.discard(woman)
 
+    def _break_assignment(self, man, woman):
+        super()._break_assignment(man, woman)
+        if woman in self.men:
+            man, woman, woman, man
+        if self._get_pref_length(woman) > 0:
+            self.unassigned_women.add(woman)
+
     def _while_loop(self) -> bool:
         while len(self.unassigned_women) != 0:
             while len(self.unassigned_women) != 0:
