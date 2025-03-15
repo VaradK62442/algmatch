@@ -13,16 +13,16 @@ class AbstractInstanceGenerator(ABC):
         assert lower_bound <= upper_bound, "Lower bound must be less than or equal to upper bound."
         assert upper_bound <= num_projects, "Upper bound must be less than or equal to the number of projects."
 
-        self._num_students = num_students
-        self._num_projects = num_projects
-        self._num_lecturers = num_lecturers
+        self._num_students: int = num_students
+        self._num_projects: int = num_projects
+        self._num_lecturers: int = num_lecturers
 
-        self._force_project_capacity = force_project_capacity
-        self._force_lecturer_capacity = force_lecturer_capacity
-        self._total_project_capacity = int(math.ceil(1.1 * self._num_students))
+        self._force_project_capacity: int = force_project_capacity
+        self._force_lecturer_capacity: int = force_lecturer_capacity
+        self._total_project_capacity: int = int(math.ceil(1.1 * self._num_students))
 
-        self._li = lower_bound # lower bound of student preference list
-        self._lj = upper_bound # upper bound of student preference list
+        self._li: int = lower_bound # lower bound of student preference list
+        self._lj: int = upper_bound # upper bound of student preference list
 
         self._reset_instance()
 
