@@ -71,7 +71,7 @@ class StudentProjectAllocationProjectsSingle:
 class StudentProjectAllocationProjectsMultiple:
     def __init__(
             self,
-            instance_generator: SPAPIG_Abstract,
+            instance_generator: SPAPIG_Abstract = None,
             iters: int = 1,
             students: int = 5,
             lower_bound: int = 1,
@@ -130,6 +130,17 @@ class StudentProjectAllocationProjectsMultiple:
         self.output_flag = int(output_flag)
         self.file_extension = file_extension
         self.delim = ',' if file_extension == "csv" else ' '
+
+        if instance_generator is None:
+            instance_generator = SPAPIG_Random(
+                num_students=self.num_students,
+                lower_bound=self.lower_bound,
+                upper_bound=self.upper_bound,
+                num_projects=self.projects,
+                force_project_capacity=self.project_capacity,
+                num_lecturers=self.lecturers,
+                force_lecturer_capacity=self.lecturer_capacity
+            )
 
         self.IG = instance_generator
 
