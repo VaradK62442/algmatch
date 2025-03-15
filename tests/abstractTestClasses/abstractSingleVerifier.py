@@ -1,5 +1,6 @@
 from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
 
+
 class AbstractSingleVerifier(AbstractVerifier):
     def __init__(self):
         self._correct_count = 0
