@@ -72,7 +72,7 @@ class StudentProjectAllocationProjectsMultiple:
     def __init__(
             self,
             instance_generator: SPAPIG_Abstract = None,
-            instance_generator_args: dict[str, any] = {}, # kwargs for instance generator
+            instance_generator_args: dict = {},
             iters: int = 1,
             students: int = 5,
             lower_bound: int = 1,
@@ -90,6 +90,7 @@ class StudentProjectAllocationProjectsMultiple:
         Run several iterations of the SPA-P algorithm.
 
         :param instance_generator: SPAPIG_Abstract, optional, default=SPAPIG_Random, what instance generator to use.
+        :param instance_generator_args: dict, optional, default={}, the keyword arguments for the instance generator.
         :param iters: int, optional, default=1, the number of iterations to run the SPA-P algorithm for.
         :param students: int, optional, default=5, the number of students.
         :param lower_bound: int, optional, default=1, the lower bound of projects a student can rank.
@@ -231,7 +232,7 @@ def main():
     parser.add_argument("--output_flag", action="store_true", help="The flag to determine whether to output the Gurobi solver output.")
     parser.add_argument("--file_extension", type=str, default='csv', help="What type of file to write the output to.")
     parser.add_argument("--instance_generator", type=str, default='random', help="The instance generator to use.")
-    parser.add_argument("--instance_generator_args", type=parse_pair, default="=", help="The arguments for the instance generator.", nargs='+')
+    parser.add_argument("--instance_generator_args", type=parse_pair, default="=", help="The keyword arguments for the instance generator.", nargs='+')
 
     args = parser.parse_args()
 
