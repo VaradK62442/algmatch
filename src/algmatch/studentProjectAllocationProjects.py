@@ -182,15 +182,15 @@ class StudentProjectAllocationProjectsMultiple:
 
 def main():
 
-    def help_msg(name=None):
+    def help_msg():
         return """
         Usage: python3 main.py [--single | --multiple] [options]
 
         Run the SPA-P algorithm for a single instance:
-            python3 main.py --single --filename FILENAME --output OUTPUT --output_flag OUTPUT_FLAG
+            python3 studentProjectAllocationProjects.py --single --filename FILENAME --output OUTPUT --output_flag OUTPUT_FLAG
 
         Run the SPA-P algorithm for multiple instances:
-            python3 main.py --multiple --iters ITERS --students STUDENTS 
+            python3 studentProjectAllocationProjects.py --multiple --iters ITERS --students STUDENTS 
                             [--lower_bound LOWER_BOUND --upper_bound UPPER_BOUND | --length LENGTH] 
                             --projects PROJECTS --force_project_capacity CAPACITY
                             --lecturers LECTURERS --force_lecturer_capacity CAPACITY
@@ -207,7 +207,11 @@ def main():
 
     def parse_pair(pair):
         key, value = pair.split('=')
-        return key, IG_arg_types[key](value)
+        try:
+            return key, IG_arg_types[key](value)
+        except KeyError:
+            print(f"Unrecognised argument: {key}")
+            exit(1)
     
     parser = argparse.ArgumentParser(description="Run the SPA-P algorithm.", usage=help_msg())
 
