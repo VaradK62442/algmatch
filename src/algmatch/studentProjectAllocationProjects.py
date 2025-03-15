@@ -195,7 +195,8 @@ def main():
                             --projects PROJECTS --force_project_capacity CAPACITY
                             --lecturers LECTURERS --force_lecturer_capacity CAPACITY
                             --instance_folder INSTANCE_FOLDER --solutions_folder SOLUTIONS_FOLDER 
-                            --output_flag OUTPUT_FLAG --file_extension EXTENSION --instance_generator GENERATOR_NAME
+                            --output_flag OUTPUT_FLAG --file_extension EXTENSION
+                            --instance_generator GENERATOR_NAME --instance_generator_args arg1=val1 arg2=val2 ...
         """
     
     IG_arg_types = {'num_dimensions': int} | {elt: float for elt in [
