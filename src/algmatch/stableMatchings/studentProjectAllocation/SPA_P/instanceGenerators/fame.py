@@ -11,8 +11,8 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.
 class SPAPIG_FameEuclidean(SPAPIG_Euclidean):
     def __init__(
             self,
-            num_dimensions = 5,
-            max_fame = 0.4,
+            num_dimensions: int = 5,
+            max_fame: float = 0.4,
             **kwargs,
     ):
         super().__init__(num_dimensions=num_dimensions, **kwargs)

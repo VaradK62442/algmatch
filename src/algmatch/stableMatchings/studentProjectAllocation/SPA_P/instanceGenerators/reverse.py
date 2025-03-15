@@ -9,7 +9,7 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.
 class SPAPIG_ReverseEuclidean(SPAPIG_Euclidean):
     def __init__(
             self,
-            num_dimensions = 5,
+            num_dimensions: int = 5,
             prop_s: float = 0.5,
             prop_l: float = 0.5,
             **kwargs,

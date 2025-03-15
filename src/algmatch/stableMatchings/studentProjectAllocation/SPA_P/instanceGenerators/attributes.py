@@ -11,7 +11,7 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.
 class SPAPIG_Attributes(SPAPIG_Euclidean):
     def __init__(
             self,
-            num_dimensions = 5,
+            num_dimensions: int = 5,
             **kwargs,
     ):
         super().__init__(num_dimensions=num_dimensions, **kwargs)

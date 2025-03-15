@@ -12,18 +12,18 @@ from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.
 class SPAPIG_Euclidean(AbstractInstanceGenerator):
     def __init__(
             self,
-            num_dimensions = 5,
+            num_dimensions: int = 5,
             **kwargs,
     ):
         assert num_dimensions > 0, "Number of dimensions must be greater than 0."
 
         super().__init__(**kwargs)
-        self._num_dimesions = num_dimensions
+        self._num_dimensions = num_dimensions
         self.to_project_string = lambda x: f'p{x+1}'
 
 
     def _sample_points(self, num_points: int):
-        return np.random.uniform(0, 1, (num_points, self._num_dimesions))
+        return np.random.uniform(0, 1, (num_points, self._num_dimensions))
 
 
     def _distance_function(self, points, point):

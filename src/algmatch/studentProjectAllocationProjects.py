@@ -72,6 +72,7 @@ class StudentProjectAllocationProjectsMultiple:
     def __init__(
             self,
             instance_generator: SPAPIG_Abstract = None,
+            instance_generator_args: dict[str, any] = {}, # kwargs for instance generator
             iters: int = 1,
             students: int = 5,
             lower_bound: int = 1,
@@ -132,17 +133,18 @@ class StudentProjectAllocationProjectsMultiple:
         self.delim = ',' if file_extension == "csv" else ' '
 
         if instance_generator is None:
-            instance_generator = SPAPIG_Random(
-                num_students=self.num_students,
-                lower_bound=self.lower_bound,
-                upper_bound=self.upper_bound,
-                num_projects=self.projects,
-                force_project_capacity=self.project_capacity,
-                num_lecturers=self.lecturers,
-                force_lecturer_capacity=self.lecturer_capacity
-            )
+            instance_generator = SPAPIG_Random
 
-        self.IG = instance_generator
+        self.IG = instance_generator(
+            **instance_generator_args,
+            num_students=students,
+            lower_bound=lower_bound,
+            upper_bound=upper_bound,
+            num_projects=projects,
+            force_project_capacity=project_capacity,
+            num_lecturers=lecturers,
+            force_lecturer_capacity=lecturer_capacity,
+        )
 
 
     def _save_instance(self, filename: str) -> None:
@@ -195,6 +197,17 @@ def main():
                             --output_flag OUTPUT_FLAG --file_extension EXTENSION --instance_generator GENERATOR_NAME
         """
     
+    IG_arg_types = {'num_dimensions': int} | {elt: float for elt in [
+        'prop_s', 'prop_l',
+        'max_fame',
+        'max_fame_student', 'max_fame_lecturer',
+        'stdev'
+    ]} | {'': str}
+
+    def parse_pair(pair):
+        key, value = pair.split('=')
+        return key, IG_arg_types[key](value)
+    
     parser = argparse.ArgumentParser(description="Run the SPA-P algorithm.", usage=help_msg())
 
     parser.add_argument("--single", action="store_true", help="Run the SPA-P algorithm for a single instance.")
@@ -218,6 +231,7 @@ def main():
     parser.add_argument("--output_flag", action="store_true", help="The flag to determine whether to output the Gurobi solver output.")
     parser.add_argument("--file_extension", type=str, default='csv', help="What type of file to write the output to.")
     parser.add_argument("--instance_generator", type=str, default='random', help="The instance generator to use.")
+    parser.add_argument("--instance_generator_args", type=parse_pair, default="=", help="The arguments for the instance generator.", nargs='+')
 
     args = parser.parse_args()
 
@@ -274,18 +288,14 @@ def main():
             [print(f"\t> {elt}") for elt in valid_instance_generators.keys()]
             return
         
-        instance_generator = valid_instance_generators[args.instance_generator](
-            num_students=args.students,
-            lower_bound=lower_bound,
-            upper_bound=upper_bound,
-            num_projects=args.projects,
-            force_project_capacity=args.force_project_capacity,
-            num_lecturers=args.lecturers,
-            force_lecturer_capacity=args.force_lecturer_capacity
-        )
+        instance_generator = valid_instance_generators[args.instance_generator]
+        instance_generator_args = {
+            key: value for key, value in args.instance_generator_args
+        } if args.instance_generator_args != ("", "") else {}
 
         spa = StudentProjectAllocationProjectsMultiple(
             instance_generator=instance_generator,
+            instance_generator_args=instance_generator_args,
             iters=args.iters,
             students=args.students,
             lower_bound=lower_bound,
