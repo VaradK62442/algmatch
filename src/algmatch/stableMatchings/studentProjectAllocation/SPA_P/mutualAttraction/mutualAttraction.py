@@ -9,7 +9,6 @@ This file contains a set of functions to perform this analysis, along with other
 
 import numpy as np
 from itertools import permutations
-from tqdm import tqdm
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.fileReader import FileReader
 
@@ -61,7 +60,7 @@ def mutual_attraction_distance(I: np.ndarray, J: np.ndarray) -> int:
     perms = list(permutations(range(I.shape[0])))
     
     min_dist = float('inf')
-    for p in tqdm(perms):
+    for p in perms:
         dist = 0
         for i, sigma_i in enumerate(p):
             dist += np.sum(np.abs(I[i] - J[sigma_i]))

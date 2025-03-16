@@ -15,7 +15,7 @@ Given above parameters, construct a 'map' of instances:
 
 import matplotlib.pyplot as plt
 from collections import Counter
-from itertools import chain
+from tqdm import tqdm
 
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.abstract import AbstractInstanceGenerator as SPAPIG_Abstract
 from algmatch.stableMatchings.studentProjectAllocation.SPA_P.instanceGenerators.attributes import SPAPIG_Attributes
@@ -97,16 +97,17 @@ def main():
     instance_generators = list(colours.keys())
 
     n, l = 4, 4
-    reps = 100 # for each IG
+    reps = 100_000 # for each IG
     default_filename = 'instance.csv'
     data = {}
+    min_Ma, min_Md = float('inf'), float('inf')
 
     fig = plt.figure(figsize=(8, 8))
     gs = fig.add_gridspec(2, 2, width_ratios=[1, 4], height_ratios=[4, 1], wspace=0, hspace=0)
 
     ax_scatter = fig.add_subplot(gs[0, 1])
-    for IG in instance_generators:
-        print(f"Running {IG.__name__}...")
+    print("Generating instances...")
+    for IG in tqdm(instance_generators):
         Ma_distances, Md_distances = [], []
         for _ in range(reps):
             generate_instance(
@@ -119,18 +120,52 @@ def main():
             Ma_distances.append(get_Ma_distance(default_filename))
             Md_distances.append(get_Md_distance(default_filename))
 
+            if Ma_distances[-1] < min_Ma:
+                min_Ma = Ma_distances[-1]
+
+            if Md_distances[-1] < min_Md:
+                min_Md = Md_distances[-1]
+
         ax_scatter.scatter(Ma_distances, Md_distances, c='black')
         data[IG] = (np.array(Ma_distances), np.array(Md_distances))
 
-    Ma, Md = mutual_agreement_matrix(n, l), mutual_disagreement_matrix(n, l)
-    ax_scatter.scatter(mutual_attraction_distance(Ma, Md), mutual_attraction_distance(Md, Ma), c='black', marker='x', label='Ma vs Md')
+    MAD_Ma_Md = MAD_distance_between_Ma_Md(n, l)
+
+    ax_scatter.scatter(
+        MAD_Ma_Md, MAD_Ma_Md,
+        c='black', marker='x', label='Ma vs Md'
+    )
 
     ax_scatter.set_xlabel('MAD(Ma, I)')
     ax_scatter.set_ylabel('MAD(Md, I)')
-    ax_scatter.set_title('Map of Instances')
+    ax_scatter.set_title(f'Map of all Instances')
+    ax_scatter.legend()
 
-    plt.show()
-    
+    ax_bar_Ma = fig.add_subplot(gs[1, 1], sharex=ax_scatter)
+    ax_bar_Md = fig.add_subplot(gs[0, 0], sharey=ax_scatter)
+
+    lower_bound = min(min_Ma, min_Md)
+
+    print("Generating histograms...")
+    for IG, colour in tqdm(colours.items()):
+        Ma_distances, Md_distances = data[IG]
+        bottom_Ma, bottom_Md = np.zeros(MAD_Ma_Md - lower_bound), np.zeros(MAD_Ma_Md - lower_bound)
+
+        ax_bar_Ma.cla()
+        ax_bar_Md.cla()
+
+        ax_bar_Ma.hist(Ma_distances, bottom=bottom_Ma, bins=range(lower_bound, MAD_Ma_Md+1), color=colour, alpha=0.5)
+        ax_bar_Md.hist(Md_distances, bottom=bottom_Md, bins=range(lower_bound, MAD_Ma_Md+1), color=colour, alpha=0.5, orientation='horizontal')
+        bottom_Ma += np.array([Counter(Ma_distances)[i] for i in range(lower_bound, MAD_Ma_Md)])
+        bottom_Md += np.array([Counter(Md_distances)[i] for i in range(lower_bound, MAD_Ma_Md)])
+
+        ax_bar_Ma.set_title(f'MAD(Ma, I) Histogram')
+        ax_bar_Ma.set_ylabel('Frequency')
+
+        ax_bar_Md.set_title(f'MAD(Md, I) Histogram')
+        ax_bar_Md.set_xlabel('Frequency')
+
+        plt.savefig(f"maps/map_{IG.__name__}.png")    
 
 
 if __name__ == "__main__":
