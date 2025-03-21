@@ -1,4 +1,4 @@
-from multiprocessing import Manager, Process
+from multiprocessing import Manager, Process, cpu_count
 from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
@@ -6,12 +6,15 @@ from tests.SMTests.SM.smMultiVerifier import SMMultiVerifier as SM_MV
 from tests.HRTests.HR.hrMultiVerifier import HRMultiVerifier as HR_MV
 from tests.SPATests.spasMultiVerifier import SPASMultiVerifier as SPAS_MV
 
+from tests.SMTests.SMTSuper.smtSuperMultiVerifier import SMTSuperMultiVerifier as SMT_MV
+
 if __name__ == "__main__":
     # ====== Control Panel ======#
-    THREADS = 4
+    THREADS = cpu_count()
     verifier_dict = {
         SM_MV: (5, 5, 0, 5, 10_000),
-        HR_MV: (12, 5, 0, 5, 10_000),
+        SMT_MV: (5, 5, 0, 5, 10_000),
+        # HR_MV: (12, 5, 0, 5, 10_000),
         # SPAS_MV: (5, 0, 3, 10_000),
     }
     # ===========================#

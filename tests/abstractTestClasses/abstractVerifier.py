@@ -39,6 +39,10 @@ class AbstractVerifier:
         m_0 = optimal_solver.get_stable_matching()
         m_z = pessimal_solver.get_stable_matching()
 
+        if not bruteforcer.stable_matching_list:
+            if m_z is None and m_0 is None:
+                return True
+
         if m_z != bruteforcer.stable_matching_list[-1]:
             return False
         if m_0 != bruteforcer.stable_matching_list[0]:
