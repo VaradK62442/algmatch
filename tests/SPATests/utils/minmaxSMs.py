@@ -1,4 +1,4 @@
-from algmatch.stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
+from algmatch.stableMatchings.studentProjectAllocation.noTies.spaAbstract import SPAAbstract
 
 
 class MMSMS(SPAAbstract):
