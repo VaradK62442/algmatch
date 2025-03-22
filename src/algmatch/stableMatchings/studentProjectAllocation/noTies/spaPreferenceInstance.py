@@ -4,8 +4,8 @@ Store preference lists for student project allocation algorithm.
 from itertools import product
 
 from algmatch.abstractClasses.abstractPreferenceInstance import AbstractPreferenceInstance
-from algmatch.stableMatchings.studentProjectAllocation.fileReader import FileReader
-from algmatch.stableMatchings.studentProjectAllocation.dictionaryReader import DictionaryReader
+from algmatch.stableMatchings.studentProjectAllocation.noTies.fileReader import FileReader
+from algmatch.stableMatchings.studentProjectAllocation.noTies.dictionaryReader import DictionaryReader
 from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 class SPAPreferenceInstance(AbstractPreferenceInstance):

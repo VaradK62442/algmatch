@@ -5,7 +5,7 @@ Student Project Allocation - Abstract class
 from copy import deepcopy
 import os
 
-from algmatch.stableMatchings.studentProjectAllocation.spaPreferenceInstance import SPAPreferenceInstance
+from algmatch.stableMatchings.studentProjectAllocation.noTies.spaPreferenceInstance import SPAPreferenceInstance
 
 
 class SPAAbstract:
