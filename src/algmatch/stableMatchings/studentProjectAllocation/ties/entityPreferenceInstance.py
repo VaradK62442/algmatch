@@ -43,7 +43,10 @@ class EntityPreferenceInstance:
         return hash(self.values)
 
     def __contains__(self, item) -> bool:
-        return item in self.values
+        if self.isTie:
+            return item in self.values
+
+        return item == self.values
     
     def __iter__(self):
         return (x for x in self.values) if self.isTie else (EntityPreferenceInstance(x) for x in [self.values])

@@ -8,7 +8,6 @@ from gurobipy import GRB
 from algmatch.stableMatchings.studentProjectAllocation.ties.fileReaderIPModel import FileReaderIPModel as FileReader
 
 from collections import defaultdict
-from pprint import pprint
 
 
 class GurobiSPAST:
@@ -121,7 +120,7 @@ class GurobiSPAST:
         theta_ij = gp.LinExpr()
         sum_outranked_projects = gp.LinExpr()
 
-        for p_jprime in self._get_outranked_entities(self._students[student][1], project):
+        for p_jprime in self._get_outranked_entities(self._students[student][0], project):
             sum_outranked_projects += self._students[student][1][p_jprime]
 
         theta_ij.addConstant(1)
@@ -358,19 +357,17 @@ class GurobiSPAST:
         all_xij = gp.quicksum(self._students[student][1][project] for student in self._students for project in self._students[student][1])
         self.J.setObjective(all_xij, GRB.MAXIMIZE)
 
+    
+    def display_assignments(self) -> None:
+        # assumes model has been solved
+        if self.J.Status != GRB.OPTIMAL:
+            print("No optimal solution found.")
+            return
 
-    def _construct_matching(self) -> None:
-        """
-        Construct matching after optimising.
-        Stored in self.matching
-        """
         for student in self._students:
             for project in self._students[student][1]:
-                if self._students[student][1][project].x == 1.0:
-                    lecturer = self._projects[project][1]
-                    self.matching[student] = project
-                    
-                    break
+                if self._students[student][1][project].x == 1: 
+                    print(f"{student} -> {project}")
 
 
     def solve(self) -> None:
@@ -379,10 +376,9 @@ class GurobiSPAST:
         self._objective_function()
 
         self.J.optimize()
-        self._construct_matching()
 
 
 if __name__ == "__main__":
     G = GurobiSPAST("instance.txt")
     G.solve()
-    print(G.matching)
+    G.display_assignments()
