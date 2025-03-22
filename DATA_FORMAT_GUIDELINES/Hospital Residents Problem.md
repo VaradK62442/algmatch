@@ -21,7 +21,7 @@ i j
 An example file could look like this:
 
 ```txt
-2 2
+3 2
 1 1 2
 2 2 1
 3 1

@@ -22,7 +22,7 @@ class FileReader(AbstractReader):
 
         try:
             self.no_men, self.no_women = map(int, file[0].split())
-        except ValueError:
+        except (ValueError, IndexError):
             raise ParticipantQuantityError()
 
         # build men dictionary
@@ -38,7 +38,7 @@ class FileReader(AbstractReader):
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise PrefListMisformatError("man",cur_line,line=True)
+                    raise PrefListMisformatError("man",cur_line,i,line=True)
             preferences = [f"w{i}" for i in entry[1:]]
 
             self.men[man] = {"list": preferences, "rank": {}}
@@ -56,7 +56,7 @@ class FileReader(AbstractReader):
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise PrefListMisformatError("woman",cur_line,line=True)
+                    raise PrefListMisformatError("woman",cur_line,i,line=True)
             preferences = [f"m{i}" for i in entry[1:]]
 
             self.women[woman] = {"list": preferences, "rank": {}}

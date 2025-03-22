@@ -25,7 +25,7 @@ class FileReader(AbstractReader):
 
         try:
             self.no_students, self.no_projects, self.no_lecturers = map(int, file[0].split())
-        except ValueError:
+        except (ValueError, IndexError):
             raise ParticipantQuantityError()
 
         # build students dictionary
@@ -41,7 +41,7 @@ class FileReader(AbstractReader):
 
             for i in entry[1:]:
                 if not i.isdigit():
-                    raise PrefListMisformatError("student",cur_line,line=True)
+                    raise PrefListMisformatError("student",cur_line,i,line=True)
             preferences = [f"p{k}" for k in entry[1:]]
 
             rank = {proj: idx for idx, proj in enumerate(preferences)}
