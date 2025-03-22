@@ -16,9 +16,10 @@ class EntityPreferenceInstance:
         """ 
         if isinstance(values, tuple):
             self.values = tuple(EntityPreferenceInstance(v) for v in values)
+            self.isTie = True
         else:
             self.values = values
-        self.isTie = isinstance(values, tuple)
+            self.isTie = False
 
     def __str__(self) -> str:
         return f"{self.values}"
@@ -45,7 +46,10 @@ class EntityPreferenceInstance:
         return item in self.values
     
     def __iter__(self):
-        return (x for x in self.values) if isinstance(self.values, tuple) else (x for x in [self.values])
+        return (x for x in self.values) if self.isTie else (EntityPreferenceInstance(x) for x in [self.values])
+
+    def __len__(self):
+        return len(self.values) if self.isTie else 1
 
     def _remove_from_tied(self, value):
         if isinstance(self.values, tuple): 
