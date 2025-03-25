@@ -192,8 +192,9 @@ class HRTAbstract:
             hospital_set = self.M[resident]["assigned"]
             if hospital_set != set():
                 # If resident is multiply assigned then there's no sup.s.m,
-                # in which case we won't call this function, so we can use pop.
-                self.stable_matching["resident_sided"][resident] = hospital_set.pop()
+                # in which case we won't call this function, so we can use this unpacking
+                [hospital] = hospital_set
+                self.stable_matching["resident_sided"][resident] = hospital
 
     def save_hospital_sided(self) -> None:
         for hospitals in self.hospitals:
