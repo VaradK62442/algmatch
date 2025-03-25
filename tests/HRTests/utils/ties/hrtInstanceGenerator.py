@@ -23,12 +23,13 @@ class HRTInstanceGenerator(HRGenericGenerator, AbstractTieGenerator):
 
     def _generate_hospitals_lists(self):
         for hos_dict in self.instance["hospitals"].values():
-            random.shuffle(self.available_hospitals)
+            # we provide a random ordering of all residents
+            random.shuffle(self.available_residents)
 
             hos_dict["capacity"] = random.randint(1, self.no_residents)
 
             hos_list = hos_dict["preferences"]
             self._generate_tied_list(
                 hos_list,
-                self.available_hospitals,
+                self.available_residents,
             )

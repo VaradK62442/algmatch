@@ -16,7 +16,6 @@ class HRInstanceGenerator(HRGenericGenerator):
 
     def _generate_hospitals_lists(self):
         for hos_dict in self.instance["hospitals"].values():
-            # random capacity; 1 <= capacity <= residents
             hos_dict["capacity"] = random.randint(1, self.no_residents)
             # we provide a random ordering of all residents
             random.shuffle(self.available_residents)
