@@ -60,6 +60,8 @@ class HRTSuperHospitalOptimal(HRTAbstract):
 
         # Check Viability of Matching
         for r in self.residents:
+            if len(self.M[r]["assigned"]) > 1:
+                return False
             if len(self.M[r]["assigned"]) == 0 and self.been_assigned[r]:
                 return False
 
