@@ -23,6 +23,7 @@ class AbstractPreferenceInstance:
         if dictionary is not None:
             self._load_from_dictionary(dictionary)
 
+    def _general_setup_procedure(self):
         self.check_preference_lists()
         self.clean_unacceptable_pairs()
         self.set_up_rankings()

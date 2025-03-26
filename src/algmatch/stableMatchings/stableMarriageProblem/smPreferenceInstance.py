@@ -19,6 +19,7 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
         self, filename: str | None = None, dictionary: dict | None = None
     ) -> None:
         super().__init__(filename, dictionary)
+        self._general_setup_procedure()
 
     def _load_from_file(self, filename: str) -> None:
         reader = FileReader(filename)
