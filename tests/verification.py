@@ -8,7 +8,7 @@ from tests.SPATests.spasMultiVerifier import SPASMultiVerifier as SPAS_MV
 
 if __name__ == "__main__":
     # ====== Control Panel ======#
-    THREADS = 4
+    THREADS = 12
     verifier_dict = {
         SM_MV: (5, 5, 0, 5, 10_000),
         HR_MV: (12, 5, 0, 5, 10_000),

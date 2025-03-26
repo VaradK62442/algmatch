@@ -12,7 +12,7 @@ class AbstractVerifier:
     def verify_instance(self):
         # optimal and pessimal from man/resident/student side
 
-        minmaxer = self.BruteForce(dictionary=self.current_instance)
+        enumerator = self.BruteForce(dictionary=self.current_instance)
         optimal_solver = self.Problem(
             dictionary=self.current_instance, optimisedSide=self.sides[0]
         )
@@ -20,13 +20,13 @@ class AbstractVerifier:
             dictionary=self.current_instance, optimisedSide=self.sides[1]
         )
 
-        minmaxer.find_minmax_matchings()
+        enumerator.find_all_stable_matchings()
         m_0 = optimal_solver.get_stable_matching()
         m_z = pessimal_solver.get_stable_matching()
 
-        if m_z != minmaxer.minmax_matchings[-1]:
+        if m_z != enumerator.all_stable_matchings[-1]:
             return False
-        if m_0 != minmaxer.minmax_matchings[0]:
+        if m_0 != enumerator.all_stable_matchings[0]:
             return False
         return True
 
