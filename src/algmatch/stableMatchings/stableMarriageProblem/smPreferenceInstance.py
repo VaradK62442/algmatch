@@ -2,8 +2,6 @@
 Store preference lists for Stable Marriage stable matching algorithm.
 """
 
-from itertools import product
-
 from algmatch.abstractClasses.abstractPreferenceInstance import (
     AbstractPreferenceInstance,
 )
@@ -49,16 +47,7 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
                     raise PrefNotFoundError("woman", w, m)
 
     def clean_unacceptable_pairs(self) -> None:
-        for m, w in product(self.men, self.women):
-            if m not in self.women[w]["list"] or w not in self.men[m]["list"]:
-                try:
-                    self.men[m]["list"].remove(w)
-                except ValueError:
-                    pass
-                try:
-                    self.women[w]["list"].remove(m)
-                except ValueError:
-                    pass
+        super().clean_unacceptable_pairs(self.men, self.women)
 
     def set_up_rankings(self):
         for m in self.men:

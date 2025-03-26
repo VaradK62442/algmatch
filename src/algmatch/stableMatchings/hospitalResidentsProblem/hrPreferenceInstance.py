@@ -2,8 +2,6 @@
 Store preference lists for Hospital/Residents Problem stbale matching algorithm.
 """
 
-from itertools import product
-
 from algmatch.abstractClasses.abstractPreferenceInstance import (
     AbstractPreferenceInstance,
 )
@@ -49,16 +47,7 @@ class HRPreferenceInstance(AbstractPreferenceInstance):
                     raise PrefNotFoundError("hospital", h, r)
 
     def clean_unacceptable_pairs(self) -> None:
-        for r, h in product(self.residents, self.hospitals):
-            if r not in self.hospitals[h]["list"] or h not in self.residents[r]["list"]:
-                try:
-                    self.residents[r]["list"].remove(h)
-                except ValueError:
-                    pass
-                try:
-                    self.hospitals[h]["list"].remove(r)
-                except ValueError:
-                    pass
+        super().clean_unacceptable_pairs(self.residents, self.hospitals)
 
     def set_up_rankings(self):
         for r in self.residents:

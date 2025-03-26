@@ -2,8 +2,6 @@
 Store preference lists for student project allocation algorithm.
 """
 
-from itertools import product
-
 from algmatch.abstractClasses.abstractPreferenceInstance import (
     AbstractPreferenceInstance,
 )
@@ -61,16 +59,7 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
                     raise PrefNotFoundError("lecturer", L, s)
 
     def clean_unacceptable_pairs(self) -> None:
-        for s, p in product(self.students, self.projects):
-            if s not in self.projects[p]["list"] or p not in self.students[s]["list"]:
-                try:
-                    self.students[s]["list"].remove(p)
-                except ValueError:
-                    pass
-                try:
-                    self.projects[p]["list"].remove(s)
-                except ValueError:
-                    pass
+        super().clean_unacceptable_pairs(self.students, self.projects)
 
         for L in self.lecturers:
             proj_pref_set = set()

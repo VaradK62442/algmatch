@@ -2,6 +2,7 @@
 Abstract class to store preference lists for both sides in a type of matching problem.
 """
 
+from itertools import product
 import os
 
 
@@ -37,8 +38,23 @@ class AbstractPreferenceInstance:
     def check_preference_lists(self) -> None:
         raise NotImplementedError("Method not implemented")
 
-    def clean_unacceptable_pairs(self) -> None:
-        raise NotImplementedError("Method not implemented")
+    def clean_unacceptable_pairs(self, a_side, b_side) -> None:
+        """
+        Provides a general function for pair cleaning between two sides.
+        May be overridden or extended by subclasses if necessary.
+
+        :param a_side: dictionary with information for e.g. men, residents
+        :param b_side: dictionary with information for e.g. women, hospitals
+        """
+        for a, b in product(a_side, b_side):
+            a_in_b_list = a in self.women[b]["list"]
+            b_in_a_list = b in self.men[a]["list"]
+
+            if not a_in_b_list or not b_in_a_list:
+                if b_in_a_list:
+                    self.men[a]["list"].remove(b)
+                if a_in_b_list:
+                    self.women[b]["list"].remove(a)
 
     def set_up_rankings(self) -> None:
         raise NotImplementedError("Method not implemented")
