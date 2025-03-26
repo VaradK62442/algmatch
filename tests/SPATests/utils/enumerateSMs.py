@@ -1,5 +1,6 @@
-from algmatch.stableMatchings.studentProjectAllocation.noTies.spaAbstract import SPAAbstract
-from algmatch.stableMatchings.studentProjectAllocation.noTies.spaPreferenceInstance import SPAPreferenceInstance
+from algmatch.stableMatchings.studentProjectAllocation.noTies.spaAbstract import (
+    SPAAbstract,
+)
 
 
 class ESMS(SPAAbstract):
@@ -10,7 +11,7 @@ class ESMS(SPAAbstract):
         self.M.update({p: {"assigned": set()} for p in self.projects})
         self.M.update({L: {"assigned": set()} for L in self.lecturers})
 
-        self.minmax_matchings = []
+        self.all_stable_matchings = []
 
         # This lets us order students in the stable matching by number.
         # We cannot use 'sorted' without this key because that uses lexial order.
@@ -75,5 +76,5 @@ class ESMS(SPAAbstract):
             self.choose(i + 1)
 
     # alias with more readable name
-    def find_minmax_matchings(self):
+    def all_stable_matchings(self):
         self.choose()
