@@ -22,9 +22,7 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
     ) -> None:
         super().__init__(filename, dictionary)
         self.setup_project_lists()
-        self.check_preference_lists()
-        self.clean_unacceptable_pairs()
-        self.set_up_rankings()
+        self._general_setup_procedure()
 
     def _load_from_file(self, filename: str) -> None:
         reader = FileReader(filename)
