@@ -9,7 +9,6 @@ from algmatch.stableMatchings.hospitalResidentsProblem.fileReader import FileRea
 from algmatch.stableMatchings.hospitalResidentsProblem.dictionaryReader import (
     DictionaryReader,
 )
-from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 
 class HRPreferenceInstance(AbstractPreferenceInstance):
@@ -30,21 +29,8 @@ class HRPreferenceInstance(AbstractPreferenceInstance):
         self.hospitals = reader.hospitals
 
     def check_preference_lists(self) -> None:
-        for r, r_prefs in self.residents.items():
-            if len(set(r_prefs["list"])) != len(r_prefs["list"]):
-                raise PrefRepError("resident", r)
-
-            for h in r_prefs["list"]:
-                if h not in self.hospitals:
-                    raise PrefNotFoundError("resident", r, h)
-
-        for h, h_prefs in self.hospitals.items():
-            if len(set(h_prefs["list"])) != len(h_prefs["list"]):
-                raise PrefRepError("hospital", h)
-
-            for r in h_prefs["list"]:
-                if r not in self.residents:
-                    raise PrefNotFoundError("hospital", h, r)
+        self.check_preferences_single_group(self.residents, "resident", self.hospitals)
+        self.check_preferences_single_group(self.hospitals, "hospital", self.residents)
 
     def clean_unacceptable_pairs(self) -> None:
         super().clean_unacceptable_pairs(self.residents, self.hospitals)

@@ -9,7 +9,6 @@ from algmatch.stableMatchings.stableMarriageProblem.fileReader import FileReader
 from algmatch.stableMatchings.stableMarriageProblem.dictionaryReader import (
     DictionaryReader,
 )
-from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 
 class SMPreferenceInstance(AbstractPreferenceInstance):
@@ -30,21 +29,8 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
         self.women = reader.women
 
     def check_preference_lists(self) -> None:
-        for m, m_prefs in self.men.items():
-            if len(set(m_prefs["list"])) != len(m_prefs["list"]):
-                raise PrefRepError("man", m)
-
-            for w in m_prefs["list"]:
-                if w not in self.women:
-                    raise PrefNotFoundError("man", m, w)
-
-        for w, w_prefs in self.women.items():
-            if len(set(w_prefs["list"])) != len(w_prefs["list"]):
-                raise PrefRepError("woman", w)
-
-            for m in w_prefs["list"]:
-                if m not in self.men:
-                    raise PrefNotFoundError("woman", w, m)
+        self.check_preferences_single_group(self.men, "man", self.women)
+        self.check_preferences_single_group(self.women, "woman", self.men)
 
     def clean_unacceptable_pairs(self) -> None:
         super().clean_unacceptable_pairs(self.men, self.women)

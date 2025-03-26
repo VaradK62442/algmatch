@@ -11,7 +11,6 @@ from algmatch.stableMatchings.studentProjectAllocation.noTies.fileReader import 
 from algmatch.stableMatchings.studentProjectAllocation.noTies.dictionaryReader import (
     DictionaryReader,
 )
-from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 
 class SPAPreferenceInstance(AbstractPreferenceInstance):
@@ -42,21 +41,8 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
             self.projects[project]["list"] = lecturer_list[:]
 
     def check_preference_lists(self) -> None:
-        for s, s_prefs in self.students.items():
-            if len(set(s_prefs["list"])) != len(s_prefs["list"]):
-                raise PrefRepError("student", s)
-
-            for p in s_prefs["list"]:
-                if p not in self.projects:
-                    raise PrefNotFoundError("student", s, p)
-
-        for L, L_prefs in self.lecturers.items():
-            if len(set(L_prefs["list"])) != len(L_prefs["list"]):
-                raise PrefRepError("lecturer", L)
-
-            for s in L_prefs["list"]:
-                if s not in self.students:
-                    raise PrefNotFoundError("lecturer", L, s)
+        self.check_preferences_single_group(self.students, "student", self.projects)
+        self.check_preferences_single_group(self.lecturers, "lecturer", self.students)
 
     def clean_unacceptable_pairs(self) -> None:
         super().clean_unacceptable_pairs(self.students, self.projects)
