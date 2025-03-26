@@ -58,3 +58,12 @@ class AbstractPreferenceInstance:
 
     def set_up_rankings(self) -> None:
         raise NotImplementedError("Method not implemented")
+
+    def tieless_lists_to_rank(self, group) -> None:
+        """
+        Utility. Takes a group with clean lists and constructs their rank dictionaries.
+
+        :param group: set of entities (e.g. men, projects, lecturers)
+        """
+        for g_data in group.values():
+            g_data["rank"] = {target: idx for idx, target in enumerate(g_data["list"])}

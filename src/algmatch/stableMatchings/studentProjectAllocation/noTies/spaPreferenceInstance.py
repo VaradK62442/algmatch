@@ -72,15 +72,6 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
             self.lecturers[L]["list"] = new_l_prefs
 
     def set_up_rankings(self):
-        for s in self.students:
-            self.students[s]["rank"] = {
-                project: idx for idx, project in enumerate(self.students[s]["list"])
-            }
-        for p in self.projects:
-            self.projects[p]["rank"] = {
-                student: idx for idx, student in enumerate(self.projects[p]["list"])
-            }
-        for L in self.lecturers:
-            self.lecturers[L]["rank"] = {
-                woman: idx for idx, woman in enumerate(self.lecturers[L]["list"])
-            }
+        self.tieless_lists_to_rank(self.students)
+        self.tieless_lists_to_rank(self.projects)
+        self.tieless_lists_to_rank(self.lecturers)

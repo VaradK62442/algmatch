@@ -50,11 +50,5 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
         super().clean_unacceptable_pairs(self.men, self.women)
 
     def set_up_rankings(self):
-        for m in self.men:
-            self.men[m]["rank"] = {
-                woman: idx for idx, woman in enumerate(self.men[m]["list"])
-            }
-        for w in self.women:
-            self.women[w]["rank"] = {
-                man: idx for idx, man in enumerate(self.women[w]["list"])
-            }
+        self.tieless_lists_to_rank(self.men)
+        self.tieless_lists_to_rank(self.women)

@@ -50,11 +50,5 @@ class HRPreferenceInstance(AbstractPreferenceInstance):
         super().clean_unacceptable_pairs(self.residents, self.hospitals)
 
     def set_up_rankings(self):
-        for r in self.residents:
-            self.residents[r]["rank"] = {
-                hospital: idx for idx, hospital in enumerate(self.residents[r]["list"])
-            }
-        for h in self.hospitals:
-            self.hospitals[h]["rank"] = {
-                resident: idx for idx, resident in enumerate(self.hospitals[h]["list"])
-            }
+        self.tieless_lists_to_rank(self.residents)
+        self.tieless_lists_to_rank(self.hospitals)
