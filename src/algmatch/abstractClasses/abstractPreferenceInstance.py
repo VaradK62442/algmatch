@@ -49,14 +49,14 @@ class AbstractPreferenceInstance:
         :param b_side: dictionary with information for e.g. women, hospitals
         """
         for a, b in product(a_side, b_side):
-            a_in_b_list = a in self.women[b]["list"]
-            b_in_a_list = b in self.men[a]["list"]
+            a_in_b_list = a in b_side[b]["list"]
+            b_in_a_list = b in a_side[a]["list"]
 
             if not a_in_b_list or not b_in_a_list:
                 if b_in_a_list:
-                    self.men[a]["list"].remove(b)
+                    a_side[a]["list"].remove(b)
                 if a_in_b_list:
-                    self.women[b]["list"].remove(a)
+                    b_side[b]["list"].remove(a)
 
     def set_up_rankings(self) -> None:
         raise NotImplementedError("Method not implemented")
