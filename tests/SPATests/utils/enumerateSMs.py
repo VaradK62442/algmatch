@@ -44,7 +44,7 @@ class ESMS(SPAAbstract):
             stable_matching["lecturer_sided"][lecturer] = sorted(
                 self.M[lecturer]["assigned"], key=self.student_order_comparator
             )
-        self.minmax_matchings.append(stable_matching)
+        self.all_stable_matchings.append(stable_matching)
 
     # ------------------------------------------------------------------------
     # The choose function finds all the matchings in the given instance
@@ -76,5 +76,5 @@ class ESMS(SPAAbstract):
             self.choose(i + 1)
 
     # alias with more readable name
-    def all_stable_matchings(self):
+    def find_all_stable_matchings(self):
         self.choose()
