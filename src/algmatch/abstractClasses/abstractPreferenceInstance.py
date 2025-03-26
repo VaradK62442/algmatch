@@ -61,7 +61,16 @@ class AbstractPreferenceInstance:
     def set_up_rankings(self) -> None:
         raise NotImplementedError("Method not implemented")
 
-    def check_preferences_single_group(self, group, name_singular, targets):
+    def check_preferences_single_group(self, group, name_singular, targets) -> None:
+        """
+        Utility. Checks that each list contains only valid targets without repetition.
+
+        :param group:  set of entities (e.g. men, projects, lecturers)
+        :param name_singular: singular of group name
+        :param targets: group of valid targets of preference
+        :raises PrefRepError: target duplication
+        :raises PrefNotFoundError: target is not is not of the right kind
+        """
         for g, prefs in group.items():
             if len(set(prefs["list"])) != len(prefs["list"]):
                 raise PrefRepError(name_singular, g)

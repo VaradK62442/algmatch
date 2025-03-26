@@ -57,7 +57,7 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
                     new_l_prefs.append(s)
             self.lecturers[L]["list"] = new_l_prefs
 
-    def set_up_rankings(self):
+    def set_up_rankings(self) -> None:
         self.tieless_lists_to_rank(self.students)
         self.tieless_lists_to_rank(self.projects)
         self.tieless_lists_to_rank(self.lecturers)

@@ -35,6 +35,6 @@ class HRPreferenceInstance(AbstractPreferenceInstance):
     def clean_unacceptable_pairs(self) -> None:
         super().clean_unacceptable_pairs(self.residents, self.hospitals)
 
-    def set_up_rankings(self):
+    def set_up_rankings(self) -> None:
         self.tieless_lists_to_rank(self.residents)
         self.tieless_lists_to_rank(self.hospitals)

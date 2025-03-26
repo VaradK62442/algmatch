@@ -35,6 +35,6 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
     def clean_unacceptable_pairs(self) -> None:
         super().clean_unacceptable_pairs(self.men, self.women)
 
-    def set_up_rankings(self):
+    def set_up_rankings(self) -> None:
         self.tieless_lists_to_rank(self.men)
         self.tieless_lists_to_rank(self.women)
