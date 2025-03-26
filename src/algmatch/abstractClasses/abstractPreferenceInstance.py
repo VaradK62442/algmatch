@@ -5,6 +5,8 @@ Abstract class to store preference lists for both sides in a type of matching pr
 from itertools import product
 import os
 
+from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
+
 
 class AbstractPreferenceInstance:
     def __init__(
@@ -59,11 +61,20 @@ class AbstractPreferenceInstance:
     def set_up_rankings(self) -> None:
         raise NotImplementedError("Method not implemented")
 
+    def check_preferences_single_group(self, group, name_singular, targets):
+        for g, prefs in group.items():
+            if len(set(prefs["list"])) != len(prefs["list"]):
+                raise PrefRepError(name_singular, g)
+
+            for t in prefs["list"]:
+                if t not in targets:
+                    raise PrefNotFoundError(name_singular, g, t)
+
     def tieless_lists_to_rank(self, group) -> None:
         """
         Utility. Takes a group with clean lists and constructs their rank dictionaries.
 
         :param group: set of entities (e.g. men, projects, lecturers)
         """
-        for g_data in group.values():
-            g_data["rank"] = {target: idx for idx, target in enumerate(g_data["list"])}
+        for prefs in group.values():
+            prefs["rank"] = {target: idx for idx, target in enumerate(prefs["list"])}
