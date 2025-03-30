@@ -108,9 +108,19 @@ class GurobiSPAST:
         """
         Return projected preference list of lecturer l_k for project p_j
         """
-        return [
-            s for students in self._lecturers[lecturer][1] for s in students if project in self._students[s][1]
-        ]
+        Lkj = []
+        for student_entity in self._lecturers[lecturer][1]:
+            if student_entity.isTie:
+                projected_tie = [s for s in student_entity if project in self._students[s][1]]
+                if len(projected_tie) > 1:
+                    new_EPI = EPI(tuple(projected_tie))
+                    Lkj.append(new_EPI)
+                elif len(projected_tie) == 1:
+                    Lkj.append(projected_tie[0])
+            else:
+                if project in self._students[student_entity][1]:
+                    Lkj.append(student_entity)
+        return Lkj
 
 
     def _theta(self, student, project) -> gp.LinExpr:
