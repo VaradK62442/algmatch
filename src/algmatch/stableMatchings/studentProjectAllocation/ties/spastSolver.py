@@ -9,6 +9,9 @@ from algmatch.stableMatchings.studentProjectAllocation.ties.fileReaderIPModel im
 
 from collections import defaultdict
 
+DEBUG = True
+dprint = lambda x: print(x) if DEBUG else None
+
 
 class GurobiSPAST:
     def __init__(self, filename: str, output_flag=1) -> None:
@@ -153,7 +156,7 @@ class GurobiSPAST:
         """
         project_occupancy = gp.LinExpr()
         for student in self._students:
-            if project in self._students[student][0]:
+            if project in self._students[student][1]:
                 project_occupancy += self._students[student][1][project]
 
         return project_occupancy
