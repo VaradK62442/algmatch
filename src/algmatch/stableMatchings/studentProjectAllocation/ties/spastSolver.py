@@ -206,12 +206,12 @@ class GurobiSPAST:
         beta_k \in {0, 1} s.t. (1 <= k <= |L|)
         beta_k = 1 <= lecturer l_k is undersubscribed
         """
-        lecturer_capacity = self._lecturers[lecturer][0]
         beta_k = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} is undersubscribed")
+        d_k = self._lecturers[lecturer][0]
         lecturer_occupancy = self._get_lecturer_occupancy(lecturer)
 
         # CONSTRAINT: if l_k is undersubscribed in M, beta_k = 1
-        self.J.addConstr(lecturer_capacity * beta_k >= lecturer_capacity - lecturer_occupancy, f"Constraint (4.9) for {lecturer}")
+        self.J.addConstr(d_k * beta_k >= d_k - lecturer_occupancy, f"Constraint (4.9) for {lecturer}")
         return beta_k
 
     
@@ -223,12 +223,11 @@ class GurobiSPAST:
         eta_k = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} is full")
         d_k = self._lecturers[lecturer][0]
         lecturer_occupancy = self._get_lecturer_occupancy(lecturer)
-        lecturer_occupancy.addConstant(1)
 
         # CONSTRAINT: if l_k is full in M, eta_k = 1
-        self.J.addConstr(d_k * eta_k >= lecturer_occupancy - d_k, f"Constraint (4.11) for {lecturer}")
+        self.J.addConstr(d_k * eta_k >= 1 + lecturer_occupancy - d_k, f"Constraint (4.11) for {lecturer}")
         return eta_k
-    
+
 
     def _delta(self, student, lecturer) -> gp.Var:
         """
