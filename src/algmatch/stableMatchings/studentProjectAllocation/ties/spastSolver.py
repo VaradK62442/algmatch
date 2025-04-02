@@ -379,8 +379,8 @@ class GurobiSPAST:
             return
 
         for student in self._students:
-            for project in self._students[student][1]:
-                if self._students[student][1][project].x == 1:
+            for project, xij in self._students[student][1].items():
+                if xij.x == 1:
                     print(f"{student} -> {project}")
 
 
