@@ -163,8 +163,8 @@ class SPAST:
 
 if __name__ == '__main__':
     s = SPAST(
-        10, 3, 3,
-        5, 2,
+        5, 1, 2,
+        3, 1,
         0.5, 0.5
     )
     s.generate_instance()
