@@ -132,7 +132,7 @@ class GurobiSPAST:
     def _theta_star(self, student, project) -> gp.LinExpr:
         """
         theta_{ij} = (sum of x_{ij'} over projects p_{j'} equal to p_j in student's preference list) - x_{ij}
-        theta_{ij} = 1 iff student is indifferent between p_j and M(s_i), where p_j != M(s_i)
+        theta_{ij} = 1 iff student is indifferent between p_j and M(s_i), where p_j not in M(s_i)
         """
         theta_star_ij = gp.LinExpr()
         sum_equal_projects = gp.LinExpr()
@@ -269,7 +269,7 @@ class GurobiSPAST:
 
         # CONSTRAINT: if l_k prefers s_i to a worst student in M(p_j)
         # or l_k is indifferent between them, lambda_{ijk} = 1
-        self.J.addConstr(c_j * lambda_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (4.15) for {student}, {project}, {lecturer}")
+        self.J.addConstr(c_j * lambda_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (4.15) for {student} {project} {lecturer}")
         return lambda_ijk
     
 
@@ -295,7 +295,7 @@ class GurobiSPAST:
                     lecturer_preferred_occupancy += self._students[student][1][project]
 
         # CONSTRAINT: if s_i \in M(l_k) or l_k prefers s_i to a worst student in M(l_k), mu_{ik} = 1
-        self.J.addConstr(d_k * mu_ik >= omega_ik + lecturer_occupancy - lecturer_preferred_occupancy, f"Constraint (5.15) for {student}, {lecturer}")
+        self.J.addConstr(d_k * mu_ik >= omega_ik + lecturer_occupancy - lecturer_preferred_occupancy, f"Constraint (5.15) for {student} {lecturer}")
         return mu_ik
     
 
@@ -308,13 +308,13 @@ class GurobiSPAST:
         c_j = self._projects[project][0]
         project_occupancy = self._get_project_occupancy(project)
 
-        T_star_ijk = self._get_outranked_entities(self._L_k_j(lecturer, project), student)
         project_preferred_occupancy = gp.LinExpr()
+        T_star_ijk = self._get_outranked_entities(self._L_k_j(lecturer, project), student)
         for student in T_star_ijk:
             project_preferred_occupancy += self._students[student][1][project]
 
         # CONSTRAINT: if l_k prefers s_i to a worst student in M(p_j), tau_{ijk} = 1
-        self.J.addConstr(c_j * tau_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (5.17) for {student}, {project}, {lecturer}")
+        self.J.addConstr(c_j * tau_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (5.17) for {student} {project} {lecturer}")
         return tau_ijk
 
     
@@ -338,35 +338,35 @@ class GurobiSPAST:
 
                 tau_ijk = self._tau(student, project, lecturer)
 
-                # blocking pair 1i
                 self.J.addConstr(theta_ij + alpha_j + beta_k <= 2, f"Blocking pair 1i for {student} and {project} (5.11)")
-                # blocking pair 1ii
                 self.J.addConstr(theta_ij + alpha_j + eta_k + delta_ik <= 3, f"Blocking pair 1ii for {student} and {project} (5.12)")
-                # blocking pair 1iii
                 self.J.addConstr(theta_ij + gamma_j + lambda_ijk <= 2, f"Blocking pair 1iii for {student} and {project} (5.13)")
 
-                # blocking pair 2i
                 self.J.addConstr(theta_star_ij + alpha_j + beta_k <= 2, f"Blocking pair 2i for {student} and {project} (5.14)")
-                # blocking pair 2ii
                 self.J.addConstr(theta_star_ij + alpha_j + eta_k + mu_ik <= 3, f"Blocking pair 2ii for {student} and {project} (5.16)")
-                # blocking pair 2iii
                 self.J.addConstr(theta_star_ij + gamma_j + tau_ijk <= 2, f"Blocking pair 2iii for {student} and {project} (5.18)")
 
 
     def _objective_function(self) -> None:
-        all_xij = gp.quicksum(self._students[student][1][project] for student in self._students for project in self._students[student][1])
+        all_xij = gp.LinExpr()
+        for student in self._students:
+            for x_ij in self._students[student][1].values():
+                    all_xij += x_ij
+
         self.J.setObjective(all_xij, GRB.MAXIMIZE)
 
     
     def display_assignments(self) -> None:
         # assumes model has been solved
         if self.J.Status != GRB.OPTIMAL:
-            print("No optimal solution found.")
+            print("\nNo solution found. ILP written to spast.ilp file.")
+            self.J.computeIIS()
+            self.J.write(f"spast.ilp")
             return
 
         for student in self._students:
             for project in self._students[student][1]:
-                if self._students[student][1][project].x == 1: 
+                if self._students[student][1][project].x == 1:
                     print(f"{student} -> {project}")
 
 
@@ -379,6 +379,6 @@ class GurobiSPAST:
 
 
 if __name__ == "__main__":
-    G = GurobiSPAST("instance.txt")
+    G = GurobiSPAST("instance.txt", output_flag=0)
     G.solve()
     G.display_assignments()
