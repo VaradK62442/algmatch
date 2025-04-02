@@ -184,7 +184,7 @@ class GurobiSPAST:
         lecturer_occupancy = gp.LinExpr()
         for project in self._P_k(lecturer):
             for student in self._students:
-                if project in self._students[student][0]:
+                if project in self._students[student][1]:
                     lecturer_occupancy += self._students[student][1][project]
 
         return lecturer_occupancy
@@ -233,7 +233,7 @@ class GurobiSPAST:
 
         for student in D_ik:
             for project in self._P_k(lecturer):
-                if project in self._students[student][0]:
+                if project in self._students[student][1]:
                     lecturer_preferred_occupancy += self._students[student][1][project]
 
         # CONSTRAINT: if s_i \in M(l_k) or l_k prefers s_i to a worst student in M(l_k)
@@ -287,14 +287,14 @@ class GurobiSPAST:
 
         omega_ik = gp.LinExpr()
         for project in self._P_k(lecturer):
-            if project in self._students[student][0]:
+            if project in self._students[student][1]:
                 omega_ik += self._students[student][1][project]
 
         lecturer_preferred_occupancy = gp.LinExpr()
         D_star_ik = self._get_outranked_entities(self._lecturers[lecturer][1], student)
         for student in D_star_ik:
             for project in self._P_k(lecturer):
-                if project in self._students[student][0]:
+                if project in self._students[student][1]:
                     lecturer_preferred_occupancy += self._students[student][1][project]
 
         # CONSTRAINT: if s_i \in M(l_k) or l_k prefers s_i to a worst student in M(l_k), mu_{ik} = 1
