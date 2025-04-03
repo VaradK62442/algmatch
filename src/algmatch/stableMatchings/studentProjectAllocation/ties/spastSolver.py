@@ -126,7 +126,7 @@ class GurobiSPAST:
         return Lkj
 
 
-    def _theta(self, student, project) -> gp.LinExpr:
+    def _theta(self, s_i, p_j) -> gp.LinExpr:
         """
         theta_{ij} = 1 - (sum of x_{ij'} over projects p_{j'} equal or higher than p_j in student's preference list)
         theta_{ij} = 1 iff student is unassigned or prefers p_j to M(s_i)
@@ -134,8 +134,8 @@ class GurobiSPAST:
         theta_ij = gp.LinExpr()
         sum_outranked_projects = gp.LinExpr()
 
-        for p_jprime in self._get_outranked_entities(self._students[student][0], project):
-            sum_outranked_projects += self._students[student][1][p_jprime]
+        for p_jprime in self._get_outranked_entities(self._students[s_i][0], p_j):
+            sum_outranked_projects += self._students[s_i][1][p_jprime]
 
         theta_ij.addConstant(1)
         theta_ij.add(sum_outranked_projects, -1)
@@ -143,7 +143,7 @@ class GurobiSPAST:
         return theta_ij
     
 
-    def _theta_star(self, student, project) -> gp.LinExpr:
+    def _theta_star(self, s_i, p_j) -> gp.LinExpr:
         """
         theta_{ij} = (sum of x_{ij'} over projects p_{j'} equal to p_j in student's preference list) - x_{ij}
         theta_{ij} = 1 iff student is indifferent between p_j and M(s_i), where p_j not in M(s_i)
@@ -151,11 +151,11 @@ class GurobiSPAST:
         theta_star_ij = gp.LinExpr()
         sum_equal_projects = gp.LinExpr()
 
-        for p_jprime in self._get_equal_entities(self._students[student][0], project):
-            sum_equal_projects += self._students[student][1][p_jprime]
+        for p_jprime in self._get_equal_entities(self._students[s_i][0], p_j):
+            sum_equal_projects += self._students[s_i][1][p_jprime]
 
         theta_star_ij.add(sum_equal_projects)
-        theta_star_ij.add(self._students[student][1][project], -1)
+        theta_star_ij.add(self._students[s_i][1][p_j], -1)
 
         return theta_star_ij
     
@@ -173,17 +173,17 @@ class GurobiSPAST:
         return project_occupancy
     
 
-    def _alpha(self, project) -> gp.Var:
+    def _alpha(self, p_j) -> gp.Var:
         """
         alpha_j in {0, 1} s.t. (1 <= j <= |P|)
         alpha_j = 1 <= project p_j is undersubscribed
         """
-        alpha_j = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{project} is undersubscribed")
-        c_j = self._projects[project][0]
-        project_occupancy = self._get_project_occupancy(project)
+        alpha_j = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{p_j} is undersubscribed")
+        c_j = self._projects[p_j][0]
+        project_occupancy = self._get_project_occupancy(p_j)
 
         # CONSTRAINT: ensures p_j is not oversubscribed
-        self.J.addConstr(c_j * alpha_j >= c_j - project_occupancy, f"Constraint (4.8) for {project}")
+        self.J.addConstr(c_j * alpha_j >= c_j - project_occupancy, f"Constraint (4.8) for {p_j}")
         return alpha_j
     
 
@@ -201,168 +201,168 @@ class GurobiSPAST:
         return lecturer_occupancy
     
 
-    def _beta(self, lecturer) -> gp.Var:
+    def _beta(self, l_k) -> gp.Var:
         """
         beta_k in {0, 1} s.t. (1 <= k <= |L|)
         beta_k = 1 <= lecturer l_k is undersubscribed
         """
-        beta_k = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} is undersubscribed")
-        d_k = self._lecturers[lecturer][0]
-        lecturer_occupancy = self._get_lecturer_occupancy(lecturer)
+        beta_k = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{l_k} is undersubscribed")
+        d_k = self._lecturers[l_k][0]
+        lecturer_occupancy = self._get_lecturer_occupancy(l_k)
 
         # CONSTRAINT: if l_k is undersubscribed in M, beta_k = 1
-        self.J.addConstr(d_k * beta_k >= d_k - lecturer_occupancy, f"Constraint (4.9) for {lecturer}")
+        self.J.addConstr(d_k * beta_k >= d_k - lecturer_occupancy, f"Constraint (4.9) for {l_k}")
         return beta_k
 
     
-    def _eta(self, lecturer) -> gp.Var:
+    def _eta(self, l_k) -> gp.Var:
         """
         eta_k in {0, 1} s.t. (1 <= k <= |L|)
         eta_k = 1 <= lecturer l_k is full
         """
-        eta_k = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} is full")
-        d_k = self._lecturers[lecturer][0]
-        lecturer_occupancy = self._get_lecturer_occupancy(lecturer)
+        eta_k = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{l_k} is full")
+        d_k = self._lecturers[l_k][0]
+        lecturer_occupancy = self._get_lecturer_occupancy(l_k)
 
         # CONSTRAINT: if l_k is full in M, eta_k = 1
-        self.J.addConstr(d_k * eta_k >= 1 + lecturer_occupancy - d_k, f"Constraint (4.11) for {lecturer}")
+        self.J.addConstr(d_k * eta_k >= 1 + lecturer_occupancy - d_k, f"Constraint (4.11) for {l_k}")
         return eta_k
 
 
-    def _delta(self, student, lecturer) -> gp.Var:
+    def _delta(self, s_i, l_k) -> gp.Var:
         """
         delta_{ik} in {0, 1} s.t. (1 <= i <= |S|, 1 <= k <= |L|)
         delta_{ik} = 1 <= s_i in M(l_k) or l_k prefers s_i to a worst student in M(l_k) or l_k is indifferent between them
         """
-        delta_ik = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{student} is assigned to {lecturer}")
-        d_k = self._lecturers[lecturer][0]
-        lecturer_occupancy = self._get_lecturer_occupancy(lecturer)
+        delta_ik = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{s_i} is assigned to {l_k}")
+        d_k = self._lecturers[l_k][0]
+        lecturer_occupancy = self._get_lecturer_occupancy(l_k)
 
         lecturer_preferred_occupancy = gp.LinExpr()
-        D_ik = self._get_outranked_entities(self._lecturers[lecturer][1], student, strict=True)
+        D_ik = self._get_outranked_entities(self._lecturers[l_k][1], s_i, strict=True)
 
         for student in D_ik:
-            for project in self._P_k(lecturer):
+            for project in self._P_k(l_k):
                 if project in self._students[student][1]:
                     lecturer_preferred_occupancy += self._students[student][1][project]
 
         # CONSTRAINT: if s_i in M(l_k) or l_k prefers s_i to a worst student in M(l_k)
         # or l_k is indifferent between them, delta_{ik} = 1
-        self.J.addConstr(d_k * delta_ik >= lecturer_occupancy - lecturer_preferred_occupancy, f"Constraint (4.12) for {student}, {lecturer}")
+        self.J.addConstr(d_k * delta_ik >= lecturer_occupancy - lecturer_preferred_occupancy, f"Constraint (4.12) for {s_i} {l_k}")
         return delta_ik
     
 
-    def _gamma(self, project) -> gp.Var:
+    def _gamma(self, p_k) -> gp.Var:
         """
         gamma_j in {0, 1} s.t. (1 <= j <= |P|)
         gamma_j = 1 <= p_j is full
         """
-        gamma_j = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{project} is full")
-        c_j = self._projects[project][0]
-        project_occupancy = self._get_project_occupancy(project)
+        gamma_j = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{p_k} is full")
+        c_j = self._projects[p_k][0]
+        project_occupancy = self._get_project_occupancy(p_k)
 
         # CONSTRAINT: if p_j is full in M, gamma_j = 1
-        self.J.addConstr(c_j * gamma_j >= 1 + project_occupancy - c_j, f"Constraint (4.14) for {project}")
+        self.J.addConstr(c_j * gamma_j >= 1 + project_occupancy - c_j, f"Constraint (4.14) for {p_k}")
         return gamma_j
     
 
-    def _lambda(self, student, project, lecturer) -> gp.Var:
+    def _lambda(self, s_i, p_j, l_k) -> gp.Var:
         """
         lambda_{ijk} in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|, 1 <= k <= |L|)
         lambda_{ijk} = 1 <= l_k prefers s_i to a worst student in M(p_j) or l_k is indifferent between them
         """
-        lambda_ijk = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} prefers / indifferent to {student} to a worst student in M({project})")
-        c_j = self._projects[project][0]
-        project_occupancy = self._get_project_occupancy(project)
+        lambda_ijk = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{l_k} prefers / indifferent to {s_i} to a worst student in M({p_j})")
+        c_j = self._projects[p_j][0]
+        project_occupancy = self._get_project_occupancy(p_j)
 
         project_preferred_occupancy = gp.LinExpr()
-        T_ijk = self._get_outranked_entities(self._L_k_j(lecturer, project), student, strict=True)
+        T_ijk = self._get_outranked_entities(self._L_k_j(l_k, p_j), s_i, strict=True)
         for student in T_ijk:
-            project_preferred_occupancy += self._students[student][1][project]
+            project_preferred_occupancy += self._students[student][1][p_j]
 
         # CONSTRAINT: if l_k prefers s_i to a worst student in M(p_j)
         # or l_k is indifferent between them, lambda_{ijk} = 1
-        self.J.addConstr(c_j * lambda_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (4.15) for {student} {project} {lecturer}")
+        self.J.addConstr(c_j * lambda_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (4.15) for {s_i} {p_j} {l_k}")
         return lambda_ijk
 
 
-    def _omega(self, student, lecturer):
+    def _omega(self, s_i, l_k):
         omega_ik = gp.LinExpr()
-        for project in self._P_k(lecturer):
-            if project in self._students[student][1]:
-                omega_ik += self._students[student][1][project]
+        for project in self._P_k(l_k):
+            if project in self._students[s_i][1]:
+                omega_ik += self._students[s_i][1][project]
 
         return omega_ik
     
 
-    def _mu(self, student, lecturer) -> gp.Var:
+    def _mu(self, s_i, l_k) -> gp.Var:
         """
         mu_{ik} in {0, 1} s.t. (1 <= i <= |S|, 1 <= k <= |L|)
         mu_{ik} = 1 <= s_i in M(l_k) or l_k prefers s_i to a worst student in M(l_k)
         """
-        mu_ik = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} assigned to / prefers {student} to a worst student in M({lecturer})")
-        d_k = self._lecturers[lecturer][0]
-        lecturer_occupancy = self._get_lecturer_occupancy(lecturer)
-        omega_ik = self._omega(student, lecturer)
+        mu_ik = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{l_k} assigned to / prefers {s_i} to a worst student in M({l_k})")
+        d_k = self._lecturers[l_k][0]
+        lecturer_occupancy = self._get_lecturer_occupancy(l_k)
+        omega_ik = self._omega(s_i, l_k)
 
         lecturer_preferred_occupancy = gp.LinExpr()
-        D_star_ik = self._get_outranked_entities(self._lecturers[lecturer][1], student)
+        D_star_ik = self._get_outranked_entities(self._lecturers[l_k][1], s_i)
         for student in D_star_ik:
-            for project in self._P_k(lecturer):
+            for project in self._P_k(l_k):
                 if project in self._students[student][1]:
                     lecturer_preferred_occupancy += self._students[student][1][project]
 
         # CONSTRAINT: if s_i in M(l_k) or l_k prefers s_i to a worst student in M(l_k), mu_{ik} = 1
-        self.J.addConstr(d_k * mu_ik >= omega_ik + lecturer_occupancy - lecturer_preferred_occupancy, f"Constraint (5.15) for {student} {lecturer}")
+        self.J.addConstr(d_k * mu_ik >= omega_ik + lecturer_occupancy - lecturer_preferred_occupancy, f"Constraint (5.15) for {s_i} {l_k}")
         return mu_ik
     
 
-    def _tau(self, student, project, lecturer) -> gp.Var:
+    def _tau(self, s_i, p_j, l_k) -> gp.Var:
         """
         tau_{ijk} in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|, 1 <= k <= |L|)
         tau_{ijk} = 1 <= l_k prefers s_i to a worst student in M(p_j)
         """
-        tau_ijk = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} prefers {student} to a worst student in M({project})")
-        c_j = self._projects[project][0]
-        project_occupancy = self._get_project_occupancy(project)
+        tau_ijk = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{l_k} prefers {s_i} to a worst student in M({p_j})")
+        c_j = self._projects[p_j][0]
+        project_occupancy = self._get_project_occupancy(p_j)
 
         project_preferred_occupancy = gp.LinExpr()
-        T_star_ijk = self._get_outranked_entities(self._L_k_j(lecturer, project), student)
+        T_star_ijk = self._get_outranked_entities(self._L_k_j(l_k, p_j), s_i)
         for student in T_star_ijk:
-            project_preferred_occupancy += self._students[student][1][project]
+            project_preferred_occupancy += self._students[student][1][p_j]
 
         # CONSTRAINT: if l_k prefers s_i to a worst student in M(p_j), tau_{ijk} = 1
-        self.J.addConstr(c_j * tau_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (5.17) for {student} {project} {lecturer}")
+        self.J.addConstr(c_j * tau_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (5.17) for {s_i} {p_j} {l_k}")
         return tau_ijk
 
     
     def _blocking_pair_constraints(self) -> None:
-        for student in self._students:
-            for project in self._students[student][1]:
-                lecturer = self._projects[project][1]
+        for s_i in self._students:
+            for p_j in self._students[s_i][1]:
+                l_k = self._projects[p_j][1]
 
-                theta_ij = self._theta(student, project)
-                theta_star_ij = self._theta_star(student, project)
-                alpha_j = self._alpha(project)
-                beta_k = self._beta(lecturer)
+                theta_ij = self._theta(s_i, p_j)
+                theta_star_ij = self._theta_star(s_i, p_j)
+                alpha_j = self._alpha(p_j)
+                beta_k = self._beta(l_k)
 
-                eta_k = self._eta(lecturer)
-                delta_ik = self._delta(student, lecturer)
+                eta_k = self._eta(l_k)
+                delta_ik = self._delta(s_i, l_k)
 
-                gamma_j = self._gamma(project)
-                lambda_ijk = self._lambda(student, project, lecturer)
+                gamma_j = self._gamma(p_j)
+                lambda_ijk = self._lambda(s_i, p_j, l_k)
 
-                mu_ik = self._mu(student, lecturer)
+                mu_ik = self._mu(s_i, l_k)
 
-                tau_ijk = self._tau(student, project, lecturer)
+                tau_ijk = self._tau(s_i, p_j, l_k)
 
-                self.J.addConstr(theta_ij + alpha_j + beta_k <= 2, f"Blocking pair 1i for {student} and {project} (5.11)")
-                self.J.addConstr(theta_ij + alpha_j + eta_k + delta_ik <= 3, f"Blocking pair 1ii for {student} and {project} (5.12)")
-                self.J.addConstr(theta_ij + gamma_j + lambda_ijk <= 2, f"Blocking pair 1iii for {student} and {project} (5.13)")
+                self.J.addConstr(theta_ij + alpha_j + beta_k <= 2, f"Blocking pair 1i for {s_i} and {p_j} (5.11)")
+                self.J.addConstr(theta_ij + alpha_j + eta_k + delta_ik <= 3, f"Blocking pair 1ii for {s_i} and {p_j} (5.12)")
+                self.J.addConstr(theta_ij + gamma_j + lambda_ijk <= 2, f"Blocking pair 1iii for {s_i} and {p_j} (5.13)")
 
-                self.J.addConstr(theta_star_ij + alpha_j + beta_k <= 2, f"Blocking pair 2i for {student} and {project} (5.14)")
-                self.J.addConstr(theta_star_ij + alpha_j + eta_k + mu_ik <= 3, f"Blocking pair 2ii for {student} and {project} (5.16)")
-                self.J.addConstr(theta_star_ij + gamma_j + tau_ijk <= 2, f"Blocking pair 2iii for {student} and {project} (5.18)")
+                self.J.addConstr(theta_star_ij + alpha_j + beta_k <= 2, f"Blocking pair 2i for {s_i} and {p_j} (5.14)")
+                self.J.addConstr(theta_star_ij + alpha_j + eta_k + mu_ik <= 3, f"Blocking pair 2ii for {s_i} and {p_j} (5.16)")
+                self.J.addConstr(theta_star_ij + gamma_j + tau_ijk <= 2, f"Blocking pair 2iii for {s_i} and {p_j} (5.18)")
 
 
     def _objective_function(self) -> None:
