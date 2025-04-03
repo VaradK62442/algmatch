@@ -284,6 +284,15 @@ class GurobiSPAST:
         # or l_k is indifferent between them, lambda_{ijk} = 1
         self.J.addConstr(c_j * lambda_ijk >= project_occupancy - project_preferred_occupancy, f"Constraint (4.15) for {student} {project} {lecturer}")
         return lambda_ijk
+
+
+    def _omega(self, student, lecturer):
+        omega_ik = gp.LinExpr()
+        for project in self._P_k(lecturer):
+            if project in self._students[student][1]:
+                omega_ik += self._students[student][1][project]
+
+        return omega_ik
     
 
     def _mu(self, student, lecturer) -> gp.Var:
@@ -294,11 +303,7 @@ class GurobiSPAST:
         mu_ik = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} assigned to / prefers {student} to a worst student in M({lecturer})")
         d_k = self._lecturers[lecturer][0]
         lecturer_occupancy = self._get_lecturer_occupancy(lecturer)
-
-        omega_ik = gp.LinExpr()
-        for project in self._P_k(lecturer):
-            if project in self._students[student][1]:
-                omega_ik += self._students[student][1][project]
+        omega_ik = self._omega(student, lecturer)
 
         lecturer_preferred_occupancy = gp.LinExpr()
         D_star_ik = self._get_outranked_entities(self._lecturers[lecturer][1], student)
