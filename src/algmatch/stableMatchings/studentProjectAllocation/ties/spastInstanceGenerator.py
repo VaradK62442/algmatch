@@ -7,7 +7,7 @@ import random
 import math
 
 
-class SPAST:
+class SPASTGen:
     def __init__(self, num_students, lower_bound, upper_bound, num_projects, num_lecturers, student_tie_density=0, lecturer_tie_density=0):
         """
         A program that writes to a .txt file, a randomly-generated instance of the student project allocation problem 
@@ -162,7 +162,7 @@ class SPAST:
 
 
 if __name__ == '__main__':
-    s = SPAST(
+    s = SPASTGen(
         5, 1, 2,
         3, 1,
         0.5, 0.5
