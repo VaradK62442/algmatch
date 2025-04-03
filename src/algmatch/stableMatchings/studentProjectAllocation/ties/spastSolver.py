@@ -98,30 +98,30 @@ class GurobiSPAST:
                 return p
             
 
-    def _P_k(self, lecturer) -> list:
+    def _P_k(self, l_k) -> list:
         """
         Return list of projects offered by lecturer l_k
         """
         return [
-            project for project in self._projects if self._projects[project][1] == lecturer
+            project for project in self._projects if self._projects[project][1] == l_k
         ]
     
 
-    def _L_k_j(self, lecturer, project) -> list:
+    def _L_k_j(self, l_k, p_j) -> list:
         """
         Return projected preference list of lecturer l_k for project p_j
         """
         Lkj = []
-        for student_entity in self._lecturers[lecturer][1]:
+        for student_entity in self._lecturers[l_k][1]:
             if student_entity.isTie:
-                projected_tie = [s for s in student_entity if project in self._students[s][1]]
+                projected_tie = [s for s in student_entity if p_j in self._students[s][1]]
                 if len(projected_tie) > 1:
                     new_EPI = EPI(tuple(projected_tie))
                     Lkj.append(new_EPI)
                 elif len(projected_tie) == 1:
                     Lkj.append(projected_tie[0])
             else:
-                if project in self._students[student_entity][1]:
+                if p_j in self._students[student_entity][1]:
                     Lkj.append(student_entity)
         return Lkj
 
@@ -134,7 +134,8 @@ class GurobiSPAST:
         theta_ij = gp.LinExpr()
         sum_outranked_projects = gp.LinExpr()
 
-        for p_jprime in self._get_outranked_entities(self._students[s_i][0], p_j):
+        S_ij = self._get_outranked_entities(self._students[s_i][0], p_j)
+        for p_jprime in S_ij:
             sum_outranked_projects += self._students[s_i][1][p_jprime]
 
         theta_ij.addConstant(1)
@@ -151,7 +152,8 @@ class GurobiSPAST:
         theta_star_ij = gp.LinExpr()
         sum_equal_projects = gp.LinExpr()
 
-        for p_jprime in self._get_equal_entities(self._students[s_i][0], p_j):
+        S_star_ij = self._get_equal_entities(self._students[s_i][0], p_j)
+        for p_jprime in S_star_ij:
             sum_equal_projects += self._students[s_i][1][p_jprime]
 
         theta_star_ij.add(sum_equal_projects)
@@ -374,18 +376,20 @@ class GurobiSPAST:
         self.J.setObjective(all_xij, GRB.MAXIMIZE)
 
     
-    def display_assignments(self) -> None:
+    def display_assignments(self) -> bool:
         # assumes model has been solved
         if self.J.Status != GRB.OPTIMAL:
             print("\nNo solution found. ILP written to spast.ilp file.")
             self.J.computeIIS()
             self.J.write("spast.ilp")
-            return
+            return False
 
         for student in self._students:
             for project, xij in self._students[student][1].items():
                 if xij.x == 1:
                     print(f"{student} -> {project}")
+
+        return True
 
 
     def solve(self) -> None:
