@@ -33,12 +33,12 @@ class GurobiSPAST:
         """
         Matching contraints
 
-        x_{ij} \in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|)
+        x_{ij} in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|)
         x_{ij} indicates whether s_i is assigned to p_j in a solution or not
 
-        \sum_{p_j \in A_i}(x_{ij}) <= 1 for all i in {1, 2, ..., |S|} # student can be assigned to at most one project
-        \sum_{i=1}^{|S|}(x_{ij}) <= c_j for all j in {1, 2, ..., |P|} # project does not exceed capacity
-        \sum_{i=1}^{|S|} \sum_{p_j \in P_k} x_{ij} <= d_k for all k in {1, 2, ..., |L|} # lecturer does not exceed capacity
+        sum_{p_j in A_i}(x_{ij}) <= 1 for all i in {1, 2, ..., |S|} # student can be assigned to at most one project
+        sum_{i=1}^{|S|}(x_{ij}) <= c_j for all j in {1, 2, ..., |P|} # project does not exceed capacity
+        sum_{i=1}^{|S|} sum_{p_j in P_k} x_{ij} <= d_k for all k in {1, 2, ..., |L|} # lecturer does not exceed capacity
         """
 
         for student in self._students:
@@ -175,7 +175,7 @@ class GurobiSPAST:
 
     def _alpha(self, project) -> gp.Var:
         """
-        alpha_j \in {0, 1} s.t. (1 <= j <= |P|)
+        alpha_j in {0, 1} s.t. (1 <= j <= |P|)
         alpha_j = 1 <= project p_j is undersubscribed
         """
         alpha_j = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{project} is undersubscribed")
@@ -190,7 +190,7 @@ class GurobiSPAST:
     def _get_lecturer_occupancy(self, lecturer) -> gp.LinExpr:
         """
         Get the occupancy of lecturer l_k defined as
-        sum_{i=1}^{|S|} sum_{p_j \in P_k} x_{ij}
+        sum_{i=1}^{|S|} sum_{p_j in P_k} x_{ij}
         """
         lecturer_occupancy = gp.LinExpr()
         for project in self._P_k(lecturer):
@@ -203,7 +203,7 @@ class GurobiSPAST:
 
     def _beta(self, lecturer) -> gp.Var:
         """
-        beta_k \in {0, 1} s.t. (1 <= k <= |L|)
+        beta_k in {0, 1} s.t. (1 <= k <= |L|)
         beta_k = 1 <= lecturer l_k is undersubscribed
         """
         beta_k = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} is undersubscribed")
@@ -217,7 +217,7 @@ class GurobiSPAST:
     
     def _eta(self, lecturer) -> gp.Var:
         """
-        eta_k \in {0, 1} s.t. (1 <= k <= |L|)
+        eta_k in {0, 1} s.t. (1 <= k <= |L|)
         eta_k = 1 <= lecturer l_k is full
         """
         eta_k = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} is full")
@@ -231,8 +231,8 @@ class GurobiSPAST:
 
     def _delta(self, student, lecturer) -> gp.Var:
         """
-        delta_{ik} \in {0, 1} s.t. (1 <= i <= |S|, 1 <= k <= |L|)
-        delta_{ik} = 1 <= s_i \in M(l_k) or l_k prefers s_i to a worst student in M(l_k) or l_k is indifferent between them
+        delta_{ik} in {0, 1} s.t. (1 <= i <= |S|, 1 <= k <= |L|)
+        delta_{ik} = 1 <= s_i in M(l_k) or l_k prefers s_i to a worst student in M(l_k) or l_k is indifferent between them
         """
         delta_ik = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{student} is assigned to {lecturer}")
         d_k = self._lecturers[lecturer][0]
@@ -246,7 +246,7 @@ class GurobiSPAST:
                 if project in self._students[student][1]:
                     lecturer_preferred_occupancy += self._students[student][1][project]
 
-        # CONSTRAINT: if s_i \in M(l_k) or l_k prefers s_i to a worst student in M(l_k)
+        # CONSTRAINT: if s_i in M(l_k) or l_k prefers s_i to a worst student in M(l_k)
         # or l_k is indifferent between them, delta_{ik} = 1
         self.J.addConstr(d_k * delta_ik >= lecturer_occupancy - lecturer_preferred_occupancy, f"Constraint (4.12) for {student}, {lecturer}")
         return delta_ik
@@ -254,7 +254,7 @@ class GurobiSPAST:
 
     def _gamma(self, project) -> gp.Var:
         """
-        gamma_j \in {0, 1} s.t. (1 <= j <= |P|)
+        gamma_j in {0, 1} s.t. (1 <= j <= |P|)
         gamma_j = 1 <= p_j is full
         """
         gamma_j = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{project} is full")
@@ -268,7 +268,7 @@ class GurobiSPAST:
 
     def _lambda(self, student, project, lecturer) -> gp.Var:
         """
-        lambda_{ijk} \in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|, 1 <= k <= |L|)
+        lambda_{ijk} in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|, 1 <= k <= |L|)
         lambda_{ijk} = 1 <= l_k prefers s_i to a worst student in M(p_j) or l_k is indifferent between them
         """
         lambda_ijk = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} prefers / indifferent to {student} to a worst student in M({project})")
@@ -288,7 +288,7 @@ class GurobiSPAST:
 
     def _mu(self, student, lecturer) -> gp.Var:
         """
-        mu_{ik} \in {0, 1} s.t. (1 <= i <= |S|, 1 <= k <= |L|)
+        mu_{ik} in {0, 1} s.t. (1 <= i <= |S|, 1 <= k <= |L|)
         mu_{ik} = 1 <= s_i in M(l_k) or l_k prefers s_i to a worst student in M(l_k)
         """
         mu_ik = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} assigned to / prefers {student} to a worst student in M({lecturer})")
@@ -307,14 +307,14 @@ class GurobiSPAST:
                 if project in self._students[student][1]:
                     lecturer_preferred_occupancy += self._students[student][1][project]
 
-        # CONSTRAINT: if s_i \in M(l_k) or l_k prefers s_i to a worst student in M(l_k), mu_{ik} = 1
+        # CONSTRAINT: if s_i in M(l_k) or l_k prefers s_i to a worst student in M(l_k), mu_{ik} = 1
         self.J.addConstr(d_k * mu_ik >= omega_ik + lecturer_occupancy - lecturer_preferred_occupancy, f"Constraint (5.15) for {student} {lecturer}")
         return mu_ik
     
 
     def _tau(self, student, project, lecturer) -> gp.Var:
         """
-        tau_{ijk} \in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|, 1 <= k <= |L|)
+        tau_{ijk} in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|, 1 <= k <= |L|)
         tau_{ijk} = 1 <= l_k prefers s_i to a worst student in M(p_j)
         """
         tau_ijk = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{lecturer} prefers {student} to a worst student in M({project})")
@@ -374,7 +374,7 @@ class GurobiSPAST:
         if self.J.Status != GRB.OPTIMAL:
             print("\nNo solution found. ILP written to spast.ilp file.")
             self.J.computeIIS()
-            self.J.write(f"spast.ilp")
+            self.J.write("spast.ilp")
             return
 
         for student in self._students:
