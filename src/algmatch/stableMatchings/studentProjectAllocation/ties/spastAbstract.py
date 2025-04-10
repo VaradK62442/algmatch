@@ -167,17 +167,19 @@ class SPASTAbstract:
                 ]
                 indifferent_projects.remove(matched_project)
 
-            for project in preferred_projects:
-                lecturer = self.projects[project]["lecturer"]
-                for condition in self.conditions_1b:
-                    if condition(student, project, lecturer):
-                        return False
+            for p_tie in preferred_projects:
+                for project in p_tie:
+                    lecturer = self.projects[project]["lecturer"]
+                    for condition in self.conditions_1b:
+                        if condition(student, project, lecturer):
+                            return False
 
-            for project in indifferent_projects:
-                lecturer = self.projects[project]["lecturer"]
-                for condition in self.conditions_2b:
-                    if condition(student, project, lecturer):
-                        return False
+            for p_tie in indifferent_projects:
+                for project in p_tie:
+                    lecturer = self.projects[project]["lecturer"]
+                    for condition in self.conditions_2b:
+                        if condition(student, project, lecturer):
+                            return False
         return True
 
     def _while_loop(self):
