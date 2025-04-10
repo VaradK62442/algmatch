@@ -7,6 +7,7 @@ from gurobipy import GRB
 
 from algmatch.stableMatchings.studentProjectAllocation.ties.fileReaderIPModel import FileReaderIPModel as FileReader
 from algmatch.stableMatchings.studentProjectAllocation.ties.entityPreferenceInstance import EntityPreferenceInstance as EPI
+from algmatch.stableMatchings.studentProjectAllocation.ties.spastBruteforcer import SPASTBruteforcer as Brute
 
 from collections import defaultdict
 
@@ -390,6 +391,15 @@ class GurobiSPAST:
                     print(f"{student} -> {project}")
 
         return True
+    
+    def assignments_as_dict(self) -> dict:
+        assignments = {}
+        for student in self._students:
+            assignments[student] = ""
+            for project, xij in self._students[student][1].items():
+                if xij.x == 1:
+                    assignments[student] = project
+        return assignments
 
 
     def solve(self) -> None:
@@ -404,3 +414,10 @@ if __name__ == "__main__":
     G = GurobiSPAST("instance.txt", output_flag=0)
     G.solve()
     G.display_assignments()
+    G_answer = G.assignments_as_dict()
+
+    B = Brute(filename="instance.txt")
+    B.choose()
+    answer_list = B.get_ssm_list()
+
+    print(G_answer in answer_list)
