@@ -1,4 +1,4 @@
-from spastAbstract import SPASTAbstract
+from algmatch.stableMatchings.studentProjectAllocation.ties.spastAbstract import SPASTAbstract
 
 
 class SPASTBruteforcer(SPASTAbstract):
