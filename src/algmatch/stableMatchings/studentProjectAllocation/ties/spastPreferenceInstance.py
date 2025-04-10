@@ -1,5 +1,5 @@
 """
-Store preference lists for student project allocation algorithm.
+Store preference lists for student project allocation with ties algorithm.
 """
 
 from itertools import product
@@ -7,22 +7,23 @@ from itertools import product
 from algmatch.abstractClasses.abstractPreferenceInstance import (
     AbstractPreferenceInstance,
 )
-from algmatch.stableMatchings.studentProjectAllocation.fileReader import FileReader
-from algmatch.stableMatchings.studentProjectAllocation.dictionaryReader import (
+from algmatch.stableMatchings.studentProjectAllocation.ties.fileReader import FileReader
+from algmatch.stableMatchings.studentProjectAllocation.ties.dictionaryReader import (
     DictionaryReader,
 )
+from algmatch.stableMatchings.studentProjectAllocation.ties.entityPreferenceInstance import (
+    EntityPreferenceInstance as EPI,
+)
+
 from algmatch.errors.InstanceSetupErrors import PrefRepError, PrefNotFoundError
 
 
-class SPAPreferenceInstance(AbstractPreferenceInstance):
+class SPASTPreferenceInstance(AbstractPreferenceInstance):
     def __init__(
         self, filename: str | None = None, dictionary: dict | None = None
     ) -> None:
         super().__init__(filename, dictionary)
         self.setup_project_lists()
-        self.check_preference_lists()
-        self.clean_unacceptable_pairs()
-        self.set_up_rankings()
 
     def _load_from_file(self, filename: str) -> None:
         reader = FileReader(filename)
@@ -41,8 +42,31 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
             lec = self.projects[project]["lecturer"]
             self.lecturers[lec]["projects"].add(project)
             lecturer_list = self.lecturers[lec]["list"]
-            self.projects[project]["list"] = lecturer_list[:]
 
+            project_list = []
+            for epi in lecturer_list:
+                if epi.isTie:
+                    project_list.append([])
+                    for stu in epi.values:
+                        for elt in self.students[stu.values]["list"]:
+                            if project in elt:
+                                project_list[-1].append(str(stu.values))
+                                print(f"appended {stu.values} (tie)")
+
+                else:
+                    for elt in self.students[epi.values]["list"]:
+                        if project in elt:
+                            project_list.append(str(epi.values))
+                            print(f"appended {epi.values} (no tie)")
+
+            self.lecturers[lec]["lkj"][project] = [
+                EPI(tuple(p)) if isinstance(p, list) else EPI(p)
+                for p in project_list
+                if p != []
+            ]
+
+    # TODO: check these work
+    # unused currently
     def check_preference_lists(self) -> None:
         for s, s_prefs in self.students.items():
             if len(set(s_prefs["list"])) != len(s_prefs["list"]):
@@ -93,5 +117,5 @@ class SPAPreferenceInstance(AbstractPreferenceInstance):
             }
         for L in self.lecturers:
             self.lecturers[L]["rank"] = {
-                woman: idx for idx, woman in enumerate(self.lecturers[L]["list"])
+                student: idx for idx, student in enumerate(self.lecturers[L]["list"])
             }

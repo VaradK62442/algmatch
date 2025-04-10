@@ -4,7 +4,7 @@ Student Project Allocation - Student Optimal version
 
 from copy import deepcopy
 
-from algmatch.stableMatchings.studentProjectAllocation.spaAbstract import SPAAbstract
+from algmatch.stableMatchings.studentProjectAllocation.noTies.spaAbstract import SPAAbstract
 
 
 class SPAStudentOptimal(SPAAbstract):
