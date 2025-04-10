@@ -2,14 +2,16 @@
 Using Gurobi Integer Programming solver to solve the SPA-ST problem.
 """
 
+from collections import defaultdict
+
 import gurobipy as gp
 from gurobipy import GRB
 
 from algmatch.stableMatchings.studentProjectAllocation.ties.fileReaderIPModel import FileReaderIPModel as FileReader
 from algmatch.stableMatchings.studentProjectAllocation.ties.entityPreferenceInstance import EntityPreferenceInstance as EPI
 from algmatch.stableMatchings.studentProjectAllocation.ties.spastBruteforcer import SPASTBruteforcer as Brute
+from algmatch.stableMatchings.studentProjectAllocation.ties.spastInstanceGenerator import SPASTGen
 
-from collections import defaultdict
 
 DEBUG = True
 dprint = lambda x: print(x) if DEBUG else None
@@ -393,6 +395,9 @@ class GurobiSPAST:
         return True
     
     def assignments_as_dict(self) -> dict:
+        if self.J.Status != GRB.OPTIMAL:
+            return None
+
         assignments = {}
         for student in self._students:
             assignments[student] = ""
@@ -411,6 +416,14 @@ class GurobiSPAST:
 
 
 if __name__ == "__main__":
+    s = SPASTGen(
+        5, 1, 2,
+        3, 1,
+        0.5, 0.5
+    )
+    s.generate_instance()
+    s.write_instance_to_file('instance.txt')
+
     G = GurobiSPAST("instance.txt", output_flag=0)
     G.solve()
     G.display_assignments()
@@ -420,4 +433,9 @@ if __name__ == "__main__":
     B.choose()
     answer_list = B.get_ssm_list()
 
-    print(G_answer in answer_list)
+    if not answer_list and G_answer is None:
+        print("Correct")
+    elif G_answer in answer_list:
+        print("Correct")
+    else:
+        print("Wrong!")
