@@ -41,13 +41,13 @@ class SPASTPreferenceInstance(AbstractPreferenceInstance):
                         for elt in self.students[stu.values]["list"]:
                             if project in elt:
                                 project_list[-1].append(str(stu.values))
-                                print(f"appended {stu.values} (tie)")
+                                #print(f"appended {stu.values} (tie)")
 
                 else:
                     for elt in self.students[epi.values]["list"]:
                         if project in elt:
                             project_list.append(str(epi.values))
-                            print(f"appended {epi.values} (no tie)")
+                            #print(f"appended {epi.values} (no tie)")
 
             self.lecturers[lec]["lkj"][project] = [EPI(tuple(p)) if isinstance(p, list) else EPI(p) for p in project_list if p != []]
 

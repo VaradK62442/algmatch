@@ -3,6 +3,7 @@ Using Gurobi Integer Programming solver to solve the SPA-ST problem.
 """
 
 from collections import defaultdict
+from tqdm import tqdm
 
 import gurobipy as gp
 from gurobipy import GRB
@@ -417,25 +418,35 @@ class GurobiSPAST:
 
 if __name__ == "__main__":
     s = SPASTGen(
-        5, 1, 2,
+        5, 0, 3,
         3, 1,
         0.5, 0.5
     )
-    s.generate_instance()
-    s.write_instance_to_file('instance.txt')
+    runs = 10_000
 
-    G = GurobiSPAST("instance.txt", output_flag=0)
-    G.solve()
-    G.display_assignments()
-    G_answer = G.assignments_as_dict()
+    results = {"right":0, "wrong":0}
 
-    B = Brute(filename="instance.txt")
-    B.choose()
-    answer_list = B.get_ssm_list()
+    for _ in tqdm(range(runs)):
+        s.generate_instance()
+        s.write_instance_to_file('instance.txt')
 
-    if not answer_list and G_answer is None:
-        print("Correct")
-    elif G_answer in answer_list:
-        print("Correct")
-    else:
-        print("Wrong!")
+        G = GurobiSPAST("instance.txt", output_flag=0)
+        G.solve()
+        G_answer = G.assignments_as_dict()
+
+        B = Brute(filename="instance.txt")
+        B.choose()
+        answer_list = B.get_ssm_list()
+
+        if not answer_list and G_answer is None:
+            results["right"] += 1
+        elif G_answer in answer_list:
+            results["right"] += 1
+        else:
+            results["wrong"] += 1
+
+    print(f"""
+          Model Test Results:
+            Right: {results["right"]}, {100*results["right"]/runs}%
+            Wrong: {results["wrong"]}, {100*results["wrong"]/runs}%
+    """)
