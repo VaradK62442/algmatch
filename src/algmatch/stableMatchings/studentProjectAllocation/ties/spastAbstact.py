@@ -67,20 +67,50 @@ class SPASTAbstract:
             "Stability type must be either 'super' or 'strong'"
         )
 
-    def blockingpair_1bi(self, _, project, lecturer):
-        if self.plc[project][1] > 0 and self.lp[lecturer][0] > 0:
+    def _blockingpair_1bi(self, _, project, lecturer):
+        cj = self.projects[project]["upper_quota"]
+        dk = self.original_lecturers[lecturer]["upper_quota"]
+
+        project_occupancy = len(self.M[project]["assigned"])
+        lecturer_occupancy = len(self.M[lecturer]["assigned"])
+
+        if project_occupancy < cj and lecturer_occupancy < dk:
             return True
         return False
 
-    def blockingpair_1bii(self, student, project, lecturer):
-        if self.plc[project][1] > 0 and self.lp[lecturer][0] == 0:
-            proj_in_M = self.M[student]
-            if proj_in_M != "" and self.plc[proj_in_M][0] == lecturer:
+    def _blockingpair_1bii(self, student, project, lecturer):
+        cj = self.projects[project]["upper_quota"]
+        dk = self.original_lecturers[lecturer]["upper_quota"]
+
+        project_occupancy = len(self.M[project]["assigned"])
+        lecturer_occupancy = len(self.M[lecturer]["assigned"])
+
+        if project_occupancy < cj and lecturer_occupancy == dk:
+            Mlk_students = self.M[lecturer]["assigned"]
+            lk_rankings = self.original_lecturers[lecturer]["rank"]
+
+            if student in Mlk_students:
                 return True
-            lec_worst_pointer = self.lecturer_wstcounter[lecturer][0]
-            student_rank_Lk = self.lp_rank[lecturer][student]
-            if student_rank_Lk <= lec_worst_pointer:
-                return True
+
+            student_rank = lk_rankings[student]
+            for worst_student in Mlk_students:
+                worst_student_rank = lk_rankings[worst_student]
+                if student_rank <= worst_student_rank:
+                    return True
+
+        return False
+
+    def _blockingpair_1biii(self, student, project, _):
+        cj = self.projects[project]["upper_quota"]
+        project_occupancy = len(self.M[project]["assigned"])
+
+        if project_occupancy == cj:
+            pj_rankings = self.projects[project]["rank"]
+            student_rank = pj_rankings[student]
+            for worst_student in self.M[project]["assigned"]:
+                worst_student_rank = pj_rankings[worst_student]
+                if student_rank <= worst_student_rank:
+                    return True
         return False
 
     def blockingpair_1biii(self, student, project, _):
