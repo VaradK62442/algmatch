@@ -100,15 +100,15 @@ class SPASTAbstract:
 
         return False
 
-    def _blockingpair_1biii(self, student, project, _):
+    def _blockingpair_1biii(self, student, project, lecturer):
         cj = self.projects[project]["upper_quota"]
         project_occupancy = len(self.M[project]["assigned"])
 
         if project_occupancy == cj:
-            pj_rankings = self.projects[project]["rank"]
-            student_rank = pj_rankings[student]
+            lkj_rankings = self.lecturers[lecturer]["rank"]
+            student_rank = lkj_rankings[student]
             for worst_student in self.M[project]["assigned"]:
-                worst_student_rank = pj_rankings[worst_student]
+                worst_student_rank = lkj_rankings[worst_student]
                 if student_rank <= worst_student_rank:
                     return True
         return False
@@ -135,15 +135,15 @@ class SPASTAbstract:
 
         return False
 
-    def _blockingpair_2biii(self, student, project, _):
+    def _blockingpair_2biii(self, student, project, lecturer):
         cj = self.projects[project]["upper_quota"]
         project_occupancy = len(self.M[project]["assigned"])
 
         if project_occupancy == cj:
-            pj_rankings = self.projects[project]["rank"]
-            student_rank = pj_rankings[student]
+            lkj_rankings = self.lecturers[lecturer]["rank"]
+            student_rank = lkj_rankings[student]
             for worst_student in self.M[project]["assigned"]:
-                worst_student_rank = pj_rankings[worst_student]
+                worst_student_rank = lkj_rankings[worst_student]
                 if student_rank < worst_student_rank:
                     return True
         return False
@@ -168,13 +168,13 @@ class SPASTAbstract:
                 indifferent_projects.remove(matched_project)
 
             for project in preferred_projects:
-                lecturer = self.plc[project][0]
+                lecturer = self.projects[project]["lecturer"]
                 for condition in self.conditions_1b:
                     if condition(student, project, lecturer):
                         return False
 
             for project in indifferent_projects:
-                lecturer = self.plc[project][0]
+                lecturer = self.projects[project]["lecturer"]
                 for condition in self.conditions_2b:
                     if condition(student, project, lecturer):
                         return False
