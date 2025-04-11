@@ -24,7 +24,7 @@ class FileReader(AbstractReader):
 
 
     def _read_data(self) -> None:
-        with open (self.data, 'r') as f:
+        with open(self.data, 'r') as f:
             f = f.readlines()
             student_size, project_size, _ = map(int, f[0].strip().split(self.delim))
 

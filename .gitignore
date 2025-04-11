@@ -5,3 +5,6 @@ test*
 results/
 *.csv
 .vscode/
+*.txt
+*.ilp
+*.png
