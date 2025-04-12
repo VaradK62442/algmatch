@@ -177,21 +177,7 @@ class GurobiSPAST:
                 project_occupancy += self._students[student][1][project]
 
         return project_occupancy
-    
 
-    def _alpha(self, p_j) -> gp.Var:
-        """
-        alpha_j in {0, 1} s.t. (1 <= j <= |P|)
-        alpha_j = 1 <= project p_j is undersubscribed
-        """
-        alpha_j = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{p_j} is undersubscribed")
-        c_j = self._projects[p_j][0]
-        project_occupancy = self._get_project_occupancy(p_j)
-
-        # CONSTRAINT: ensures p_j is not oversubscribed
-        self.J.addConstr(c_j * alpha_j >= c_j - project_occupancy, f"Constraint (4.8) for {p_j}")
-        return alpha_j
-    
 
     def _get_lecturer_occupancy(self, lecturer) -> gp.LinExpr:
         """
@@ -206,6 +192,20 @@ class GurobiSPAST:
 
         return lecturer_occupancy
     
+
+    def _alpha(self, p_j) -> gp.Var:
+        """
+        alpha_j in {0, 1} s.t. (1 <= j <= |P|)
+        alpha_j = 1 <= project p_j is undersubscribed
+        """
+        alpha_j = self.J.addVar(lb=0.0, ub=1.0, obj=0.0, vtype=GRB.BINARY, name=f"{p_j} is undersubscribed")
+        c_j = self._projects[p_j][0]
+        project_occupancy = self._get_project_occupancy(p_j)
+
+        # CONSTRAINT: ensures p_j is not oversubscribed
+        self.J.addConstr(c_j * alpha_j >= c_j - project_occupancy, f"Constraint (4.8) for {p_j}")
+        return alpha_j
+
 
     def _beta(self, l_k) -> gp.Var:
         """
