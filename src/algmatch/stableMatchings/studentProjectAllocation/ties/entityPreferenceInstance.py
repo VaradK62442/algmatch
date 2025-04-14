@@ -55,7 +55,7 @@ class EntityPreferenceInstance:
         return len(self.values) if self.isTie else 1
 
     def _remove_from_tied(self, value):
-        if isinstance(self.values, tuple): 
+        if self.isTie: 
             self.values = tuple(v for v in self.values if v != value)
         else:
             raise ValueError("Cannot remove from non-tied preference")

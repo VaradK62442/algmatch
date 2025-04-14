@@ -14,10 +14,6 @@ from algmatch.stableMatchings.studentProjectAllocation.ties.spastBruteforcer imp
 from algmatch.stableMatchings.studentProjectAllocation.ties.spastInstanceGenerator import SPASTGen
 
 
-DEBUG = True
-dprint = lambda x: print(x) if DEBUG else None
-
-
 class GurobiSPAST:
     def __init__(self, filename: str, output_flag=1) -> None:
         self.filename = filename
