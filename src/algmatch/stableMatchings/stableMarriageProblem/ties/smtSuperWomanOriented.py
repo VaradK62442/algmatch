@@ -32,31 +32,30 @@ class SMTSuperWomanOriented(SMTAbstract):
         if self._get_pref_length(woman) == 0:
             self.unassigned_women.discard(woman)
 
-    def _break_assignment(self, man, woman):
-        super()._break_assignment(man, woman)
+    def _break_engagement(self, man, woman):
+        super()._break_engagement(man, woman)
         if woman in self.men:
-            man, woman, woman, man
-        if self._get_pref_length(woman) > 0:
-            self.unassigned_women.add(woman)
+            man, woman = woman, man
+        self.unassigned_women.add(woman)
 
     def _while_loop(self) -> bool:
         while len(self.unassigned_women) != 0:
-            while len(self.unassigned_women) != 0:
-                w = self.unassigned_women.pop()
-                m_tie = self._get_head(w)
-                for m in m_tie:
-                    self._engage(m, w)
-                    self.proposed[m] = True
-                    self._reject_lower_ranks(m, w)
+            w = self.unassigned_women.pop()
+            m_tie = self._get_head(w)
+            for m in m_tie:
+                self._engage(m, w)
+                self.proposed[m] = True
+                self._reject_lower_ranks(m, w)
 
-            for m in self.men:
                 if len(self.M[m]["assigned"]) > 1:
                     self._break_all_engagements(m)
                     self._delete_tail(m)
 
-        # do flow alg to get max matching
-        graph_maxer = GraphMax(self.M)
-        self.M = graph_maxer.get_max_matching()
+        for person_info in self.M.values():
+            if person_info["assigned"]:
+                person_info["assigned"] = next(iter(person_info["assigned"]))
+            else:
+                person_info["assigned"] = None
 
         # check viability of matching
         for m in self.men:

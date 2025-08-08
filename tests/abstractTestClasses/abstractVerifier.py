@@ -45,9 +45,6 @@ class AbstractVerifier:
             else:
                 return False
 
-        if not bruteforcer.stable_matching_list:
-            print(self.current_instance)
-
         if m_z != bruteforcer.stable_matching_list[-1]:
             return False
         if m_0 != bruteforcer.stable_matching_list[0]:
