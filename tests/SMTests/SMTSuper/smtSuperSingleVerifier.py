@@ -33,7 +33,7 @@ def main():
     LOWER_LIST_BOUND = 0
     UPPER_LIST_BOUND = n
     TIE_DENSITY_STEPS = 10
-    REPS_PER_TDS = 10
+    REPS_PER_TDS = 1000
 
     td_step_size = 1 / TIE_DENSITY_STEPS
     td_values = np.arange(0, 1 + td_step_size / 2, td_step_size)
@@ -48,7 +48,7 @@ def main():
         print("-" * 18)
         print(f"With Tie Density: {td}")
 
-        verifier.gen.set_tie_density(1)
+        verifier.gen.set_tie_density(td)
         for _ in tqdm(range(REPS_PER_TDS)):
             verifier.run()
 
