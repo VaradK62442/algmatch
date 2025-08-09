@@ -3,7 +3,7 @@ import random
 
 class AbstractTieGenerator:
     def __init__(self):
-        self.tie_density = 0  # default to none
+        self.tie_density = 0.5  # default to mixed
 
     def set_tie_density(self, tie_density):
         assert tie_density >= 0 and tie_density <= 1, "Tie density must be in [0,1]."
