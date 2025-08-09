@@ -56,6 +56,15 @@ class SMTAbstract:
         )
 
     def _check_super_stability(self) -> bool:
+        # first check for multiple-assignment
+        seen_matching_targets = set()
+        for person in self.M:
+            matching_target = self.M[person]["assigned"]
+            if matching_target in seen_matching_targets:
+                return False
+            if matching_target is not None:
+                seen_matching_targets.add(matching_target)
+
         # stability must be checked with regards to the original lists prior to deletions
         for man, m_prefs in self.original_men.items():
             preferred_women = self.original_men[man]["list"]

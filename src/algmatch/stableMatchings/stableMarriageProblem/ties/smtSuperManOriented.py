@@ -3,7 +3,6 @@ Algorithm to produce M_0, the man-optimal, woman-pessimal super-stable matching,
 """
 
 from algmatch.stableMatchings.stableMarriageProblem.ties.smtAbstract import SMTAbstract
-from algmatch.stableMatchings.stableMarriageProblem.ties.graphMax import GraphMax
 
 
 class SMTSuperManOriented(SMTAbstract):
@@ -42,7 +41,7 @@ class SMTSuperManOriented(SMTAbstract):
         while len(self.unassigned_men) != 0:
             m = self.unassigned_men.pop()
             w_tie = self._get_head(m)
-            for w in w_tie:
+            for w in w_tie.copy():
                 self._engage(m, w)
                 self.proposed[w] = True
                 self._reject_lower_ranks(w, m)
@@ -51,6 +50,11 @@ class SMTSuperManOriented(SMTAbstract):
                     self._break_all_engagements(w)
                     self._delete_tail(w)
 
+        man_multiply_assigned = False
+        for m in self.men:
+            if len(self.M[m]["assigned"]) > 1:
+                man_multiply_assigned = True
+
         for person_info in self.M.values():
             if person_info["assigned"]:
                 person_info["assigned"] = next(iter(person_info["assigned"]))
@@ -58,6 +62,8 @@ class SMTSuperManOriented(SMTAbstract):
                 person_info["assigned"] = None
 
         # check viability of matching
+        if man_multiply_assigned:
+            return False
         for w in self.women:
             if self.M[w]["assigned"] is None and self.proposed[w]:
                 return False
