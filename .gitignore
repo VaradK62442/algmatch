@@ -3,4 +3,5 @@ dist/
 test*
 !tests/
 results/
-.vscode
+*.csv
+.vscode/

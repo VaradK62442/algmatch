@@ -8,12 +8,8 @@ Class to provide interface for the Student Project Allocation stable matching al
 
 import os
 
-from algmatch.stableMatchings.studentProjectAllocation.spaStudentOptimal import (
-    SPAStudentOptimal,
-)
-from algmatch.stableMatchings.studentProjectAllocation.spaLecturerOptimal import (
-    SPALecturerOptimal,
-)
+from algmatch.stableMatchings.studentProjectAllocation.noTies.spaStudentOptimal import SPAStudentOptimal
+from algmatch.stableMatchings.studentProjectAllocation.noTies.spaLecturerOptimal import SPALecturerOptimal
 
 
 class StudentProjectAllocation:

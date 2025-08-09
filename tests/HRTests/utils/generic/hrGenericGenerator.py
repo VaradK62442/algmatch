@@ -28,8 +28,8 @@ class HRGenericGenerator(GenericGeneratorInterface):
             "Bounds must be integers."
         )
         assert self.li >= 0, "Lower bound is negative."
-        assert self.lj <= min(self.no_residents, self.no_hospitals), (
-            "Upper bound is greater than the number of residents or the number of hospitals."
+        assert self.lj <= self.no_hospitals, (
+            "Upper bound is greater than the number of hospitals."
         )
         assert self.li <= self.lj, "Lower bound is greater than upper bound"
 
