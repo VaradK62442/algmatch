@@ -11,10 +11,11 @@ class HRTEnumerator(HRTAbstract, HRGenericEnumerator):
 
     def has_stability(self) -> bool:
         for person in self.M:
-            if self.M[person]["assigned"] is not None:
-                self.M[person]["assigned"] = set(self.M[person]["assigned"])
-            else:
+            assignee = self.M[person]["assigned"]
+            if assignee is None:
                 self.M[person]["assigned"] = set()
+            elif isinstance(assignee, str):
+                self.M[person]["assigned"] = set([assignee])
 
         if self.stability_type == "super":
             return self._check_super_stability()

@@ -24,16 +24,17 @@ class HRGenericBruteForcer:
     def save_matching(self):
         stable_matching = {"resident_sided": {}, "hospital_sided": {}}
         for resident in self.residents:
-            if self.M[resident]["assigned"] is None:
+            if not self.M[resident]["assigned"]:
                 stable_matching["resident_sided"][resident] = ""
             else:
-                stable_matching["resident_sided"][resident] = self.M[resident][
-                    "assigned"
-                ]
+                # extract single element of set
+                stable_matching["resident_sided"][resident] = next(
+                    iter(self.M[resident]["assigned"])
+                )
         for hospital in self.hospitals:
-            stable_matching["hospital_sided"][hospital] = sorted(
-                self.M[hospital]["assigned"], key=self.resident_order_comparator
-            )
+            stable_matching["hospital_sided"][hospital] = self.M[hospital][
+                "assigned"
+            ].copy()
         self.stable_matching_list.append(stable_matching)
 
     def has_stability(self) -> bool:

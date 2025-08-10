@@ -69,8 +69,6 @@ class HRTAbstract:
     def _check_super_stability(self) -> bool:
         # stability must be checked with regards to the original lists prior to deletions
         for resident, r_prefs in self.original_residents.items():
-            preferred_hospitals = self.original_residents[resident]["list"]
-
             # catch multiple assignments
             assignment_num = len(self.M[resident]["assigned"])
             if assignment_num > 1:
@@ -80,6 +78,7 @@ class HRTAbstract:
             else:
                 matched_hospital = None
 
+            preferred_hospitals = r_prefs["list"]
             if matched_hospital is not None:
                 rank_worst_matched_hospital = r_prefs["rank"][matched_hospital]
                 # every hospital that r_i prefers to their match or is indifferent between them
@@ -89,6 +88,12 @@ class HRTAbstract:
                 for hospital in h_tie:
                     if hospital == matched_hospital:
                         continue
+
+                    if (
+                        len(self.M[hospital]["assigned"])
+                        < self.hospitals[hospital]["capacity"]
+                    ):
+                        return False
 
                     worst_resident = self._get_worst_existing_resident(hospital)
                     if worst_resident is None:
