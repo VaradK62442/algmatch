@@ -44,7 +44,7 @@ class HRTSuperResidentOptimal(HRTAbstract):
         while len(self.unassigned_residents) != 0:
             r = self.unassigned_residents.pop()
             h_tie = self._get_head(r)
-            for h in h_tie:
+            for h in h_tie.copy():
                 self._assign(r, h)
 
                 capacity = self.hospitals[h]["capacity"]

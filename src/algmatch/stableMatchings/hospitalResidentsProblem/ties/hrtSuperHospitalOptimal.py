@@ -48,7 +48,7 @@ class HRTSuperHospitalOptimal(HRTAbstract):
         while len(self.undersub_hospitals) != 0:
             h = self.undersub_hospitals.pop()
             r_tie = self._get_head(h)
-            for r in r_tie:
+            for r in r_tie.copy():
                 self._assign(r, h)
                 self.been_assigned[r] = True
 
