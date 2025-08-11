@@ -26,35 +26,59 @@ class HRTSuperHospitalOptimal(HRTAbstract):
                 self.undersub_hospitals.add(hospital)
             self.M[hospital] = {"assigned": set()}
 
-    def _delete_pair(self, resident, hospital):
-        super()._delete_pair(resident, hospital)
+    def _assign(self, resident, hospital) -> None:
+        super()._assign(resident, hospital)
         if resident in self.hospitals:
             resident, hospital = hospital, resident
-        if self._get_pref_length(hospital) == 0:
+
+        capacity = self.hospitals[hospital]["capacity"]
+        occupancy = len(self.M[hospital]["assigned"])
+        if occupancy >= capacity:
             self.undersub_hospitals.discard(hospital)
 
     def _break_assignment(self, resident, hospital):
         super()._break_assignment(resident, hospital)
         if resident in self.hospitals:
             resident, hospital = hospital, resident
-        if self._get_pref_length(hospital) == 0:
+
+        capacity = self.hospitals[hospital]["capacity"]
+        occupancy = len(self.M[hospital]["assigned"])
+        if occupancy < capacity:
             self.undersub_hospitals.add(hospital)
 
-    def indifferent_between_assigned_hospitals(self, r):
+    def _indifferent_between_assigned_hospitals(self, r):
         r_ranks = self._get_pref_ranks(r)
         return len(set(r_ranks[h] for h in self.M[r]["assigned"])) == 1
 
+    def _get_next_residents(self, h):
+        pref_list = self._get_pref_list(h)
+        current_residents = self.M[h]["assigned"]
+        idx = 0
+        while idx < len(pref_list):
+            head = pref_list[idx]
+            remaining_head = head - current_residents
+            if remaining_head:
+                return remaining_head
+            idx += 1
+        return None
+
     def _while_loop(self) -> bool:
         while len(self.undersub_hospitals) != 0:
-            h = self.undersub_hospitals.pop()
-            r_tie = self._get_head(h)
+            h = next(iter(self.undersub_hospitals))
+            r_tie = self._get_next_residents(h)
+
+            if r_tie is None:
+                self.undersub_hospitals.discard(h)
+                continue
+
             for r in r_tie.copy():
                 self._assign(r, h)
                 self.been_assigned[r] = True
 
-                if len(self.M[r]["assigned"]) > 1:
-                    if self.indifferent_between_assigned_hospitals(r):
-                        self._delete_tail(r)
+                if len(
+                    self.M[r]["assigned"]
+                ) > 1 and self._indifferent_between_assigned_hospitals(r):
+                    self._delete_tail(r)
                 else:
                     self._reject_lower_ranks(r, h)
 
