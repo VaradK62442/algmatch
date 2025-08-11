@@ -3,7 +3,13 @@ Class to read in a dictionary of preferences for the Student Project Allocation 
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
-from algmatch.errors.ReaderErrors import CapacityError, IDMisformatError, RepeatIDError, PrefListMisformatError, OffererError
+from algmatch.errors.ReaderErrors import (
+    CapacityError,
+    IDMisformatError,
+    RepeatIDError,
+    PrefListMisformatError,
+    OffererError,
+)
 
 
 class DictionaryReader(AbstractReader):
@@ -21,14 +27,14 @@ class DictionaryReader(AbstractReader):
                 case "students":
                     for k, v in value.items():
                         if type(k) is not int:
-                            raise IDMisformatError("student",k)
+                            raise IDMisformatError("student", k)
                         student = f"s{k}"
                         if student in self.students:
-                            raise RepeatIDError("student",k)
-                        
+                            raise RepeatIDError("student", k)
+
                         for i in v:
                             if type(i) is not int:
-                                raise PrefListMisformatError("student",k,i)
+                                raise PrefListMisformatError("student", k, i)
                         preferences = [f"p{i}" for i in v]
 
                         self.students[student] = {"list": preferences, "rank": dict()}
@@ -36,36 +42,45 @@ class DictionaryReader(AbstractReader):
                 case "projects":
                     for k, v in value.items():
                         if type(k) is not int:
-                            raise IDMisformatError("project",k)
+                            raise IDMisformatError("project", k)
                         project = f"p{k}"
                         if project in self.projects:
-                            raise RepeatIDError("project",k)
+                            raise RepeatIDError("project", k)
 
                         if type(v["capacity"]) is not int:
-                            raise CapacityError("project",k)
+                            raise CapacityError("project", k)
                         capacity = v["capacity"]
 
                         if type(v["lecturer"]) is not int:
-                            raise OffererError("project","lecturer",k)
+                            raise OffererError("project", "lecturer", k)
                         offerer = f"l{v['lecturer']}"
 
-                        self.projects[project] = {"lower_quota": 0, "upper_quota": capacity, "lecturer": offerer}
+                        self.projects[project] = {
+                            "lower_quota": 0,
+                            "upper_quota": capacity,
+                            "lecturer": offerer,
+                        }
 
                 case "lecturers":
                     for k, v in value.items():
                         if type(k) is not int:
-                            raise IDMisformatError("lecturer",k)
+                            raise IDMisformatError("lecturer", k)
                         lecturer = f"l{k}"
                         if lecturer in self.lecturers:
-                            raise RepeatIDError("lecturer",k)
-                        
+                            raise RepeatIDError("lecturer", k)
+
                         if type(v["capacity"]) is not int:
-                            raise CapacityError("project",k)
+                            raise CapacityError("project", k)
                         capacity = v["capacity"]
 
                         for i in v["preferences"]:
                             if type(i) is not int:
-                                raise PrefListMisformatError("lecturer",k,i)
+                                raise PrefListMisformatError("lecturer", k, i)
                         preferences = [f"s{i}" for i in v["preferences"]]
 
-                        self.lecturers[lecturer] = {"upper_quota": capacity, "projects": set(), "list": preferences, "rank": dict()}
+                        self.lecturers[lecturer] = {
+                            "upper_quota": capacity,
+                            "projects": set(),
+                            "list": preferences,
+                            "rank": dict(),
+                        }

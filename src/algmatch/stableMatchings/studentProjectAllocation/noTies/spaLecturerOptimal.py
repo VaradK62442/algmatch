@@ -6,7 +6,9 @@ from algmatch.stableMatchings.studentProjectAllocation.noTies.spaAbstract import
 
 
 class SPALecturerOptimal(SPAAbstract):
-    def __init__(self, filename: str | None = None, dictionary: dict | None = None) -> None:
+    def __init__(
+        self, filename: str | None = None, dictionary: dict | None = None
+    ) -> None:
         super().__init__(filename=filename, dictionary=dictionary)
 
         self.under_subscribed_lecturers = list(self.lecturers.keys())
@@ -20,31 +22,29 @@ class SPALecturerOptimal(SPAAbstract):
         for lecturer in self.lecturers:
             self.M[lecturer] = {"assigned": set()}
 
-
     def _delete(self, student, project):
-        self.students[student]['list'].remove(project)
-        self.projects[project]['list'].remove(student)
-
+        self.students[student]["list"].remove(project)
+        self.projects[project]["list"].remove(student)
 
     def _check_pair_conditions(self, s_i, p_j, L_k):
         # s_i is not provisionally assigned to p_j
         # and p_j in P_k is under subscribed
         # and s_i in L_k^j
 
-        return self.M[s_i]["assigned"] != p_j and \
-               p_j in self.lecturers[L_k]["projects"] and \
-               len(self.M[p_j]["assigned"]) < self.projects[p_j]["upper_quota"]
-    
+        return (
+            self.M[s_i]["assigned"] != p_j
+            and p_j in self.lecturers[L_k]["projects"]
+            and len(self.M[p_j]["assigned"]) < self.projects[p_j]["upper_quota"]
+        )
 
     def _find_valid_pair(self, L_k):
         # s_i is first valid on L_k list
         # p_j is first valid on s_i list
 
-        for s_i in self.lecturers[L_k]['list']:
-            for p_j in self.students[s_i]['list']:
+        for s_i in self.lecturers[L_k]["list"]:
+            for p_j in self.students[s_i]["list"]:
                 if self._check_pair_conditions(s_i, p_j, L_k):
                     return (s_i, p_j)
-                
 
     def _break_assignment(self, student):
         p = self.M[student]["assigned"]
@@ -54,16 +54,14 @@ class SPALecturerOptimal(SPAAbstract):
 
         # add under-subscribed lecturer to under_subscribed_lecturers
         if len(self.M[p]["assigned"]) == self.projects[p]["lower_quota"]:
-            self.under_subscribed_lecturers.insert(int(L[1:])-1, L)
+            self.under_subscribed_lecturers.insert(int(L[1:]) - 1, L)
 
         self.M[L]["assigned"].remove(student)
-
 
     def _provisionally_assign(self, student, project, lecturer):
         self.M[student]["assigned"] = project
         self.M[project]["assigned"].add(student)
         self.M[lecturer]["assigned"].add(student)
-
 
     def _while_loop(self):
         while len(self.under_subscribed_lecturers) > 0:
@@ -85,8 +83,8 @@ class SPALecturerOptimal(SPAAbstract):
             self._provisionally_assign(s_i, p_j, L_k)
 
             # for each successor p of p_j on s_i's list, delete (s_i, p)
-            p_j_pos = self.students[s_i]['list'].index(p_j)
-            for p in self.students[s_i]['list'][p_j_pos+1:]:
+            p_j_pos = self.students[s_i]["list"].index(p_j)
+            for p in self.students[s_i]["list"][p_j_pos + 1 :]:
                 self._delete(s_i, p)
 
             # check if lecturer is still under subscribed

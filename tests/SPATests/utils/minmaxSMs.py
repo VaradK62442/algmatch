@@ -105,7 +105,7 @@ class MMSMS(SPAAbstract):
             self.project_choose(i + 1)
 
     # alias with more readable name
-    def find_minmax_matchings(self):
+    def find_stable_matchings(self):
         self.setup_M()
         self.student_choose()
 

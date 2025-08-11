@@ -76,5 +76,5 @@ class ESMS(SPAAbstract):
             self.choose(i + 1)
 
     # alias with more readable name
-    def find_all_stable_matchings(self):
+    def find_stable_matchings(self):
         self.choose()
