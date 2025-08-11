@@ -35,7 +35,7 @@ class GurobiSPAP:
         x_{ij} \in {0, 1} s.t. (1 <= i <= |S|, 1 <= j <= |P|)
         x_{ij} indicates whether s_i is assigned to p_j in a solution or not
 
-        \sum_{p_j \in A_j}(x_{ij}) <= 1 for all i in {1, 2, ..., |S|} # student can be assigned to at most one project
+        \sum_{p_j \in A_i}(x_{ij}) <= 1 for all i in {1, 2, ..., |S|} # student can be assigned to at most one project
         \sum_{i=1}^{|S|}(x_{ij}) <= c_j for all j in {1, 2, ..., |P|} # project does not exceed capacity
         \sum_{i=1}^{|S|} \sum_{p_j \in P_k} x_{ij} <= d_k for all k in {1, 2, ..., |L|} # lecturer does not exceed capacity
         """
