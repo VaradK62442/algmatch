@@ -43,18 +43,17 @@ class HRAbstract:
         self.is_stable = False
 
     def _blocking_pair_condition(self, resident, hospital):
-        # blocking pairs exist w.r.t the original preference lists; we must use original_
-        h_data = self.original_hospitals[hospital]
+        h_info = self.original_hospitals[hospital]
         assignees = self.M[hospital]["assigned"]
 
-        cj = h_data["capacity"]
+        cj = h_info["capacity"]
         occupancy = len(assignees)
         if occupancy < cj:
             return True
 
-        resident_rank = h_data["rank"][resident]
+        resident_rank = h_info["rank"][resident]
         for existing_resident in assignees:
-            existing_rank = h_data["rank"][existing_resident]
+            existing_rank = h_info["rank"][existing_resident]
             if resident_rank < existing_rank:
                 return True
 
