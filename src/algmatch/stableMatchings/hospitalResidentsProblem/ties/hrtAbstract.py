@@ -96,14 +96,11 @@ class HRTAbstract:
                         return False
 
                     worst_resident = self._get_worst_existing_resident(hospital)
-                    if worst_resident is None:
+                    h_prefs = self.original_hospitals[hospital]
+                    rank_worst = h_prefs["rank"][worst_resident]
+                    rank_resident = h_prefs["rank"][resident]
+                    if rank_resident <= rank_worst:
                         return False
-                    else:
-                        h_prefs = self.original_hospitals[hospital]
-                        rank_worst = h_prefs["rank"][worst_resident]
-                        rank_resident = h_prefs["rank"][resident]
-                        if rank_resident <= rank_worst:
-                            return False
         return True
 
     def _check_strong_stability(self) -> bool:
