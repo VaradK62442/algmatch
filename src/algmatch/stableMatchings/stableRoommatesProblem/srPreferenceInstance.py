@@ -5,13 +5,16 @@ Store preference lists for Stable Roommates stable matching algorithm.
 from algmatch.abstractClasses.abstractPreferenceInstance import (
     AbstractPreferenceInstance,
 )
-from algmatch.stableMatchings.stableMarriageProblem.noTies.fileReader import FileReader
-from algmatch.stableMatchings.stableMarriageProblem.noTies.dictionaryReader import (
+
+from algmatch.errors.InstanceSetupErrors import PrefSelfError
+
+from algmatch.stableMatchings.stableRoommatesProblem.fileReader import FileReader
+from algmatch.stableMatchings.stableRoommatesProblem.dictionaryReader import (
     DictionaryReader,
 )
 
 
-class SMPreferenceInstance(AbstractPreferenceInstance):
+class SRPreferenceInstance(AbstractPreferenceInstance):
     def __init__(
         self, filename: str | None = None, dictionary: dict | None = None
     ) -> None:
@@ -20,21 +23,20 @@ class SMPreferenceInstance(AbstractPreferenceInstance):
 
     def _load_from_file(self, filename: str) -> None:
         reader = FileReader(filename)
-        self.men = reader.men
-        self.women = reader.women
+        self.roommates = reader.roommates
 
     def _load_from_dictionary(self, dictionary: dict) -> None:
         reader = DictionaryReader(dictionary)
-        self.men = reader.men
-        self.women = reader.women
+        self.roommates = reader.roommates
 
     def check_preference_lists(self) -> None:
-        self.check_preferences_single_group(self.men, "man", self.women)
-        self.check_preferences_single_group(self.women, "woman", self.men)
+        self.check_preferences_single_group(self.roommates, "roommate", self.roommates)
+        for r, prefs in self.roommates.items():
+            if r in prefs["list"]:
+                raise PrefSelfError("roommate", r)
 
     def clean_unacceptable_pairs(self) -> None:
-        super().clean_unacceptable_pairs(self.men, self.women)
+        super().clean_unacceptable_pairs(self.roommates, self.roommates)
 
     def set_up_rankings(self) -> None:
-        self.tieless_lists_to_rank(self.men)
-        self.tieless_lists_to_rank(self.women)
+        self.tieless_lists_to_rank(self.roommates)

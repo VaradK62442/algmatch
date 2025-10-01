@@ -20,3 +20,8 @@ class PrefNotFoundError(InstanceSetupError):
     def __init__(self, participant_type, name, offender):
         cause = f"{offender} not instantiated."
         super().__init__(participant_type, name, cause)
+
+class PrefSelfError(InstanceSetupError):
+    def __init__(self, participant_type, name):
+        cause = f"ranks themselves in list."
+        super().__init__(participant_type, name, cause)
