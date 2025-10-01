@@ -23,7 +23,6 @@ class FileReader(AbstractReader):
         with open(self.data, "r") as file:
             file = file.read().splitlines()
 
-        # build men dictionary
         for elt in file[:self.no_roommates]:
             cur_line += 1
             entry = elt.split()

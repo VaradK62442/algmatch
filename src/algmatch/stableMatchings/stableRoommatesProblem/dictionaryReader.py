@@ -1,5 +1,5 @@
 """
-Class to read in a file of preferences for the Stable Rommates Problem stable matching algorithm.
+Class to read in a file of preferences for the Stable Roomates Problem stable matching algorithm.
 """
 
 from algmatch.abstractClasses.abstractReader import AbstractReader
