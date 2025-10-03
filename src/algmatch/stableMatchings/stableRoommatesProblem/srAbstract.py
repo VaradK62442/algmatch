@@ -8,7 +8,7 @@ import os
 from algmatch.stableMatchings.stableRoommatesProblem.srPreferenceInstance import SRPreferenceInstance
 
 
-class SMAbstract:
+class SRAbstract:
     def __init__(
         self, filename: str | None = None, dictionary: dict | None = None
     ) -> None:
