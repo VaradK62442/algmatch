@@ -23,7 +23,7 @@ class FileReader(AbstractReader):
         with open(self.data, "r") as file:
             file = file.read().splitlines()
 
-        for elt in file[:self.no_roommates]:
+        for elt in file[: self.no_roommates]:
             cur_line += 1
             entry = elt.split()
 
@@ -34,7 +34,7 @@ class FileReader(AbstractReader):
                 raise RepeatIDError("roommate", cur_line, line=True)
 
             for i in entry[1:]:
-                if not i.isdigit() or entry[0] == i: # self-ranking is illegal
+                if not i.isdigit() or entry[0] == i:  # self-ranking is illegal
                     raise PrefListMisformatError("roommate", cur_line, i, line=True)
             preferences = [f"r{i}" for i in entry[1:]]
 

@@ -5,7 +5,9 @@ Stable Roommates Problem - Abstract class
 from copy import deepcopy
 import os
 
-from algmatch.stableMatchings.stableRoommatesProblem.srPreferenceInstance import SRPreferenceInstance
+from algmatch.stableMatchings.stableRoommatesProblem.srPreferenceInstance import (
+    SRPreferenceInstance,
+)
 
 
 class SRAbstract:
@@ -36,7 +38,7 @@ class SRAbstract:
     def _check_stability(self):
         # stability must be checked with regards to the original lists prior to deletions
         for roommate, r_prefs in self.original_roomates.items():
-            preferred_partner = r_prefs["list"]
+            preferred_partners = r_prefs["list"]
             if self.M[roommate]["assigned"] is not None:
                 matched_partner = self.M[roommate]["assigned"]
                 rank_matched_partner = r_prefs["rank"][matched_partner]

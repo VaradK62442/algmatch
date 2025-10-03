@@ -26,7 +26,7 @@ class DictionaryReader(AbstractReader):
                 raise RepeatIDError("roommate", k)
 
             for i in v:
-                if type(i) is not int or k == i: # self-ranking is illegal
+                if type(i) is not int or k == i:  # self-ranking is illegal
                     raise PrefListMisformatError("roommate", k, i)
             preferences = [f"r{i}" for i in v]
 
