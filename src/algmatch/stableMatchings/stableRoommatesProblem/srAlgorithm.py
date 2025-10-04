@@ -31,11 +31,10 @@ class SRAlgorithm(SRAbstract):
         self.M[r_b]["assigned"] = r_a
 
     def _free_up(self, r):
-        self.M[r]["assigned"] = None
         if len(self.roommates[r]["list"]) > 0:
             self.unassigned_roommates.add(r)
 
-    def phase_one(self):
+    def proposal_phase(self):
         """
         Stable marriage-like proposal and refusal sequence
         """
@@ -48,28 +47,59 @@ class SRAlgorithm(SRAbstract):
                 self._free_up(r_b_partner)
             self._engage(r_a, r_b)
 
-            rank_r_a = self.roommates[r_b]["list"].index(r_a) # using ranks might also be ok here
+            # using ranks might also be ok here
+            rank_r_a = self.roommates[r_b]["list"].index(r_a)
             for reject in self.roommates[r_b]["list"][rank_r_a + 1 :]:
                 self._delete_pair(reject, r_b)
 
-    def phase_two(self):
-        pass
+    def locate_cycle(self, p_1):
+        """
+        Given a roommate p_1 who's reduced preference list contains more than one
+        element, we identify a cycle of roommates, p_1,...,p_n. We want the roommate
+        who holds their proposals to reject them. p_{i+1} is being held by q_i. We
+        return only these q_i that need to make a rejection.
+        """
+        p = []
+        q = []
+        cur_p = p_1
+        while cur_p not in p:
+            p.append(cur_p)
+            cur_q = self.roommates[cur_p]["list"][1]
+            q.append(cur_q)
+            cur_p = self.roommates[cur_q]["list"][-1]
+        cycle_start = p.index(cur_p)
+
+        if cycle_start == 0:
+            return [q[-1]] + q[:-1]
+        else:
+            return q[cycle_start - 1 : -1]
+
+    def cycle_phase(self):
+        for candidate in self.roommates:
+            length = len(self.roommates[candidate]["list"])
+            if length != 1:
+                r_a = candidate
+                break
+
+        rejecters = self.locate_cycle(r_a)
+        for r_b in rejecters:
+            partner = self.M[r_b]["assigned"]
+            self._free_up(partner)
+            self.M[r_b]["assigned"] = None
+            self._delete_pair(r_b, partner)
+
+    def halting_condition(self):
+        for r in self.roommates:
+            length = len(self.roommates[r]["list"])
+            if length != 1:
+                return True
+        return False
 
     def _while_loop(self):
-        self.phase_one()
-        self.phase_two()
+        self.proposal_phase()
+        while self.halting_condition():
+            self.cycle_phase()
+            self.proposal_phase()
 
         for k, v in self.M.items():
-            print(f"{k}: {v['assigned']}, with\t{self.roommates[k]['list']}")
-
-
-if __name__ == "__main__":
-    instance = {
-        1: [4, 6, 2, 5, 3],
-        2: [6, 3, 5, 1, 4],
-        3: [4, 5, 1, 6, 2],
-        4: [2, 6, 5, 1, 3],
-        5: [4, 2, 3, 6, 1],
-        6: [5, 1, 4, 2, 3],
-    }
-    SRAlgorithm(dictionary=instance).run()
+            print(f"{k}: {v['assigned']}")
