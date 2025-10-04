@@ -6,7 +6,7 @@ from algmatch.abstractClasses.abstractPreferenceInstance import (
     AbstractPreferenceInstance,
 )
 
-from algmatch.errors.InstanceSetupErrors import PrefSelfError
+from algmatch.errors.InstanceSetupErrors import IncompleteListError, PrefSelfError
 
 from algmatch.stableMatchings.stableRoommatesProblem.fileReader import FileReader
 from algmatch.stableMatchings.stableRoommatesProblem.dictionaryReader import (
@@ -34,6 +34,9 @@ class SRPreferenceInstance(AbstractPreferenceInstance):
         for r, prefs in self.roommates.items():
             if r in prefs["list"]:
                 raise PrefSelfError("roommate", r)
+            print(len(prefs["list"]), len(self.roommates))
+            if len(prefs["list"]) != len(self.roommates) - 1:
+                raise IncompleteListError("roommate", r)
 
     def clean_unacceptable_pairs(self) -> None:
         super().clean_unacceptable_pairs(self.roommates, self.roommates)

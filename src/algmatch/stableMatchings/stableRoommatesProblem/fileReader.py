@@ -34,7 +34,7 @@ class FileReader(AbstractReader):
                 raise RepeatIDError("roommate", cur_line, line=True)
 
             for i in entry[1:]:
-                if not i.isdigit() or entry[0] == i:  # self-ranking is illegal
+                if not i.isdigit():
                     raise PrefListMisformatError("roommate", cur_line, i, line=True)
             preferences = [f"r{i}" for i in entry[1:]]
 

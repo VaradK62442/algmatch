@@ -21,7 +21,14 @@ class PrefNotFoundError(InstanceSetupError):
         cause = f"{offender} not instantiated."
         super().__init__(participant_type, name, cause)
 
+
 class PrefSelfError(InstanceSetupError):
     def __init__(self, participant_type, name):
-        cause = f"ranks themselves in list."
+        cause = "ranks themselves in their own list."
+        super().__init__(participant_type, name, cause)
+
+
+class IncompleteListError(InstanceSetupError):
+    def __init__(self, participant_type, name):
+        cause = "has an incomplete list, which is unsupported for this problem."
         super().__init__(participant_type, name, cause)
