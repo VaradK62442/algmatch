@@ -37,7 +37,7 @@ class SRAbstract:
 
     def _check_stability(self):
         # stability must be checked with regards to the original lists prior to deletions
-        for roommate, r_prefs in self.original_roomates.items():
+        for roommate, r_prefs in self.original_roommates.items():
             preferred_partners = r_prefs["list"]
             if self.M[roommate]["assigned"] is not None:
                 matched_partner = self.M[roommate]["assigned"]
@@ -61,7 +61,7 @@ class SRAbstract:
     def _while_loop(self):
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
 
-    def run(self) -> None:
+    def run(self):
         self._while_loop()
 
         for roommate in self.roommates:

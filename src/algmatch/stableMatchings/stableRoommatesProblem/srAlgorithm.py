@@ -13,7 +13,7 @@ class SRAlgorithm(SRAbstract):
 
         self.unassigned_roommates = set()
 
-        for roommate, r_prefs in self.men.items():
+        for roommate, r_prefs in self.roommates.items():
             if len(r_prefs["list"]) > 0:
                 self.unassigned_roommates.add(roommate)
             self.M[roommate] = {"assigned": None}
@@ -28,12 +28,11 @@ class SRAlgorithm(SRAbstract):
             self.unassigned_roommates.discard(r_b)
 
     def _engage(self, r_a, r_b):
-        self.M[r_a]["assigned"] = r_b
         self.M[r_b]["assigned"] = r_a
 
     def _free_up(self, r):
         self.M[r]["assigned"] = None
-        if len(self.men[r]["list"]) > 0:
+        if len(self.roommates[r]["list"]) > 0:
             self.unassigned_roommates.add(r)
 
     def phase_one(self):
@@ -49,7 +48,7 @@ class SRAlgorithm(SRAbstract):
                 self._free_up(r_b_partner)
             self._engage(r_a, r_b)
 
-            rank_r_a = self.roommate[r_b]["rank"][r_a]
+            rank_r_a = self.roommates[r_b]["list"].index(r_a) # using ranks might also be ok here
             for reject in self.roommates[r_b]["list"][rank_r_a + 1 :]:
                 self._delete_pair(reject, r_b)
 
@@ -61,7 +60,7 @@ class SRAlgorithm(SRAbstract):
         self.phase_two()
 
         for k, v in self.M.items():
-            print(f"{k}: {v}")
+            print(f"{k}: {v['assigned']}, with\t{self.roommates[k]['list']}")
 
 
 if __name__ == "__main__":
@@ -73,4 +72,4 @@ if __name__ == "__main__":
         5: [4, 2, 3, 6, 1],
         6: [5, 1, 4, 2, 3],
     }
-    SRAlgorithm(dictionary=instance)
+    SRAlgorithm(dictionary=instance).run()
