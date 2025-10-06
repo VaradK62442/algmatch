@@ -34,7 +34,6 @@ class SRPreferenceInstance(AbstractPreferenceInstance):
         for r, prefs in self.roommates.items():
             if r in prefs["list"]:
                 raise PrefSelfError("roommate", r)
-            print(len(prefs["list"]), len(self.roommates))
             if len(prefs["list"]) != len(self.roommates) - 1:
                 raise IncompleteListError("roommate", r)
 

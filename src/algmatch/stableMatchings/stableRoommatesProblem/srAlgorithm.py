@@ -100,6 +100,3 @@ class SRAlgorithm(SRAbstract):
         while self.halting_condition():
             self.cycle_phase()
             self.proposal_phase()
-
-        for k, v in self.M.items():
-            print(f"{k}: {v['assigned']}")
