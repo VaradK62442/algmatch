@@ -89,11 +89,12 @@ class SRAlgorithm(SRAbstract):
             self._delete_pair(r_b, partner)
 
     def halting_condition(self):
-        for r in self.roommates:
-            length = len(self.roommates[r]["list"])
-            if length != 1:
-                return True
-        return False
+        if any(len(self.roommates[r]["list"]) == 0 for r in self.roommates):
+            return False
+        elif all(len(self.roommates[r]["list"]) == 1 for r in self.roommates):
+            return False
+        else:
+            return True
 
     def _while_loop(self):
         self.proposal_phase()

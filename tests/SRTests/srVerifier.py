@@ -20,7 +20,9 @@ class SRVerifier:
         bruteforcer.find_stable_matchings()
         matching = solver.get_stable_matching()
 
-        if not bruteforcer.stable_matching_list:
+        if not solver.sr_alg.is_stable:
+            if not bruteforcer.stable_matching_list:
+                return True
             return False
 
         if matching not in bruteforcer.stable_matching_list:
