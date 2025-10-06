@@ -28,5 +28,5 @@ class SRInstanceGenerator(GenericGeneratorInterface):
     def _generate_lists(self):
         for r, r_list in self.instance.items():
             shuffle(self.available_roommates)
-            r_list = self.available_roommates.copy()
+            r_list.extend(self.available_roommates.copy())
             r_list.remove(r)
