@@ -44,6 +44,8 @@ class SRAbstract:
                 rank_matched_partner = r_prefs["rank"][matched_partner]
                 # every other roomate that r_i prefers to his matched partner
                 preferred_partners = r_prefs["list"][:rank_matched_partner]
+            else:
+                return False
 
             for partner in preferred_partners:
                 existing_roommate = self.M[partner]["assigned"]
