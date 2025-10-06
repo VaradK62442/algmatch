@@ -22,7 +22,7 @@ class StableRoommatesProblem:
         if filename is not None:
             filename = os.path.join(os.getcwd(), filename)
 
-        self.sm_alg = SRAlgorithm(filename=filename, dictionary=dictionary)
+        self.sr_alg = SRAlgorithm(filename=filename, dictionary=dictionary)
 
     def get_stable_matching(self) -> dict | None:
         """
@@ -30,7 +30,7 @@ class StableRoommatesProblem:
 
         :return: dict, the stable matching for this instance
         """
-        self.sm_alg.run()
-        if self.sm_alg.is_stable:
-            return self.sm_alg.stable_matching
+        self.sr_alg.run()
+        if self.sr_alg.is_stable:
+            return self.sr_alg.stable_matching
         return None

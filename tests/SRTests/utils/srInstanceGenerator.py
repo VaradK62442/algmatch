@@ -18,7 +18,7 @@ class SRInstanceGenerator(GenericGeneratorInterface):
         self.available_roommates = [i + 1 for i in range(self.no_roommates)]
 
     def _reset_instance(self):
-        self.instance = {r: [] for r in self.available_roommates}
+        self.instance = {i + 1: [] for i in range(self.no_roommates)}
 
     def generate_instance(self):
         self._reset_instance()
