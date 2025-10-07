@@ -92,7 +92,49 @@ class SMTAbstract:
         return True
 
     def _check_strong_stability(self) -> bool:
-        raise NotImplementedError("Strong stability checking isn't implemented")
+        # first check for multiple-assignment
+        seen_matching_targets = set()
+        for person in self.M:
+            matching_target = self.M[person]["assigned"]
+            if matching_target in seen_matching_targets:
+                return False
+            if matching_target is not None:
+                seen_matching_targets.add(matching_target)
+
+        # stability must be checked with regards to the original lists prior to deletions
+        for man, m_prefs in self.original_men.items():
+            preferred_women = self.original_men[man]["list"]
+            matched_woman = self.M[man]["assigned"]
+
+            if matched_woman is not None:
+                rank_matched_woman = m_prefs["rank"][matched_woman]
+                preferred_women = m_prefs["list"][:rank_matched_woman]
+                indifferent_women = m_prefs["list"][rank_matched_woman + 1]
+
+            for w_tie in preferred_women:
+                for woman in w_tie:
+                    existing_fiance = self.M[woman]["assigned"]
+                    if existing_fiance is None:
+                        return False
+                    else:
+                        w_prefs = self.original_women[woman]
+                        rank_fiance = w_prefs["rank"][existing_fiance]
+                        rank_man = w_prefs["rank"][man]
+                        if rank_man <= rank_fiance:
+                            return False
+
+            for woman in indifferent_women:
+                existing_fiance = self.M[woman]["assigned"]
+                if existing_fiance is None:
+                    return False
+                else:
+                    w_prefs = self.original_women[woman]
+                    rank_fiance = w_prefs["rank"][existing_fiance]
+                    rank_man = w_prefs["rank"][man]
+                    if rank_man < rank_fiance:
+                        return False
+
+        return True
 
     def _get_pref_list(self, person) -> list:
         if person in self.men:
@@ -144,10 +186,8 @@ class SMTAbstract:
         self.M[woman]["assigned"].discard(man)
 
     def _delete_pair(self, man, woman) -> None:
-        # allow either order of args
         if man in self.women:
             man, woman = woman, man
-        # TO-DO: speed this up iusing ranks
         for tie in self.men[man]["list"]:
             tie.discard(woman)
         for tie in self.women[woman]["list"]:
