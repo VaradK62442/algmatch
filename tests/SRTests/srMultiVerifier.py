@@ -49,8 +49,8 @@ class SRMultiVerifier(SRV):
 
 def main():
     TOTAL_ROOMMATES = 6
-    REPETITIONS = 5_000  # per thread
-    THREADS = 2
+    REPETITIONS = 84_000  # per thread
+    THREADS = 12
 
     start = perf_counter_ns()
 
@@ -75,10 +75,10 @@ def main():
         for v_t in v_threads:
             v_t.join()
 
-    end = perf_counter_ns()
-    print(f"\nFinal Runtime: {(end - start) / 1000**3}s")
+        end = perf_counter_ns()
+        print(f"\nFinal Runtime: {(end - start) / 1000**3}s")
 
-    verifier.show_results()
+        verifier.show_results()
 
 
 if __name__ == "__main__":
