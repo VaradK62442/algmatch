@@ -2,16 +2,16 @@
 Algorithm to produce M_0, the man-optimal, woman-pessimal strongly stable matching, where such a thing exists.
 """
 
-from algmatch.stableMatchings.stableMarriageProblem.ties.smtAbstract import SMTAbstract
+from algmatch.stableMatchings.stableMarriageProblem.ties.smtStrongAbstract import (
+    SMTStrongAbstract,
+)
 
 
-class SMTStrongManOriented(SMTAbstract):
+class SMTStrongManOptimal(SMTStrongAbstract):
     def __init__(
         self, filename: str | None = None, dictionary: dict | None = None
     ) -> None:
-        super().__init__(
-            filename=filename, dictionary=dictionary, stability_type="strong"
-        )
+        super().__init__(filename=filename, dictionary=dictionary)
 
         self.unassigned_men = set()
         self.proposed = {w: False for w in self.women}
@@ -38,19 +38,23 @@ class SMTStrongManOriented(SMTAbstract):
         self.unassigned_men.add(man)
 
     def _get_critical_set(self):
-        maximum_matching = self.get_maximum_matching()
+        self._get_maximum_matching()
 
-        unexplored_men = {m for m, w in maximum_matching["men"] if w is not None}
+        unexplored_men = {
+            m for m, w in self.maximum_matching["men"].items() if w is None
+        }
         explored_men, visited_women = set(), set()
         while unexplored_men:
             man = unexplored_men.pop()
             explored_men.add(man)
-            women_to_explore = self.M[man]["assigned"] - maximum_matching["men"][man]
+            women_to_explore = self.M[man]["assigned"] - {
+                self.maximum_matching["men"][man]
+            }
 
             for w in women_to_explore:
                 if w not in visited_women:
                     visited_women.add(w)
-                    w_match = maximum_matching["women"][w]
+                    w_match = self.maximum_matching["women"][w]
                     if w_match not in explored_men:
                         unexplored_men.add(w_match)
 
@@ -69,6 +73,12 @@ class SMTStrongManOriented(SMTAbstract):
         for w in self._neighbourhood(Z):
             self._break_all_engagements(m)
             self._delete_tail(m)
+
+        self._get_maximum_matching()
+        for m, w in self.maximum_matching["men"].items():
+            self.M[m]["assigned"] = w
+        for w, m in self.maximum_matching["women"].items():
+            self.M[w]["assigned"] = m
 
         # check viability of matching
         for w in self.women:
