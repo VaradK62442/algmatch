@@ -213,6 +213,12 @@ class SMTAbstract:
                 self._break_engagement(target, reject)
                 self._delete_pair(target, reject)
 
+    def _get_maximum_matching(self):
+        return NotImplementedError("Maximum matching algorithm must be implemented")
+
+    def _neighbourhood(self, people):
+        return set.union(*[self.M[person]["assigned"] for person in people])
+
     def _while_loop(self) -> bool:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
 
