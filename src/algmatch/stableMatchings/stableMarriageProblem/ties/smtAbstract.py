@@ -103,13 +103,15 @@ class SMTAbstract:
 
         # stability must be checked with regards to the original lists prior to deletions
         for man, m_prefs in self.original_men.items():
-            preferred_women = self.original_men[man]["list"]
             matched_woman = self.M[man]["assigned"]
 
             if matched_woman is not None:
                 rank_matched_woman = m_prefs["rank"][matched_woman]
                 preferred_women = m_prefs["list"][:rank_matched_woman]
-                indifferent_women = m_prefs["list"][rank_matched_woman + 1]
+                indifferent_women = m_prefs["list"][rank_matched_woman]
+            else:
+                preferred_women = self.original_men[man]["list"]
+                indifferent_women = []
 
             for w_tie in preferred_women:
                 for woman in w_tie:
