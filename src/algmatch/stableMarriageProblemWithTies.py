@@ -9,6 +9,12 @@ from algmatch.stableMatchings.stableMarriageProblem.ties.smtSuperManOriented imp
 from algmatch.stableMatchings.stableMarriageProblem.ties.smtSuperWomanOriented import (
     SMTSuperWomanOriented,
 )
+from algmatch.stableMatchings.stableMarriageProblem.ties.smtStrongManOptimal import (
+    SMTStrongManOptimal,
+)
+from algmatch.stableMatchings.stableMarriageProblem.ties.smtStrongWomanOptimal import (
+    SMTStrongWomanOptimal,
+)
 from algmatch.stableMatchings.stableMarriageProblem.ties.smtAbstract import SMTAbstract
 
 
@@ -65,7 +71,14 @@ class StableMarriageProblemWithTies:
                     filename=self.filename, dictionary=self.dictionary
                 )
         elif self.stability_type == "strong":
-            raise NotImplementedError("Strong algorithms are not yet available.")
+            if self.optimised_side == "men":
+                self.sm_alg = SMTStrongManOptimal(
+                    filename=self.filename, dictionary=self.dictionary
+                )
+            else:
+                self.sm_alg = SMTStrongWomanOptimal(
+                    filename=self.filename, dictionary=self.dictionary
+                )
         else:
             raise ValueError('stability_type must be either "strong" or "super".')
 
