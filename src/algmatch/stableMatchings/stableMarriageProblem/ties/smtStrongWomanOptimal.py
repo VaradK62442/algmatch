@@ -16,10 +16,10 @@ class SMTStrongWomanOptimal(SMTStrongAbstract):
         self.unassigned_women = set()
         self.proposed = {m: False for m in self.men}
 
-        for man, prefs in self.men.items():
+        for man in self.men:
             self.M[man] = {"assigned": set()}
 
-        for woman in self.women:
+        for woman, prefs in self.women.items():
             if len(prefs["list"]) > 0:
                 self.unassigned_women.add(woman)
             self.M[woman] = {"assigned": set()}
@@ -29,13 +29,13 @@ class SMTStrongWomanOptimal(SMTStrongAbstract):
         if man in self.women:
             man, woman = woman, man
         if self._get_pref_length(woman) == 0:
-            self.unassigned_men.discard(woman)
+            self.unassigned_women.discard(woman)
 
     def _break_engagement(self, man, woman):
         super()._break_engagement(man, woman)
         if man in self.women:
             man, woman = woman, man
-        self.unassigned_men.add(woman)
+        self.unassigned_women.add(woman)
 
     def _get_critical_set(self):
         self._get_maximum_matching()
@@ -73,7 +73,7 @@ class SMTStrongWomanOptimal(SMTStrongAbstract):
 
             Z = self._get_critical_set()
             U = self._neighbourhood(Z)
-            for m in self._neighbourhood(Z):
+            for m in U:
                 self._break_all_engagements(m)
                 self._delete_tail(m)
 
