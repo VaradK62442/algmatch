@@ -61,24 +61,23 @@ class SMTStrongManOptimal(SMTStrongAbstract):
         return explored_men
 
     def _while_loop(self) -> bool:
-        while len(self.unassigned_men) != 0:
-            m = self.unassigned_men.pop()
-            w_tie = self._get_head(m)
-            for w in w_tie.copy():
-                self._engage(m, w)
-                self.proposed[w] = True
-                self._reject_lower_ranks(w, m)
+        U = {None}
+        while U:
+            while len(self.unassigned_men) != 0:
+                m = self.unassigned_men.pop()
+                w_tie = self._get_head(m)
+                for w in w_tie.copy():
+                    self._engage(m, w)
+                    self.proposed[w] = True
+                    self._reject_lower_ranks(w, m)
 
-        Z = self._get_critical_set()
-        for w in self._neighbourhood(Z):
-            self._break_all_engagements(m)
-            self._delete_tail(m)
+            Z = self._get_critical_set()
+            U = self._neighbourhood(Z)
+            for w in U:
+                self._break_all_engagements(w)
+                self._delete_tail(w)
 
-        self._get_maximum_matching()
-        for m, w in self.maximum_matching["men"].items():
-            self.M[m]["assigned"] = w
-        for w, m in self.maximum_matching["women"].items():
-            self.M[w]["assigned"] = m
+        self._select_maximum_matching()
 
         # check viability of matching
         for w in self.women:

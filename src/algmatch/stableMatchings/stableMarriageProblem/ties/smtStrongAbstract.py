@@ -69,3 +69,10 @@ class SMTStrongAbstract(SMTAbstract):
             for m in self.men:
                 if self.maximum_matching["men"][m] is None:
                     self._DFS(m)
+
+    def _select_maximum_matching(self):
+        self._get_maximum_matching()
+        for m, w in self.maximum_matching["men"].items():
+            self.M[m]["assigned"] = w
+        for w, m in self.maximum_matching["women"].items():
+            self.M[w]["assigned"] = m
