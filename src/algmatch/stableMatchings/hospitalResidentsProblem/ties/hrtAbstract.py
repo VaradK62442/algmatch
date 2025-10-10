@@ -104,7 +104,53 @@ class HRTAbstract:
         return True
 
     def _check_strong_stability(self) -> bool:
-        raise NotImplementedError("Strong stability checking isn't implemented")
+        # stability must be checked with regards to the original lists prior to deletions
+        for resident, r_prefs in self.original_residents.items():
+            # catch multiple assignments
+            assignment_num = len(self.M[resident]["assigned"])
+            if assignment_num > 1:
+                return False
+            elif assignment_num == 1:
+                [matched_hospital] = self.M[resident]["assigned"]
+            else:
+                matched_hospital = None
+
+            preferred_hospitals = r_prefs["list"]
+            if matched_hospital is not None:
+                rank_worst_matched_hospital = r_prefs["rank"][matched_hospital]
+                preferred_hospitals = r_prefs["list"][:rank_worst_matched_hospital]
+                indifferent_hospitals = r_prefs["list"][rank_worst_matched_hospital + 1]
+
+            for h_tie in preferred_hospitals:
+                for hospital in h_tie:
+                    if (
+                        len(self.M[hospital]["assigned"])
+                        < self.hospitals[hospital]["capacity"]
+                    ):
+                        return False
+
+                    worst_resident = self._get_worst_existing_resident(hospital)
+                    h_prefs = self.original_hospitals[hospital]
+                    rank_worst = h_prefs["rank"][worst_resident]
+                    rank_resident = h_prefs["rank"][resident]
+                    if rank_resident <= rank_worst:
+                        return False
+
+            for hospital in indifferent_hospitals:
+                if (
+                    len(self.M[hospital]["assigned"])
+                    < self.hospitals[hospital]["capacity"]
+                ):
+                    return False
+
+                worst_resident = self._get_worst_existing_resident(hospital)
+                h_prefs = self.original_hospitals[hospital]
+                rank_worst = h_prefs["rank"][worst_resident]
+                rank_resident = h_prefs["rank"][resident]
+                if rank_resident < rank_worst:
+                    return False
+
+        return True
 
     def _get_pref_list(self, participant) -> list:
         if participant in self.residents:

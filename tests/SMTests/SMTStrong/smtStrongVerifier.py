@@ -5,7 +5,7 @@ from tests.SMTests.utils.ties.smtInstanceGenerator import SMTInstanceGenerator
 from tests.SMTests.utils.ties.smtEnumerator import SMTEnumerator
 
 
-class SMTSuperVerifier(AbstractVerifier):
+class SMTStrongVerifier(AbstractVerifier):
     def __init__(self, total_men, total_women, lower_bound, upper_bound):
         """
         It takes argument as follows (set in init):
@@ -29,5 +29,5 @@ class SMTSuperVerifier(AbstractVerifier):
             SMTInstanceGenerator,
             generator_args,
             SMTEnumerator,
-            "super",
+            "strong",
         )
