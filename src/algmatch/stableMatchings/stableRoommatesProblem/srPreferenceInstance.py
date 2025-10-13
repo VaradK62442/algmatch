@@ -19,6 +19,8 @@ class SRPreferenceInstance(AbstractPreferenceInstance):
         self, filename: str | None = None, dictionary: dict | None = None
     ) -> None:
         super().__init__(filename, dictionary)
+        if len(self.roommates) % 2 != 0:
+            raise ValueError("Problems must have an even number of roommates.")
         self._general_setup_procedure()
 
     def _load_from_file(self, filename: str) -> None:
