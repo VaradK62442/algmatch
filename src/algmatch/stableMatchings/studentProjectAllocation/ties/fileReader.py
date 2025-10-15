@@ -105,11 +105,7 @@ class FileReader(AbstractReader):
                 raise OffererError("project", "lecturer", self.cur_line, line=True)
             offerer = f"l{entry[2]}"
 
-            self.projects[project] = {
-                "lower_quota": 0,
-                "upper_quota": capacity,
-                "lecturer": offerer,
-            }
+            self.projects[project] = {"capacity": capacity, "lecturer": offerer}
 
         # build lecturers dictionary
         lecturers_end = projects_end + self.no_lecturers
@@ -129,7 +125,7 @@ class FileReader(AbstractReader):
 
             preferences = self._scan_preference_tokens(entry[2:], "hospital")
             self.lecturers[lecturer] = {
-                "upper_quota": capacity,
+                "capacity": capacity,
                 "projects": set(),
                 "list": preferences,
                 "rank": {},

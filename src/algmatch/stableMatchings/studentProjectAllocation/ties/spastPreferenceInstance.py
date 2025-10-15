@@ -81,4 +81,5 @@ class SPASTPreferenceInstance(AbstractPreferenceInstanceWithTies):
 
     def set_up_rankings(self):
         self.tied_lists_to_rank(self.students)
+        self.tied_lists_to_rank(self.projects)
         self.tied_lists_to_rank(self.lecturers)

@@ -67,8 +67,7 @@ class DictionaryReader(AbstractReader):
                         offerer = f"l{v['lecturer']}"
 
                         self.projects[project] = {
-                            "lower_quota": 0,
-                            "upper_quota": capacity,
+                            "capacity": capacity,
                             "lecturer": offerer,
                         }
 
@@ -101,7 +100,7 @@ class DictionaryReader(AbstractReader):
                             preferences.append(tie)
 
                         self.lecturers[lecturer] = {
-                            "upper_quota": capacity,
+                            "capacity": capacity,
                             "projects": set(),
                             "list": preferences,
                             "rank": dict(),
