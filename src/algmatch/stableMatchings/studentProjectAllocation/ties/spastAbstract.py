@@ -179,10 +179,10 @@ class SPASTAbstract:
             raise ValueError(f"{participant} is not a student, project, or lecturer.")
 
     def _get_pref_list(self, participant) -> list:
-        return self._get_pref(participant)["list"]
+        return self._get_prefs(participant)["list"]
 
     def _get_pref_ranks(self, participant) -> dict:
-        return self._get_pref(participant)["rank"]
+        return self._get_prefs(participant)["rank"]
 
     def _get_pref_length(self, person) -> int:
         pref_list = self._get_pref_list(person)
@@ -195,7 +195,7 @@ class SPASTAbstract:
         while idx < len(pref_list):
             head = pref_list[idx]
             if len(head) > 0:
-                return head
+                return head.copy()
             idx += 1
         raise ValueError("Pref_list empty")
 
@@ -205,7 +205,7 @@ class SPASTAbstract:
         while idx >= 0:
             tail = pref_list[idx]
             if len(tail) > 0:
-                return tail
+                return tail.copy()
             idx -= 1
         raise ValueError("Pref_list empty")
 
@@ -229,7 +229,7 @@ class SPASTAbstract:
         p_prefs["list"][p_rank_s].remove(student)
 
         best_reject = self.projects[project]["best_reject"]
-        if p_rank_s < p_prefs["rank"][best_reject]:
+        if best_reject is None or p_rank_s < p_prefs["rank"][best_reject]:
             self.projects[project]["best_reject"] = student
 
         l_prefs = self._get_prefs(lecturer)
@@ -239,16 +239,14 @@ class SPASTAbstract:
     def _delete_tail_project(self, project) -> None:
         tail = self._get_tail(project)
         lecturer = self.projects[project]["lecturer"]
-        while len(tail) != 0:
-            student = tail.pop()
+        for student in tail:
             self._break_assignment(student, project, lecturer)
             self._delete_triple(student, project, lecturer)
 
     def _delete_tail_lecturer(self, lecturer) -> None:
         tail = self._get_tail(lecturer)
-        while len(tail) != 0:
-            student = tail.pop()
-            for project in self.M[student]["assigned"]:
+        for student in tail:
+            for project in self.M[student]["assigned"].copy():
                 if self.projects[project]["lecturer"] == lecturer:
                     self._break_assignment(student, project, lecturer)
                     self._delete_triple(student, project, lecturer)
@@ -257,8 +255,7 @@ class SPASTAbstract:
         p_prefs = self._get_prefs(project)
         rank_worst = p_prefs["rank"][worst]
         for reject_tie in p_prefs["list"][rank_worst + 1 :]:
-            while len(reject_tie) != 0:
-                reject = reject_tie.pop()
+            for reject in reject_tie.copy():
                 self._break_assignment(reject, project, lecturer)
                 self._delete_triple(reject, project, lecturer)
 
@@ -266,9 +263,8 @@ class SPASTAbstract:
         l_prefs = self._get_prefs(lecturer)
         rank_worst = l_prefs["rank"][worst]
         for reject_tie in l_prefs["list"][rank_worst + 1 :]:
-            while len(reject_tie) != 0:
-                student = reject_tie.pop()
-                for project in self.M[student]["assigned"]:
+            for student in reject_tie.copy():
+                for project in self.M[student]["assigned"].copy():
                     if self.projects[project]["lecturer"] == lecturer:
                         self._break_assignment(student, project, lecturer)
                         self._delete_triple(student, project, lecturer)
@@ -286,7 +282,7 @@ class SPASTAbstract:
                 self.stable_matching["student_sided"][student] = project
 
     def _save_lecturer_sided(self) -> None:
-        for lecturer in self.lecturer:
+        for lecturer in self.lecturers:
             student_set = self.M[lecturer]["assigned"]
             if student_set != set():
                 self.stable_matching["lecturer_sided"][lecturer] = student_set
