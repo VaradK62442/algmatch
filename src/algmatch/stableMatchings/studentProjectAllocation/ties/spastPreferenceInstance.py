@@ -2,6 +2,7 @@
 Store preference lists for the SPAST stable matching algorithm.
 """
 
+from copy import deepcopy
 from itertools import product
 
 from algmatch.abstractClasses.abstractPreferenceInstanceWithTies import (
@@ -38,7 +39,9 @@ class SPASTPreferenceInstance(AbstractPreferenceInstanceWithTies):
             lec = self.projects[project]["lecturer"]
             self.lecturers[lec]["projects"].add(project)
             lecturer_list = self.lecturers[lec]["list"]
-            self.projects[project]["list"] = lecturer_list[:]
+
+            self.projects[project]["list"] = deepcopy(lecturer_list)
+            self.projects[project]["best_reject"] = None
 
     def check_preference_lists(self) -> None:
         self.check_preferences_with_ties_single_group(

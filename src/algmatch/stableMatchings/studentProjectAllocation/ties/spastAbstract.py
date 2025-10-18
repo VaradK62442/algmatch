@@ -168,6 +168,111 @@ class SPASTAbstract:
             "Strong stability algorithms have not yet been published for SPAST"
         )
 
+    def _get_prefs(self, participant) -> dict:
+        if participant in self.students:
+            return self.students[participant]
+        elif participant in self.projects:
+            return self.projects[participant]
+        elif participant in self.lecturers:
+            return self.lecturers[participant]
+        else:
+            raise ValueError(f"{participant} is not a student, project, or lecturer.")
+
+    def _get_pref_list(self, participant) -> list:
+        return self._get_pref(participant)["list"]
+
+    def _get_pref_ranks(self, participant) -> dict:
+        return self._get_pref(participant)["rank"]
+
+    def _get_pref_length(self, person) -> int:
+        pref_list = self._get_pref_list(person)
+        total = sum([len(tie) for tie in pref_list])
+        return total
+
+    def _get_head(self, person) -> set:
+        pref_list = self._get_pref_list(person)
+        idx = 0
+        while idx < len(pref_list):
+            head = pref_list[idx]
+            if len(head) > 0:
+                return head
+            idx += 1
+        raise ValueError("Pref_list empty")
+
+    def _get_tail(self, person) -> set:
+        pref_list = self._get_pref_list(person)
+        idx = len(pref_list) - 1
+        while idx >= 0:
+            tail = pref_list[idx]
+            if len(tail) > 0:
+                return tail
+            idx -= 1
+        raise ValueError("Pref_list empty")
+
+    def _assign(self, student, project, lecturer) -> None:
+        self.M[student]["assigned"].add(project)
+        self.M[project]["assigned"].add(student)
+        self.M[lecturer]["assigned"].add(student)
+
+    def _break_assignment(self, student, project, lecturer) -> None:
+        self.M[student]["assigned"].discard(project)
+        self.M[project]["assigned"].discard(student)
+        self.M[lecturer]["assigned"].discard(student)
+
+    def _delete_triple(self, student, project, lecturer) -> None:
+        s_prefs = self._get_prefs(student)
+        s_rank_p = s_prefs["rank"][project]
+        s_prefs["list"][s_rank_p].remove(project)
+
+        p_prefs = self._get_prefs(project)
+        p_rank_s = p_prefs["rank"][student]
+        p_prefs["list"][p_rank_s].remove(student)
+
+        best_reject = self.projects[project]["best_reject"]
+        if p_rank_s < p_prefs["rank"][best_reject]:
+            self.projects[project]["best_reject"] = student
+
+        l_prefs = self._get_prefs(lecturer)
+        l_rank_s = l_prefs["rank"][student]
+        l_prefs["list"][l_rank_s].remove(student)
+
+    def _delete_tail_project(self, project) -> None:
+        tail = self._get_tail(project)
+        lecturer = self.projects[project]["lecturer"]
+        while len(tail) != 0:
+            student = tail.pop()
+            self._break_assignment(student, project, lecturer)
+            self._delete_triple(student, project, lecturer)
+
+    def _delete_tail_lecturer(self, lecturer) -> None:
+        tail = self._get_tail(lecturer)
+        while len(tail) != 0:
+            student = tail.pop()
+            for project in self.M[student]["assigned"]:
+                if self.projects[project]["lecturer"] == lecturer:
+                    self._break_assignment(student, project, lecturer)
+                    self._delete_triple(student, project, lecturer)
+
+    def _reject_project_lower_ranks(self, worst, project, lecturer) -> None:
+        p_prefs = self._get_prefs(project)
+        rank_worst = p_prefs["rank"][worst]
+        for reject_tie in p_prefs["list"][rank_worst + 1 :]:
+            while len(reject_tie) != 0:
+                reject = reject_tie.pop()
+                self._break_assignment(reject, project, lecturer)
+                self._delete_triple(reject, project, lecturer)
+
+    def _reject_lecturer_lower_ranks(self, worst, lecturer) -> None:
+        l_prefs = self._get_prefs(lecturer)
+        rank_worst = l_prefs["rank"][worst]
+        for reject_tie in l_prefs["list"][rank_worst + 1 :]:
+            while len(reject_tie) != 0:
+                student = reject_tie.pop()
+                for project in self.M[student]["assigned"]:
+                    if self.projects[project]["lecturer"] == lecturer:
+                        self._break_assignment(student, project, lecturer)
+                        self._delete_triple(student, project, lecturer)
+
     def _while_loop(self) -> bool:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
 
