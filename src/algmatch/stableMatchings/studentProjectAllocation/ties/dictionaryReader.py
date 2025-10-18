@@ -94,9 +94,9 @@ class DictionaryReader(AbstractReader):
                         for i, elt in enumerate(v["preferences"]):
                             if isinstance(elt, int):
                                 tie = set()
-                                tie.add(f"r{elt}")
+                                tie.add(f"s{elt}")
                             else:
-                                tie = {f"r{j}" for j in elt}
+                                tie = {f"s{j}" for j in elt}
                             preferences.append(tie)
 
                         self.lecturers[lecturer] = {

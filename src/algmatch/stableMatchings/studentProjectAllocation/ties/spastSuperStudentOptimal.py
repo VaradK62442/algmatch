@@ -29,7 +29,7 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
         for lecturer in self.lecturers:
             self.M[lecturer] = {"assigned": set()}
 
-    def _delete_pair(self, student, project, lecturer):
+    def _delete_triple(self, student, project, lecturer):
         super()._delete_triple(student, project, lecturer)
         if self._get_pref_length(student) == 0:
             self.unassigned_students.discard(student)
@@ -38,14 +38,6 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
         super()._break_assignment(student, project, lecturer)
         if self._get_pref_length(student) > 0:
             self.unassigned_students.add(student)
-
-    def _reject_lower_ranks(self, target, proposer) -> None:
-        rank_p = self._get_pref_ranks(target)[proposer]
-        for reject_tie in self._get_pref_list(target)[rank_p + 1 :]:
-            while len(reject_tie) != 0:
-                reject = reject_tie.pop()
-                self._break_assignment(target, reject)
-                self._delete_pair(target, reject)
 
     def _while_loop(self) -> bool:
         while len(self.unassigned_students) != 0:
@@ -90,27 +82,5 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                     sr = p_info["best_reject"]
                     self._reject_lecturer_lower_ranks(sr, L)
 
-
-if __name__ == "__main__":
-    instance = {
-        "students": {
-            1: [1],
-            2: [[1, 3]],
-            3: [2],
-            4: [2, 3],
-            5: [3, 1],
-        },
-        "projects": {
-            1: {"capacity": 1, "lecturer": 1},
-            2: {"capacity": 2, "lecturer": 1},
-            3: {"capacity": 1, "lecturer": 2},
-        },
-        "lecturers": {
-            1: {"capacity": 2, "preferences": [5, [1, 2], 3, 4]},
-            2: {"capacity": 1, "preferences": [2, 4, 3]},
-        },
-    }
-    thing = SPASTSuperStudentOptimal(dictionary=instance)
-    thing.run()
-    print(thing.stable_matching)
-    print(thing.is_stable)
+        # placeholding for simpler stability conditions
+        return self._check_super_stability()

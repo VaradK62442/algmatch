@@ -123,7 +123,7 @@ class FileReader(AbstractReader):
                 raise CapacityError("lecturer", self.cur_line, line=True)
             capacity = int(entry[1])
 
-            preferences = self._scan_preference_tokens(entry[2:], "hospital")
+            preferences = self._scan_preference_tokens(entry[2:], "lecturer", "s")
             self.lecturers[lecturer] = {
                 "capacity": capacity,
                 "projects": set(),
