@@ -2,27 +2,38 @@ from multiprocessing import Manager, Process
 from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
-from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
-from tests.SPASTests.spasVerifier import SPASAbstractVerifier as SPASAV
+from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier
+from tests.SPASTests.SPAS.spasVerifier import SPASVerifier
 
 
-class SPASMultiVerifier(SPASAV, AMV):
+class SPASMultiVerifier(SPASVerifier, AbstractMultiVerifier):
     def __init__(
         self,
         total_students,
-        lower_project_bound,
-        upper_project_bound,
+        total_projects,
+        total_lecturers,
+        lower_bound,
+        upper_bound,
         reps,
         result_dict,
     ):
-        SPASAV.__init__(self, total_students, lower_project_bound, upper_project_bound)
-        AMV.__init__(self, reps, result_dict)
+        SPASVerifier.__init__(
+            self,
+            total_students,
+            total_projects,
+            total_lecturers,
+            lower_bound,
+            upper_bound,
+        )
+        AbstractMultiVerifier.__init__(self, reps, result_dict)
 
     def show_results(self):
         print(f"""
             Total students: {self._total_students}
-            Lower project bound: {self._lower_project_bound}
-            Upper project bound: {self._upper_project_bound}
+            Total projects: {self._total_projects}
+            Total lecturers: {self._total_lecturers}
+            Lower list bound: {self._lower_bound}
+            Upper list bound: {self._upper_bound}
             Repetitions: {self.result_dict["total"]}
 
             Correct: {self.result_dict["correct"]}
@@ -31,9 +42,11 @@ class SPASMultiVerifier(SPASAV, AMV):
 
 
 def main():
-    TOTAL_STUDENTS = 5
-    LOWER_PROJECT_BOUND = 3
-    UPPER_PROJECT_BOUND = 3
+    TOTAL_STUDENTS = 12
+    TOTAL_PROJECTS = 5
+    TOTAL_LECTURERS = 3
+    LOWER_BOUND = 0
+    UPPER_BOUND = 3
     REPETITIONS = 10_000  # per thread
     THREADS = 4
 
@@ -43,8 +56,10 @@ def main():
         result_dict = manager.dict()
         verifier = SPASMultiVerifier(
             TOTAL_STUDENTS,
-            LOWER_PROJECT_BOUND,
-            UPPER_PROJECT_BOUND,
+            TOTAL_PROJECTS,
+            TOTAL_LECTURERS,
+            LOWER_BOUND,
+            UPPER_BOUND,
             REPETITIONS,
             result_dict,
         )
