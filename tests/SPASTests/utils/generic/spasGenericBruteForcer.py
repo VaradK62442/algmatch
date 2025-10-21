@@ -45,6 +45,6 @@ class SPASGenericBruteForcer:
         # Link to problem description
         raise NotImplementedError("Enumerators need to link to a stability definition.")
 
-    def student_trial_order(self, resident) -> str:
-        # generator for an order of residentsin preference list
+    def student_trial_order(self, student) -> str:
+        # generator for an order of projects in a student's preference list
         raise NotImplementedError("Enumerators need to describe the order of matching.")
