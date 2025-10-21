@@ -38,7 +38,7 @@ class HRAbstract:
         self.M = {}  # provisional matching
         self.stable_matching = {
             "resident_sided": {resident: "" for resident in self.residents},
-            "hospital_sided": {hospital: [] for hospital in self.hospitals},
+            "hospital_sided": {hospital: set() for hospital in self.hospitals},
         }
         self.is_stable = False
 
@@ -84,7 +84,7 @@ class HRAbstract:
             hospital = self.M[resident]["assigned"]
             if hospital is not None:
                 self.stable_matching["resident_sided"][resident] = hospital
-                self.stable_matching["hospital_sided"][hospital].append(resident)
+                self.stable_matching["hospital_sided"][hospital].add(resident)
 
         self.is_stable = self._check_stability()
 
