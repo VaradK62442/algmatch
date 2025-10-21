@@ -69,14 +69,7 @@ class HRTAbstract:
     def _check_super_stability(self) -> bool:
         # stability must be checked with regards to the original lists prior to deletions
         for resident, r_prefs in self.original_residents.items():
-            # catch multiple assignments
-            assignment_num = len(self.M[resident]["assigned"])
-            if assignment_num > 1:
-                return False
-            elif assignment_num == 1:
-                [matched_hospital] = self.M[resident]["assigned"]
-            else:
-                matched_hospital = None
+            matched_hospital = self.M[resident]["assigned"]
 
             preferred_hospitals = r_prefs["list"]
             if matched_hospital is not None:
@@ -106,14 +99,7 @@ class HRTAbstract:
     def _check_strong_stability(self) -> bool:
         # stability must be checked with regards to the original lists prior to deletions
         for resident, r_prefs in self.original_residents.items():
-            # catch multiple assignments
-            assignment_num = len(self.M[resident]["assigned"])
-            if assignment_num > 1:
-                return False
-            elif assignment_num == 1:
-                [matched_hospital] = self.M[resident]["assigned"]
-            else:
-                matched_hospital = None
+            matched_hospital = self.M[resident]["assigned"]
 
             preferred_hospitals = r_prefs["list"]
             if matched_hospital is not None:
@@ -237,18 +223,17 @@ class HRTAbstract:
 
     def save_resident_sided(self) -> None:
         for resident in self.residents:
-            hospital_set = self.M[resident]["assigned"]
-            if hospital_set != set():
-                # If resident is multiply assigned then there's no sup.s.m,
-                # in which case we won't call this function, so we can use this unpacking
-                [hospital] = hospital_set
+            hospital = self.M[resident]["assigned"]
+            if hospital is None:
+                self.stable_matching["resident_sided"][resident] = ""
+            else:
                 self.stable_matching["resident_sided"][resident] = hospital
 
     def save_hospital_sided(self) -> None:
-        for hospitals in self.hospitals:
-            resident_set = self.M[hospitals]["assigned"]
+        for hospital in self.hospitals:
+            resident_set = self.M[hospital]["assigned"]
             if resident_set != set():
-                self.stable_matching["hospital_sided"][hospitals] = resident_set
+                self.stable_matching["hospital_sided"][hospital] = resident_set
 
     def run(self) -> None:
         if self._while_loop():
