@@ -3,23 +3,23 @@ from tests.SPASTests.utils.generic.spasGenericBruteForcer import SPASGenericBrut
 
 class SPASGenericEnumerator(SPASGenericBruteForcer):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
 
     def add_triple(self, student, project, lecturer):
-        super().add_pair(student, project, lecturer)
+        super().add_triple(student, project, lecturer)
         if self.project_is_full(project):
             self.full_projects.add(project)
         if self.lecturer_is_full(lecturer):
             self.full_lecturers.add(lecturer)
 
     def delete_triple(self, student, project, lecturer):
-        super().delete_pair(student, project, lecturer)
+        super().delete_triple(student, project, lecturer)
         self.full_projects.discard(project)
         self.full_lecturers.discard(lecturer)
 
     def choose(self, i=1) -> None:
         # if every student is assigned
-        if i > len(self.student):
+        if i > len(self.students):
             if self.has_stability():
                 self.save_matching()
 

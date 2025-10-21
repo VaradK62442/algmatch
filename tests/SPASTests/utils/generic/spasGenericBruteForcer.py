@@ -10,20 +10,28 @@ class SPASGenericBruteForcer:
         self.stable_matching_list = []
 
     def project_is_full(self, p):
-        return self.projects[p]["capacity"] == len(self.M[p]["assigned"])
+        p_info = self.projects[p]
+        if "capacity" in p_info:
+            return self.projects[p]["capacity"] == len(self.M[p]["assigned"])
+        else:
+            return self.projects[p]["upper_quota"] == len(self.M[p]["assigned"])
 
     def lecturer_is_full(self, L):
-        return self.lecutrers[L]["capacity"] == len(self.M[L]["assigned"])
+        l_info = self.lecturers[L]
+        if "capacity" in l_info:
+            return self.lecturers[L]["capacity"] == len(self.M[L]["assigned"])
+        else:
+            return self.lecturers[L]["upper_quota"] == len(self.M[L]["assigned"])
 
     def add_triple(self, student, project, lecturer):
-        self.M[student] = project
-        self.M[project].add(student)
-        self.M[lecturer].add(student)
+        self.M[student]["assigned"] = project
+        self.M[project]["assigned"].add(student)
+        self.M[lecturer]["assigned"].add(student)
 
     def delete_triple(self, student, project, lecturer):
-        self.M[student] = None
-        self.M[project].remove(student)
-        self.M[lecturer].remove(student)
+        self.M[student]["assigned"] = None
+        self.M[project]["assigned"].remove(student)
+        self.M[lecturer]["assigned"].remove(student)
 
     def save_matching(self):
         stable_matching = {"student_sided": {}, "lecturer_sided": {}}

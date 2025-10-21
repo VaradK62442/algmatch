@@ -50,7 +50,7 @@ class SPASGenericGenerator(GenericGeneratorInterface):
             },
             "lecturers": {
                 i + 1: {"capacity": 0, "preferences": []}
-                for i in range(self.no_projects)
+                for i in range(self.no_lecturers)
             },
         }
 
