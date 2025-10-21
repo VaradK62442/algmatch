@@ -1,8 +1,8 @@
 from algmatch.studentProjectAllocation import StudentProjectAllocation
 
 from tests.abstractTestClasses.abstractVerifier import AbstractVerifier
-from tests.SPATests.utils.instanceGenerator import SPAInstanceGenerator
-from tests.SPATests.utils.enumerateSMs import ESMS
+from tests.SPASTests.utils.instanceGenerator import SPAInstanceGenerator
+from tests.SPASTests.utils.enumerateSMs import ESMS
 
 
 class SPASAbstractVerifier(AbstractVerifier):

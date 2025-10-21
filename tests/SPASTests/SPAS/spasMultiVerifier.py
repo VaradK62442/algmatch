@@ -3,7 +3,7 @@ from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
 from tests.abstractTestClasses.abstractMultiVerifier import AbstractMultiVerifier as AMV
-from tests.SPATests.spasVerifier import SPASAbstractVerifier as SPASAV
+from tests.SPASTests.spasVerifier import SPASAbstractVerifier as SPASAV
 
 
 class SPASMultiVerifier(SPASAV, AMV):

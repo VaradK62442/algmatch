@@ -4,7 +4,7 @@ from tqdm import tqdm
 from tests.abstractTestClasses.abstractSingleVerifier import (
     AbstractSingleVerifier as ASV,
 )
-from tests.SPATests.spasVerifier import SPASAbstractVerifier as SPASAV
+from tests.SPASTests.spasVerifier import SPASAbstractVerifier as SPASAV
 
 
 class SPASSingleVerifier(SPASAV, ASV):
