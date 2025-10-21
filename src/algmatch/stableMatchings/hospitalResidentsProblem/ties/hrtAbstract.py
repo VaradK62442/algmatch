@@ -69,14 +69,7 @@ class HRTAbstract:
     def _check_super_stability(self) -> bool:
         # stability must be checked with regards to the original lists prior to deletions
         for resident, r_prefs in self.original_residents.items():
-            # catch multiple assignments
-            assignment_num = len(self.M[resident]["assigned"])
-            if assignment_num > 1:
-                return False
-            elif assignment_num == 1:
-                [matched_hospital] = self.M[resident]["assigned"]
-            else:
-                matched_hospital = None
+            matched_hospital = self.M[resident]["assigned"]
 
             preferred_hospitals = r_prefs["list"]
             if matched_hospital is not None:
@@ -106,14 +99,7 @@ class HRTAbstract:
     def _check_strong_stability(self) -> bool:
         # stability must be checked with regards to the original lists prior to deletions
         for resident, r_prefs in self.original_residents.items():
-            # catch multiple assignments
-            assignment_num = len(self.M[resident]["assigned"])
-            if assignment_num > 1:
-                return False
-            elif assignment_num == 1:
-                [matched_hospital] = self.M[resident]["assigned"]
-            else:
-                matched_hospital = None
+            matched_hospital = self.M[resident]["assigned"]
 
             preferred_hospitals = r_prefs["list"]
             if matched_hospital is not None:
