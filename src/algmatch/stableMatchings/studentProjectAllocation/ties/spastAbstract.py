@@ -134,14 +134,7 @@ class SPASTAbstract:
     def _check_super_stability(self) -> bool:
         # stability must be checked with regards to the original lists prior to deletions
         for student, s_prefs in self.original_students.items():
-            # catch multiple assignments
-            assignment_num = len(self.M[student]["assigned"])
-            if assignment_num > 1:
-                return False
-            elif assignment_num == 1:
-                [matched_project] = self.M[student]["assigned"]
-            else:
-                matched_project = None
+            matched_project = self.M[student]["assigned"]
 
             if matched_project is None:
                 preferred_projects = s_prefs["list"]
@@ -274,11 +267,10 @@ class SPASTAbstract:
 
     def _save_student_sided(self) -> None:
         for student in self.students:
-            project_set = self.M[student]["assigned"]
-            if project_set != set():
-                # If student is multiply assigned then there's no stable matching,
-                # in which case we won't call this function, so we can use this unpacking
-                [project] = project_set
+            project = self.M[student]["assigned"]
+            if project is None:
+                self.stable_matching["student_sided"][student] = ""
+            else:
                 self.stable_matching["student_sided"][student] = project
 
     def _save_lecturer_sided(self) -> None:

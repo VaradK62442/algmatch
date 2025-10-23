@@ -82,5 +82,15 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                     sr = p_info["best_reject"]
                     self._reject_lecturer_lower_ranks(sr, L)
 
+        # Select matching
+        for s in self.students:
+            if len(self.M[s]["assigned"]) > 1:
+                return False
+            if not self.M[s]["assigned"]:
+                self.M[s]["assigned"] = None
+            else:
+                # unpack single element
+                self.M[s]["assigned"] = next(iter(self.M[s]["assigned"]))
+
         # placeholding for simpler stability conditions
         return self._check_super_stability()
