@@ -47,7 +47,7 @@ class SPASTAbstract:
         self.M = {}  # provisional matching
         self.stable_matching = {
             "student_sided": {student: "" for student in self.students},
-            "lecturer_sided": {lecturer: [] for lecturer in self.lecturers},
+            "lecturer_sided": {lecturer: set() for lecturer in self.lecturers},
         }
 
         self.super_blocking_conditions = (
