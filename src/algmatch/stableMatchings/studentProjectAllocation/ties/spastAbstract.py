@@ -226,8 +226,10 @@ class SPASTAbstract:
             self.projects[project]["best_reject"] = student
 
         l_prefs = self._get_prefs(lecturer)
-        l_rank_s = l_prefs["rank"][student]
-        l_prefs["list"][l_rank_s].remove(student)
+        l_prefs["times_ranked"][student] -= 1
+        if l_prefs["times_ranked"][student] == 0:
+            l_rank_s = l_prefs["rank"][student]
+            l_prefs["list"][l_rank_s].remove(student)
 
     def _delete_tail_project(self, project) -> None:
         tail = self._get_tail(project)

@@ -86,3 +86,13 @@ class SPASTPreferenceInstance(AbstractPreferenceInstanceWithTies):
         self.tied_lists_to_rank(self.students)
         self.tied_lists_to_rank(self.projects)
         self.tied_lists_to_rank(self.lecturers)
+
+        for l_prefs in self.lecturers.values():
+            l_prefs["times_ranked"] = {s: 0 for s_tie in l_prefs["list"] for s in s_tie}
+
+        for p, p_info in self.projects.items():
+            L = p_info["lecturer"]
+            counting = self.lecturers[L]["times_ranked"]
+            for s_tie in p_info["list"]:
+                for s in s_tie:
+                    counting[s] += 1
