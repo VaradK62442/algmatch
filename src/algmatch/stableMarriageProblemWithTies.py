@@ -31,8 +31,8 @@ class StableMarriageProblemWithTies:
 
         :param filename: str, optional, default=None, the path to the file to read in the preferences from.
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
-        :param optimised_side: str, optional, default="men", whether the algorithm is "men" (default) or "woman" sided.
-        :param stabilityType: str, optional, default=None which kind of matching to look for. Must be either "strong" or "super".
+        :param optimised_side: str, optional, default="men", whether the algorithm is "men" (default) or "women" sided.
+        :param stability_type: str, optional, default=None which kind of matching to look for. Must be either "strong" or "super".
         """
         if filename is not None:
             filename = os.path.join(os.getcwd(), filename)

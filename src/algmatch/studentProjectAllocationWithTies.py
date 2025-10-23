@@ -57,8 +57,8 @@ class StudentProjectAllocationWithTies:
 
     def _set_algorithm(self):
         if self.stability_type == "super":
-            if self.optimised_side == "residents":
-                self.hr_alg = SPASTSuperStudentOptimal(
+            if self.optimised_side == "students":
+                self.spas_alg = SPASTSuperStudentOptimal(
                     filename=self.filename, dictionary=self.dictionary
                 )
             else:
@@ -72,11 +72,11 @@ class StudentProjectAllocationWithTies:
 
     def get_stable_matching(self) -> dict | None:
         """
-        Get the stable matching for the Stable Marriage Problem With Ties algorithm.
+        Get the stable matching for the Student Project Allocation Problem With Ties algorithm.
 
         :return: dict, the stable matching for this instance
         """
-        self.sm_alg.run()
-        if self.sm_alg.is_stable:
-            return self.sm_alg.stable_matching
+        self.spas_alg.run()
+        if self.spas_alg.is_stable:
+            return self.spas_alg.stable_matching
         return None
