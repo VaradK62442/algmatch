@@ -80,7 +80,10 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                 if p_occupancy < p_capacity:
                     L = p_info["lecturer"]
                     sr = p_info["best_reject"]
-                    self._reject_lecturer_lower_ranks(sr, L)
+                    rank_sr = self._get_pref_ranks(L)[sr]
+                    rank_tail = self._get_tail(L, return_idx=True)
+                    if rank_tail >= rank_sr:
+                        self._delete_tail_lecturer(L)
 
         # Select matching
         for s in self.students:

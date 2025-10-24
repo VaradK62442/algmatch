@@ -192,14 +192,20 @@ class SPASTAbstract:
             idx += 1
         raise ValueError("Pref_list empty")
 
-    def _get_tail(self, person) -> set:
+    def _get_tail(self, person, return_idx=False) -> set:
         pref_list = self._get_pref_list(person)
         idx = len(pref_list) - 1
         while idx >= 0:
             tail = pref_list[idx]
             if len(tail) > 0:
-                return tail.copy()
+                if return_idx:
+                    return idx
+                else:
+                    return tail.copy()
             idx -= 1
+
+        if return_idx:
+            return -1
         raise ValueError("Pref_list empty")
 
     def _assign(self, student, project, lecturer) -> None:
