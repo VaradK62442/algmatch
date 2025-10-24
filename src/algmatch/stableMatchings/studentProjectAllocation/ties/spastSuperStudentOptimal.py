@@ -36,7 +36,7 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
 
     def _break_assignment(self, student, project, lecturer):
         super()._break_assignment(student, project, lecturer)
-        if self._get_pref_length(student) > 0:
+        if not self.M[student]["assigned"] and self._get_pref_length(student) > 0:
             self.unassigned_students.add(student)
 
     def _while_loop(self) -> bool:
