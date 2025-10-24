@@ -255,10 +255,11 @@ class SPASTAbstract:
     def _delete_tail_lecturer(self, lecturer) -> None:
         tail = self._get_tail(lecturer)
         for student in tail:
-            for project in self.M[student]["assigned"].copy():
-                if self.projects[project]["lecturer"] == lecturer:
-                    self._break_assignment(student, project, lecturer)
-                    self._delete_triple(student, project, lecturer)
+            for project_tie in self._get_pref_list(student):
+                for project in project_tie.copy():
+                    if self.projects[project]["lecturer"] == lecturer:
+                        self._break_assignment(student, project, lecturer)
+                        self._delete_triple(student, project, lecturer)
 
     def _reject_project_lower_ranks(self, worst, project, lecturer) -> None:
         p_prefs = self._get_prefs(project)
@@ -273,10 +274,11 @@ class SPASTAbstract:
         rank_worst = l_prefs["rank"][worst]
         for reject_tie in l_prefs["list"][rank_worst + 1 :]:
             for student in reject_tie.copy():
-                for project in self.M[student]["assigned"].copy():
-                    if self.projects[project]["lecturer"] == lecturer:
-                        self._break_assignment(student, project, lecturer)
-                        self._delete_triple(student, project, lecturer)
+                for project_tie in self._get_pref_list(student):
+                    for project in project_tie.copy():
+                        if self.projects[project]["lecturer"] == lecturer:
+                            self._break_assignment(student, project, lecturer)
+                            self._delete_triple(student, project, lecturer)
 
     def _while_loop(self) -> bool:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
@@ -292,8 +294,7 @@ class SPASTAbstract:
     def _save_lecturer_sided(self) -> None:
         for lecturer in self.lecturers:
             student_set = self.M[lecturer]["assigned"]
-            if student_set != set():
-                self.stable_matching["lecturer_sided"][lecturer] = student_set
+            self.stable_matching["lecturer_sided"][lecturer] = student_set
 
     def run(self) -> None:
         if self._while_loop():
