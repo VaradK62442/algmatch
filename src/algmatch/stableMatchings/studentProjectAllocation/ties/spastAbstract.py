@@ -142,7 +142,7 @@ class SPASTAbstract:
                 rank_matched_project = s_prefs["rank"][matched_project]
                 # every project that s_i prefers to her matched project
                 # or is indifferent between them
-                preferred_projects = s_prefs["list"][:rank_matched_project]
+                preferred_projects = s_prefs["list"][: rank_matched_project + 1]
 
             for p_tie in preferred_projects:
                 for project in p_tie:
