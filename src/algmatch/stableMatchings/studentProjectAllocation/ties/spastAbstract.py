@@ -216,7 +216,15 @@ class SPASTAbstract:
     def _break_assignment(self, student, project, lecturer) -> None:
         self.M[student]["assigned"].discard(project)
         self.M[project]["assigned"].discard(student)
-        self.M[lecturer]["assigned"].discard(student)
+
+        student_still_assigned = any(
+            [
+                self.projects[p]["lecturer"] == lecturer
+                for p in self.M[student]["assigned"]
+            ]
+        )
+        if not student_still_assigned:
+            self.M[lecturer]["assigned"].discard(student)
 
     def _delete_triple(self, student, project, lecturer) -> None:
         s_prefs = self._get_prefs(student)
