@@ -41,9 +41,6 @@ class HRTStrongResidentOptimal(HRTStrongAbstract):
     def _form_G_r(self):
         raise NotImplementedError()
 
-    def _get_critical_set(self):
-        raise NotImplementedError()
-
     def _while_loop(self) -> bool:
         Z = {None}
         while Z:
@@ -56,7 +53,7 @@ class HRTStrongResidentOptimal(HRTStrongAbstract):
                     capacity = self.hospitals[h]["capacity"]
                     occupancy = len(self.M[h]["assigned"])
                     if occupancy >= capacity:
-                        raise NotImplementedError("dominations")
+                        self._delete_dominated_residents(h)
 
             self._form_G_r()
             Z = self._get_critical_set()

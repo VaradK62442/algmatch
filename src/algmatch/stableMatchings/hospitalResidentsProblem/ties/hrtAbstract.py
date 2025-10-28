@@ -138,21 +138,19 @@ class HRTAbstract:
 
         return True
 
-    def _get_pref_list(self, participant) -> list:
+    def _get_prefs(self, participant) -> list:
         if participant in self.residents:
-            return self.residents[participant]["list"]
+            return self.residents[participant]
         elif participant in self.hospitals:
-            return self.hospitals[participant]["list"]
+            return self.hospitals[participant]
         else:
             raise ValueError(f"{participant} is not a resident or a hospital")
 
-    def _get_pref_ranks(self, participant) -> list:
-        if participant in self.residents:
-            return self.residents[participant]["rank"]
-        elif participant in self.hospitals:
-            return self.hospitals[participant]["rank"]
-        else:
-            raise ValueError(f"{participant} is not a resident or a hospital")
+    def _get_pref_list(self, participant) -> list:
+        return self._get_prefs(participant)["list"]
+
+    def _get_pref_ranks(self, participant) -> dict:
+        return self._get_prefs(participant)["rank"]
 
     def _get_pref_length(self, person) -> int:
         pref_list = self._get_pref_list(person)
