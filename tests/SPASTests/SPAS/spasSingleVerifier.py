@@ -1,16 +1,15 @@
-import numpy as np
 from time import perf_counter_ns
 from tqdm import tqdm
 
 from tests.abstractTestClasses.abstractSingleVerifier import AbstractSingleVerifier
-from tests.SPASTests.SPASTSuper.spastSuperVerifier import SPASTSuperVerifier
+from tests.SPASTests.SPAS.spasVerifier import SPASVerifier
 
 
-class SPASTSuperSingleVerifier(SPASTSuperVerifier, AbstractSingleVerifier):
+class SPASSingleVerifier(SPASVerifier, AbstractSingleVerifier):
     def __init__(
         self, total_students, total_projects, total_lecturers, lower_bound, upper_bound
     ):
-        SPASTSuperVerifier.__init__(
+        SPASVerifier.__init__(
             self,
             total_students,
             total_projects,
@@ -40,25 +39,15 @@ def main():
     TOTAL_LECTURERS = 3
     LOWER_BOUND = 0
     UPPER_BOUND = 3
-    TIE_DENSITY_STEPS = 10
-    REPS_PER_TDS = 5_000
-
-    td_step_size = 1 / TIE_DENSITY_STEPS
-    td_values = np.arange(0, 1 + td_step_size / 2, td_step_size)
+    REPETITIONS = 40_000
 
     start = perf_counter_ns()
 
-    verifier = SPASTSuperSingleVerifier(
+    verifier = SPASSingleVerifier(
         TOTAL_STUDENTS, TOTAL_PROJECTS, TOTAL_LECTURERS, LOWER_BOUND, UPPER_BOUND
     )
-
-    for td in td_values:
-        print("-" * 18)
-        print(f"With Tie Density: {td}")
-
-        verifier.gen.set_tie_density(td)
-        for _ in tqdm(range(REPS_PER_TDS)):
-            verifier.run()
+    for _ in tqdm(range(REPETITIONS)):
+        verifier.run()
 
     end = perf_counter_ns()
     print(f"\nFinal Runtime: {(end - start) / 1000**3}s")

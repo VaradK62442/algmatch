@@ -39,7 +39,7 @@ class SPAAbstract:
         self.M = {}  # provisional matching
         self.stable_matching = {
             "student_sided": {student: "" for student in self.students},
-            "lecturer_sided": {lecturer: [] for lecturer in self.lecturers},
+            "lecturer_sided": {lecturer: set() for lecturer in self.lecturers},
         }
         self.blocking_conditions = (
             self._blockingpair_1bi,
@@ -128,7 +128,7 @@ class SPAAbstract:
             if project is not None:
                 lecturer = self.projects[project]["lecturer"]
                 self.stable_matching["student_sided"][student] = project
-                self.stable_matching["lecturer_sided"][lecturer].append(student)
+                self.stable_matching["lecturer_sided"][lecturer].add(student)
 
         self.is_stable = self._check_stability()
 
