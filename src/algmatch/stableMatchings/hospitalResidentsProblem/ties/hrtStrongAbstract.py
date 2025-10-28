@@ -7,6 +7,7 @@ Stores implementations of:
 """
 
 from collections import deque
+from copy import deepcopy
 
 from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtAbstract import (
     HRTAbstract,
@@ -26,9 +27,9 @@ class HRTStrongAbstract(HRTAbstract):
         self.G_r = {}
 
     def _reset_G_r(self):
-        self.G_r = {r: set() for r in self.residents} | {
-            h: set() for h in self.hospitals
-        }
+        self.G_r = deepcopy(self.M)
+        for hospital, h_info in self.hospitals.items():
+            self.G_r[hospital]["quota"] = h_info["capacity"]
 
     def _reset_maximum_matching(self):
         self.maximum_matching = {
@@ -37,6 +38,32 @@ class HRTStrongAbstract(HRTAbstract):
         }
         self.dist = {}
 
+    def _remove_from_G_r(self, resident):
+        for hospital in self.G_r[resident]["assigned"].copy():
+            self.G_r[resident]["assigned"].remove(hospital)
+            self.G_r[hospital]["assigned"].remove(resident)
+
+    def _form_G_r(self):
+        self._reset_G_r()
+
+        bound_residents = set()
+        for h in self.hospitals:
+            capacity = self.hospitals[h]["capacity"]
+            occupancy = len(self.M[h]["assigned"])
+            if occupancy <= capacity:
+                for r in self.G_r[h]["assigned"].copy():
+                    bound_residents.add(r)
+                    self.G_r[h]["quota"] -= 1
+
+            else:
+                h_tail = self._get_tail(h)
+                for r in self.G_r[h]["assigned"] - h_tail:
+                    bound_residents.add(r)
+                    self.G_r[h]["quota"] -= 1
+
+        for r in bound_residents:
+            self._remove_from_G_r(r)
+
     def _get_maximum_matching_in_G_r(self):
         """
         An implementation of Gabow 1983.
@@ -44,11 +71,7 @@ class HRTStrongAbstract(HRTAbstract):
         raise NotImplementedError()
 
     def _select_maximum_matching_in_G_r(self):
-        self._get_maximum_matching()
-        for m, w in self.maximum_matching["men"].items():
-            self.M[m]["assigned"] = w
-        for w, m in self.maximum_matching["women"].items():
-            self.M[w]["assigned"] = m
+        raise NotImplementedError()
 
     def _get_critical_set(self):
         raise NotImplementedError()

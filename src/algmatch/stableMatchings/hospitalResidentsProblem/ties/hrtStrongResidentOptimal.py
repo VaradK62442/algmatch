@@ -38,9 +38,6 @@ class HRTStrongResidentOptimal(HRTStrongAbstract):
         if self._get_pref_length(resident) > 0:
             self.unassigned_residents.add(resident)
 
-    def _form_G_r(self):
-        raise NotImplementedError()
-
     def _while_loop(self) -> bool:
         Z = {None}
         while Z:
