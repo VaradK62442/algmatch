@@ -1,5 +1,5 @@
 """
-Stable Marriage Problem With Ties - Strong-Stability-Specific Abstract class
+Stable Marriage Problem With Ties - Strong-Stability-Specific Abstract Class
 Stores Hopcroft-Karp implementation for finding the maximum matching
 """
 
