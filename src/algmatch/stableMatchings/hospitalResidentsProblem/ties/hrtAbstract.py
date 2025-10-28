@@ -216,6 +216,11 @@ class HRTAbstract:
                 self._break_assignment(target, reject)
                 self._delete_pair(target, reject)
 
+    def _neighbourhood(self, people):
+        if not people:
+            return set()
+        return set.union(*[self.M[person]["assigned"] for person in people])
+
     def _while_loop(self) -> bool:
         raise NotImplementedError("Method _while_loop must be implemented in subclass")
 
