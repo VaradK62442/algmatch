@@ -1,36 +1,33 @@
 """
-Class to provide interface for the Hospital/Residents Problem With Ties algorithm.
+Class to provide interface for the Student Project Allocation With Ties algorithms.
 """
 
 import os
 
-from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtSuperResidentOptimal import (
-    HRTSuperResidentOptimal,
+from algmatch.stableMatchings.studentProjectAllocation.ties.spastSuperStudentOptimal import (
+    SPASTSuperStudentOptimal,
 )
-from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtSuperHospitalOptimal import (
-    HRTSuperHospitalOptimal,
-)
-from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtAbstract import (
-    HRTAbstract,
+from algmatch.stableMatchings.studentProjectAllocation.ties.spastAbstract import (
+    SPASTAbstract,
 )
 
 
-class HospitalResidentsProblemWithTies:
+class StudentProjectAllocationWithTies:
     def __init__(
         self,
         filename: str | None = None,
         dictionary: dict | None = None,
-        optimised_side: str = "residents",
+        optimised_side: str = "students",
         stability_type: str = None,
     ) -> None:
         """
-        Initialise the Hospital Residents Problem With Ties algorithms.
-
+        Initialise the Student Project Allocation Problem With Ties algorithms.
         :param filename: str, optional, default=None, the path to the file to read in the preferences from.
         :param dictionary: dict, optional, default=None, the dictionary of preferences.
-        :param optimised_side: str, optional, default="residents", whether the algorithm is "residents" (default) or "hospitals" sided.
+        :param optimised_side: str, optional, default="students", whether the algorithm is "students" (default) or "lecturers" sided.
         :param stability_type: str, default=None, specifies the stability condition to be solved for.
         """
+
         if filename is not None:
             filename = os.path.join(os.getcwd(), filename)
 
@@ -42,8 +39,8 @@ class HospitalResidentsProblemWithTies:
     def _assert_valid_optimised_side(self, optimised_side):
         assert type(optimised_side) is str, "Param optimised_side must be of type str"
         optimised_side = optimised_side.lower()
-        assert optimised_side in ("residents", "hospitals"), (
-            "Optimised side must either be 'residents' or 'hospitals'"
+        assert optimised_side in ("students", "lecturers"), (
+            "Optimised side must either be 'students' or 'lecturers'"
         )
 
     def _validate_and_save_parameters(
@@ -52,7 +49,7 @@ class HospitalResidentsProblemWithTies:
         self._assert_valid_optimised_side(optimised_side)
         self.optimised_side = optimised_side.lower()
 
-        HRTAbstract._assert_valid_stability_type(stability_type)
+        SPASTAbstract._assert_valid_stability_type(stability_type)
         self.stability_type = stability_type.lower()
 
         self.filename = filename
@@ -60,13 +57,13 @@ class HospitalResidentsProblemWithTies:
 
     def _set_algorithm(self):
         if self.stability_type == "super":
-            if self.optimised_side == "residents":
-                self.hr_alg = HRTSuperResidentOptimal(
+            if self.optimised_side == "students":
+                self.spas_alg = SPASTSuperStudentOptimal(
                     filename=self.filename, dictionary=self.dictionary
                 )
             else:
-                self.hr_alg = HRTSuperHospitalOptimal(
-                    filename=self.filename, dictionary=self.dictionary
+                raise NotImplementedError(
+                    "Lecturer oriented algorithms are not yet available."
                 )
         elif self.stability_type == "strong":
             raise NotImplementedError("Strong algorithms are not yet available.")
@@ -75,11 +72,11 @@ class HospitalResidentsProblemWithTies:
 
     def get_stable_matching(self) -> dict | None:
         """
-        Get the stable matching for the Hospital/Residents Problem With Ties algorithm.
+        Get the stable matching for the Student Project Allocation Problem With Ties algorithm.
 
         :return: dict, the stable matching for this instance
         """
-        self.hr_alg.run()
-        if self.hr_alg.is_stable:
-            return self.hr_alg.stable_matching
+        self.spas_alg.run()
+        if self.spas_alg.is_stable:
+            return self.spas_alg.stable_matching
         return None
