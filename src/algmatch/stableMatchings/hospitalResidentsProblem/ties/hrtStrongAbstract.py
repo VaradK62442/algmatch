@@ -85,7 +85,6 @@ class HRTStrongAbstract(HRTAbstract):
             if self.dist[h] < self.dist[None]:
                 for r in self.G_r[h]["assigned"]:
                     target = self.maximum_matching["residents"][r]
-                    print(r, h)
                     if self.dist[target] == float("inf"):
                         self.dist[target] = self.dist[h] + 1
                         queue.append(target)
@@ -120,7 +119,35 @@ class HRTStrongAbstract(HRTAbstract):
         raise NotImplementedError()
 
     def _get_critical_set(self):
-        raise NotImplementedError()
+        """
+        Finds the critical set of residents in the current maximum matching.
+        """
+        U_r = set()
+        for r, h in self.maximum_matching["residents"].items():
+            if h is not None:
+                U_r.add(r)
+
+        unexplored_residents = U_r.copy()
+        explored_residents = set()
+        visited_hospitals = set()
+
+        while unexplored_residents:
+            r = unexplored_residents.pop()
+            explored_residents.add(r)
+
+            hospitals_to_explore = self.G_r[r]["assigned"].copy()
+            matched_h = self.maximum_matching["residents"][r]
+            if matched_h is not None:
+                hospitals_to_explore.remove(matched_h)
+
+            for h in hospitals_to_explore:
+                if h not in visited_hospitals:
+                    visited_hospitals.add(h)
+
+                    for matched_r in self.G_r[h]["assigned"]:
+                        unexplored_residents.add(matched_r)
+
+        return explored_residents
 
     def _get_domination_index(self, hospital):
         capacity = self.hospitals[hospital]["capacity"]
