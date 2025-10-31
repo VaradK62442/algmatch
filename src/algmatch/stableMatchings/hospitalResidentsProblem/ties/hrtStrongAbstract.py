@@ -33,8 +33,8 @@ class HRTStrongAbstract(HRTAbstract):
 
     def _reset_maximum_matching(self):
         self.maximum_matching = {
-            "resident": {r: None for r in self.residents},
-            "hospital": {h: set() for h in self.hospitals},
+            "residents": {r: None for r in self.residents},
+            "hospitals": {h: set() for h in self.hospitals},
         }
         self.dist = {}
 
@@ -64,13 +64,59 @@ class HRTStrongAbstract(HRTAbstract):
         for r in bound_residents:
             self._remove_from_G_r(r)
 
+    def _is_under_quota_in_M_r(self, hospital):
+        return (
+            len(self.maximum_matching["hospitals"][hospital])
+            < self.G_r[hospital]["quota"]
+        )
+
+    def _BFS(self):
+        queue = deque(maxlen=len(self.hospitals))
+        self.dist = {None: float("inf")}
+        for h in self.hospitals:
+            if self._is_under_quota_in_M_r(h):
+                self.dist[h] = 0
+                queue.append(h)
+            else:
+                self.dist[h] = float("inf")
+
+        while queue:
+            h = queue.popleft()
+            if self.dist[h] < self.dist[None]:
+                for r in self.G_r[h]["assigned"]:
+                    target = self.maximum_matching["residents"][r]
+                    print(r, h)
+                    if self.dist[target] == float("inf"):
+                        self.dist[target] = self.dist[h] + 1
+                        queue.append(target)
+
+        return self.dist[None] != float("inf")
+
+    def _DFS(self, h):
+        if h is None:
+            return True
+
+        for r in self.G_r[h]["assigned"]:
+            target = self.maximum_matching["residents"][r]
+            if self.dist[target] == self.dist[h] + 1:
+                if self._DFS(target):
+                    self.maximum_matching["residents"][r] = h
+                    self.maximum_matching["hospitals"][h].add(r)
+                    return True
+        self.dist[h] = float("inf")
+        return False
+
     def _get_maximum_matching_in_G_r(self):
         """
-        An implementation of Gabow 1983.
+        An extension of Hopcroft-Karp that matches Gabow 1983 for time-complexity.
         """
-        raise NotImplementedError()
+        self._reset_maximum_matching()
+        while self._BFS():
+            for h in self.hospitals:
+                if self._is_under_quota_in_M_r(h):
+                    self._DFS(h)
 
-    def _select_maximum_matching_in_G_r(self):
+    def _get_feasible_matching(self):
         raise NotImplementedError()
 
     def _get_critical_set(self):
