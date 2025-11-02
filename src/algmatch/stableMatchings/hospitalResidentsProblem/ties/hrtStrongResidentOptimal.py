@@ -1,5 +1,5 @@
 """
-Algorithm to produce M_0, the resident-optimal, hospital-pessimal super-stable matching, where such a thing exists.
+Algorithm to produce M_0, the resident-optimal, hospital-pessimal strongly stable matching, where such a thing exists.
 """
 
 from algmatch.stableMatchings.hospitalResidentsProblem.ties.hrtStrongAbstract import (
@@ -50,22 +50,32 @@ class HRTStrongResidentOptimal(HRTStrongAbstract):
                     capacity = self.hospitals[h]["capacity"]
                     occupancy = len(self.M[h]["assigned"])
                     if occupancy >= capacity:
+                        self.been_full[h] = True
                         self._delete_dominated_residents(h)
 
             self._form_G_r()
+            self._get_maximum_matching_in_G_r()
             Z = self._get_critical_set()
             for h in self._neighbourhood(Z):
                 self._delete_tail(h)
 
-        # Check Viability of Matching
-        for r in self.residents:
-            if len(self.M[r]["assigned"]) > 1:
-                return False
+        provisional_assignee_count = {
+            h: len(self.M[h]["assigned"]) for h in self.hospitals
+        }
+
+        self._select_feasible_matching()
 
         for h in self.hospitals:
-            capacity = self.hospitals[h]["capacity"]
             occupancy = len(self.M[h]["assigned"])
-            if occupancy < capacity and self.been_full[h]:
-                return False
+            # Sandy Scott Thesis Lemma 2.2.3.
+            # a)
+            if not self.been_full[h]:
+                if occupancy < provisional_assignee_count[h]:
+                    return False
+            # b)
+            else:
+                capacity = self.hospitals[h]["capacity"]
+                if capacity != occupancy:
+                    return False
 
         return True
