@@ -5,9 +5,11 @@ from tests.SRTests.utils.srEnumerator import SREnumerator
 
 
 class SRVerifier:
-    def __init__(self, no_roommates):
+    def __init__(self, no_roommates, lower_bound, upper_bound):
         self._total_roommates = no_roommates
-        self.gen = SRInstanceGenerator(no_roommates)
+        self._lower_bound = lower_bound
+        self._upper_bound = upper_bound
+        self.gen = SRInstanceGenerator(no_roommates, lower_bound, upper_bound)
         self.current_instance = {}
 
     def generate_instance(self):

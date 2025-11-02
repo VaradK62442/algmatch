@@ -1,12 +1,12 @@
 from time import perf_counter_ns
 from tqdm import tqdm
 
-from tests.SRTests.srVerifier import SRVerifier as SRV
+from tests.SRTests.srVerifier import SRVerifier
 
 
-class SRSingleVerifier(SRV):
-    def __init__(self, no_roommates):
-        SRV.__init__(self, no_roommates)
+class SRSingleVerifier(SRVerifier):
+    def __init__(self, no_roommates, lower_bound, upper_bound):
+        SRVerifier.__init__(self, no_roommates, lower_bound, upper_bound)
         self._correct_count = 0
         self._incorrect_count = 0
         self._total_count = 0
@@ -31,12 +31,14 @@ class SRSingleVerifier(SRV):
 
 
 def main():
-    TOTAL_ROOMMATES = 6
-    REPETITIONS = 10_000
+    TOTAL_ROOMMATES = 12
+    LOWER_BOUND = 0
+    UPPER_BOUND = TOTAL_ROOMMATES - 1
+    REPETITIONS = 50_000
 
     start = perf_counter_ns()
 
-    verifier = SRSingleVerifier(TOTAL_ROOMMATES)
+    verifier = SRSingleVerifier(TOTAL_ROOMMATES, LOWER_BOUND, UPPER_BOUND)
     for _ in tqdm(range(REPETITIONS)):
         verifier.run()
 
