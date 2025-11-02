@@ -6,7 +6,7 @@ from algmatch.abstractClasses.abstractPreferenceInstance import (
     AbstractPreferenceInstance,
 )
 
-from algmatch.errors.InstanceSetupErrors import IncompleteListError, PrefSelfError
+from algmatch.errors.InstanceSetupErrors import PrefSelfError
 
 from algmatch.stableMatchings.stableRoommatesProblem.fileReader import FileReader
 from algmatch.stableMatchings.stableRoommatesProblem.dictionaryReader import (
@@ -19,8 +19,6 @@ class SRPreferenceInstance(AbstractPreferenceInstance):
         self, filename: str | None = None, dictionary: dict | None = None
     ) -> None:
         super().__init__(filename, dictionary)
-        if len(self.roommates) % 2 != 0:
-            raise ValueError("Problems must have an even number of roommates.")
         self._general_setup_procedure()
 
     def _load_from_file(self, filename: str) -> None:
@@ -36,8 +34,6 @@ class SRPreferenceInstance(AbstractPreferenceInstance):
         for r, prefs in self.roommates.items():
             if r in prefs["list"]:
                 raise PrefSelfError("roommate", r)
-            if len(prefs["list"]) != len(self.roommates) - 1:
-                raise IncompleteListError("roommate", r)
 
     def clean_unacceptable_pairs(self) -> None:
         super().clean_unacceptable_pairs(self.roommates, self.roommates)
