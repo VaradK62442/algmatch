@@ -249,5 +249,5 @@ class HRTAbstract:
                 self.is_stable = self._check_strong_stability()
 
             if self.is_stable:
-                return f"super-stable matching: {self.stable_matching}"
-        return "no super-stable matching"
+                return f"stable matching: {self.stable_matching}"
+        return "no stable matching"

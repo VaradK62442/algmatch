@@ -43,26 +43,42 @@ class HRTStrongAbstract(HRTAbstract):
             self.G_r[resident]["assigned"].remove(hospital)
             self.G_r[hospital]["assigned"].remove(resident)
 
-    def _form_G_r(self):
-        self._reset_G_r()
+    def _form_G_r(self) -> tuple[bool, dict]:
+        """
+        Forms the reduced assignment graph self.G_r from self.M.
 
-        bound_residents = set()
+        :return double bound flag: a boolean indicating whether any resident is bound
+        to more than one hospital
+        :return bound residents: a map of residents to their bound hospitals.
+        """
+        self._reset_G_r()
+        found_double_bound_resident = False
+        bound_residents = dict()
+
         for h in self.hospitals:
             capacity = self.hospitals[h]["capacity"]
             occupancy = len(self.M[h]["assigned"])
             if occupancy <= capacity:
                 for r in self.G_r[h]["assigned"].copy():
-                    bound_residents.add(r)
+                    if r in bound_residents:
+                        found_double_bound_resident = True
+                    else:
+                        bound_residents[r] = h
                     self.G_r[h]["quota"] -= 1
 
             else:
                 h_tail = self._get_tail(h)
                 for r in self.G_r[h]["assigned"] - h_tail:
-                    bound_residents.add(r)
+                    if r in bound_residents:
+                        found_double_bound_resident = True
+                    else:
+                        bound_residents[r] = h
                     self.G_r[h]["quota"] -= 1
 
         for r in bound_residents:
             self._remove_from_G_r(r)
+
+        return found_double_bound_resident, bound_residents
 
     def _is_under_quota_in_M_r(self, hospital):
         return (
@@ -115,8 +131,34 @@ class HRTStrongAbstract(HRTAbstract):
                 if self._is_under_quota_in_M_r(h):
                     self._DFS(h)
 
-    def _get_feasible_matching(self):
-        raise NotImplementedError()
+    def _select_feasible_matching(self) -> bool:
+        """
+        Selects a strongly stable matching where it is possible to do so.
+
+        :return: a boolean indicating whether a stable matching was successful.
+        """
+        double_bound_flag, bound_residents = self._form_G_r()
+        if double_bound_flag:
+            return False
+
+        self._get_maximum_matching_in_G_r()
+
+        for resident in self.residents:
+            self.M[resident] = {"assigned": None}
+        for hospital in self.hospitals:
+            self.M[hospital] = {"assigned": set()}
+
+        for r, h in bound_residents.items():
+            self.M[r]["assigned"] = h
+            self.M[h]["assigned"].add(r)
+
+        for r, h in self.maximum_matching["residents"].items():
+            if r not in bound_residents.keys():
+                self.M[r]["assigned"] = h
+        for h, r_set in self.maximum_matching["hospitals"].items():
+            self.M[h]["assigned"] |= r_set
+
+        return True
 
     def _get_critical_set(self):
         """
