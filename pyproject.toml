@@ -13,15 +13,12 @@ authors = [
 description = "A package containing various matching algorithms, such as stable marriage, hospital-residents, and student-project allocation."
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.21.5", "tqdm==4.57.0"]
+dependencies = ["numpy>=1.21.5", "tqdm==4.57.0", "gurobipy"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
-[project.optional-dependencies]
-ip_model = ["gurobipy"]
 
 [project.urls]
 Homepage = "https://github.com/VaradK62442/algmatch"
