@@ -54,18 +54,19 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                         self._delete_tail_project(p)
                     else:
                         l_capacity = self.lecturers[L]["capacity"]
-                        l_occupancy = len(self.M[L]["assigned"])
+                        l_occupancy = self._get_lecturer_occupancy(L)
                         if l_occupancy > l_capacity:
                             self._delete_tail_lecturer(L)
 
                     p_capacity = self.projects[p]["capacity"]
                     p_occupancy = len(self.M[p]["assigned"])
-                    l_capacity = self.lecturers[L]["capacity"]
-                    l_occupancy = len(self.M[L]["assigned"])
                     if p_occupancy == p_capacity:
                         self.been_full[p] = True
                         s_worst = self._get_project_worst_existing_student(p)
                         self._reject_project_lower_ranks(s_worst, p, L)
+
+                    l_capacity = self.lecturers[L]["capacity"]
+                    l_occupancy = self._get_lecturer_occupancy(L)
                     if l_occupancy == l_capacity:
                         s_worst = self._get_lecturer_worst_existing_student(L)
                         self._reject_lecturer_lower_ranks(s_worst, L)
