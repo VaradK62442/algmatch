@@ -190,7 +190,7 @@ class SPASTAbstract:
             if len(head) > 0:
                 return head.copy()
             idx += 1
-        raise ValueError("Pref_list empty")
+        return set()
 
     def _get_tail(self, person, return_idx=False) -> set:
         pref_list = self._get_pref_list(person)

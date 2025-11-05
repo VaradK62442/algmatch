@@ -45,6 +45,9 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                 s = self.unassigned_students.pop()
                 p_tie = self._get_head(s)
                 for p in p_tie.copy():
+                    if p not in self._get_head(s):
+                        continue
+
                     L = self.projects[p]["lecturer"]
                     self._assign(s, p, L)
 
