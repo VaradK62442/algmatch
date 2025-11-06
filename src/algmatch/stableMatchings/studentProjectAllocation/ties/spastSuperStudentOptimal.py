@@ -16,7 +16,7 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
         )
 
         self.unassigned_students = set()
-        self.been_full = {p: False for p in self.projects}
+        self.filled_projects = set()
 
         for student, s_prefs in self.students.items():
             if len(s_prefs["list"]) > 0:
@@ -64,7 +64,7 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                     p_capacity = self.projects[p]["capacity"]
                     p_occupancy = len(self.M[p]["assigned"])
                     if p_occupancy == p_capacity:
-                        self.been_full[p] = True
+                        self.filled_projects.add(p)
                         s_worst = self._get_project_worst_existing_student(p)
                         self._reject_project_lower_ranks(s_worst, p, L)
 
@@ -74,9 +74,7 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                         s_worst = self._get_lecturer_worst_existing_student(L)
                         self._reject_lecturer_lower_ranks(s_worst, L)
 
-            for p in self.projects:
-                if not self.been_full[p]:
-                    continue
+            for p in self.filled_projects:
                 p_info = self.projects[p]
 
                 p_capacity = p_info["capacity"]
