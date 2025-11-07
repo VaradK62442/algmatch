@@ -190,7 +190,7 @@ class SPASTAbstract:
             if len(head) > 0:
                 return head.copy()
             idx += 1
-        raise ValueError("Pref_list empty")
+        return set()
 
     def _get_tail(self, person, return_idx=False) -> set:
         pref_list = self._get_pref_list(person)
@@ -207,6 +207,11 @@ class SPASTAbstract:
         if return_idx:
             return -1
         raise ValueError("Pref_list empty")
+
+    def _get_lecturer_occupancy(self, lecturer):
+        return sum(
+            len(self.M[p]["assigned"]) for p in self.lecturers[lecturer]["projects"]
+        )
 
     def _assign(self, student, project, lecturer) -> None:
         self.M[student]["assigned"].add(project)

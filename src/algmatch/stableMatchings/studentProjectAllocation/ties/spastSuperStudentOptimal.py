@@ -16,7 +16,7 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
         )
 
         self.unassigned_students = set()
-        self.been_full = {p: False for p in self.projects}
+        self.filled_projects = set()
 
         for student, s_prefs in self.students.items():
             if len(s_prefs["list"]) > 0:
@@ -45,6 +45,9 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                 s = self.unassigned_students.pop()
                 p_tie = self._get_head(s)
                 for p in p_tie.copy():
+                    if p not in self._get_head(s):
+                        continue
+
                     L = self.projects[p]["lecturer"]
                     self._assign(s, p, L)
 
@@ -54,25 +57,24 @@ class SPASTSuperStudentOptimal(SPASTAbstract):
                         self._delete_tail_project(p)
                     else:
                         l_capacity = self.lecturers[L]["capacity"]
-                        l_occupancy = len(self.M[L]["assigned"])
+                        l_occupancy = self._get_lecturer_occupancy(L)
                         if l_occupancy > l_capacity:
                             self._delete_tail_lecturer(L)
 
                     p_capacity = self.projects[p]["capacity"]
                     p_occupancy = len(self.M[p]["assigned"])
-                    l_capacity = self.lecturers[L]["capacity"]
-                    l_occupancy = len(self.M[L]["assigned"])
                     if p_occupancy == p_capacity:
-                        self.been_full[p] = True
+                        self.filled_projects.add(p)
                         s_worst = self._get_project_worst_existing_student(p)
                         self._reject_project_lower_ranks(s_worst, p, L)
+
+                    l_capacity = self.lecturers[L]["capacity"]
+                    l_occupancy = self._get_lecturer_occupancy(L)
                     if l_occupancy == l_capacity:
                         s_worst = self._get_lecturer_worst_existing_student(L)
                         self._reject_lecturer_lower_ranks(s_worst, L)
 
-            for p in self.projects:
-                if not self.been_full[p]:
-                    continue
+            for p in self.filled_projects:
                 p_info = self.projects[p]
 
                 p_capacity = p_info["capacity"]
