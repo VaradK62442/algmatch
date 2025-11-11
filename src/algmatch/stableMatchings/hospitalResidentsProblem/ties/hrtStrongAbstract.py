@@ -168,7 +168,7 @@ class HRTStrongAbstract(HRTAbstract):
         """
         U_r = set()
         for r, h in self.maximum_matching["residents"].items():
-            if h is not None:
+            if h is None:
                 U_r.add(r)
 
         unexplored_residents = U_r.copy()
