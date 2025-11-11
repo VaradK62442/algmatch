@@ -2,12 +2,12 @@ from multiprocessing import Lock, Manager, Process
 from time import perf_counter_ns, sleep
 from tqdm import tqdm
 
-from tests.SRTests.srVerifier import SRVerifier as SRV
+from tests.SRTests.srVerifier import SRVerifier
 
 
-class SRMultiVerifier(SRV):
-    def __init__(self, no_roommates, reps, result_dict):
-        SRV.__init__(self, no_roommates)
+class SRMultiVerifier(SRVerifier):
+    def __init__(self, no_roommates, lower_bound, upper_bound, reps, result_dict):
+        SRVerifier.__init__(self, no_roommates, lower_bound, upper_bound)
         self._reps = reps  # per thread
 
         self.result_dict = result_dict
@@ -48,7 +48,9 @@ class SRMultiVerifier(SRV):
 
 
 def main():
-    TOTAL_ROOMMATES = 6
+    TOTAL_ROOMMATES = 10
+    LOWER_BOUND = 0
+    UPPER_BOUND = TOTAL_ROOMMATES - 1
     REPETITIONS = 84_000  # per thread
     THREADS = 12
 
@@ -56,7 +58,9 @@ def main():
 
     with Manager() as manager:
         result_dict = manager.dict()
-        verifier = SRMultiVerifier(TOTAL_ROOMMATES, REPETITIONS, result_dict)
+        verifier = SRMultiVerifier(
+            TOTAL_ROOMMATES, LOWER_BOUND, UPPER_BOUND, REPETITIONS, result_dict
+        )
         v_threads = []
         for _ in range(THREADS):
             thread = Process(target=verifier.run)
