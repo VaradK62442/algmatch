@@ -101,11 +101,13 @@ class HRTAbstract:
         for resident, r_prefs in self.original_residents.items():
             matched_hospital = self.M[resident]["assigned"]
 
-            preferred_hospitals = r_prefs["list"]
             if matched_hospital is not None:
                 rank_worst_matched_hospital = r_prefs["rank"][matched_hospital]
                 preferred_hospitals = r_prefs["list"][:rank_worst_matched_hospital]
-                indifferent_hospitals = r_prefs["list"][rank_worst_matched_hospital + 1]
+                indifferent_hospitals = r_prefs["list"][rank_worst_matched_hospital]
+            else:
+                preferred_hospitals = r_prefs["list"]
+                indifferent_hospitals = []
 
             for h_tie in preferred_hospitals:
                 for hospital in h_tie:
