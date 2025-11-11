@@ -33,15 +33,15 @@ class HRTStrongAbstract(HRTAbstract):
 
     def _reset_maximum_matching(self):
         self.maximum_matching = {
-            "residents": {r: None for r in self.residents},
+            "residents": {r: None for r in self.residents if r in self.G_r},
             "hospitals": {h: set() for h in self.hospitals},
         }
         self.dist = {}
 
     def _remove_from_G_r(self, resident):
-        for hospital in self.G_r[resident]["assigned"].copy():
-            self.G_r[resident]["assigned"].remove(hospital)
+        for hospital in self.G_r[resident]["assigned"]:
             self.G_r[hospital]["assigned"].remove(resident)
+        del self.G_r[resident]
 
     def _form_G_r(self) -> tuple[bool, dict]:
         """
@@ -77,6 +77,10 @@ class HRTStrongAbstract(HRTAbstract):
 
         for r in bound_residents:
             self._remove_from_G_r(r)
+
+        for r in self.residents:
+            if len(self.M[r]["assigned"]) == 0:
+                self._remove_from_G_r(r)
 
         return found_double_bound_resident, bound_residents
 
