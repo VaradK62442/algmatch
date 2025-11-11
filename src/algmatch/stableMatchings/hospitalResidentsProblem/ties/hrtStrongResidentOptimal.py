@@ -63,7 +63,10 @@ class HRTStrongResidentOptimal(HRTStrongAbstract):
             h: len(self.M[h]["assigned"]) for h in self.hospitals
         }
 
-        self._select_feasible_matching()
+        is_successful_matching = self._select_feasible_matching()
+
+        if not is_successful_matching:
+            return False
 
         for h in self.hospitals:
             occupancy = len(self.M[h]["assigned"])
