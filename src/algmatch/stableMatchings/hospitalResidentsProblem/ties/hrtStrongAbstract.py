@@ -142,8 +142,6 @@ class HRTStrongAbstract(HRTAbstract):
         :return: a boolean indicating whether a stable matching was successful.
         """
         double_bound_flag, bound_residents = self._form_G_r()
-        if double_bound_flag:
-            return False
 
         self._get_maximum_matching_in_G_r()
 
@@ -157,11 +155,11 @@ class HRTStrongAbstract(HRTAbstract):
             self.M[h]["assigned"].add(r)
 
         for r, h in self.maximum_matching["residents"].items():
-            if r not in bound_residents.keys():
-                self.M[r]["assigned"] = h
-        for h, r_set in self.maximum_matching["hospitals"].items():
-            self.M[h]["assigned"] |= r_set
+            self.M[r]["assigned"] = h
+            self.M[h]["assigned"].add(r)
 
+        if double_bound_flag:
+            return False
         return True
 
     def _get_critical_set(self):
