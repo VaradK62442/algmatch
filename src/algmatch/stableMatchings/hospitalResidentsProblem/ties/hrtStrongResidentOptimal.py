@@ -38,6 +38,40 @@ class HRTStrongResidentOptimal(HRTStrongAbstract):
         if self._get_pref_length(resident) > 0:
             self.unassigned_residents.add(resident)
 
+    def _form_G_r(self):
+        self._reset_G_r()
+        found_double_bound_resident = False
+        bound_residents = dict()
+
+        for h in self.hospitals:
+            capacity = self.hospitals[h]["capacity"]
+            occupancy = len(self.M[h]["assigned"])
+            if occupancy <= capacity:
+                for r in self.G_r[h]["assigned"].copy():
+                    if r in bound_residents:
+                        found_double_bound_resident = True
+                    else:
+                        bound_residents[r] = h
+                    self.G_r[h]["quota"] -= 1
+
+            else:
+                h_tail = self._get_tail(h)
+                for r in self.G_r[h]["assigned"] - h_tail:
+                    if r in bound_residents:
+                        found_double_bound_resident = True
+                    else:
+                        bound_residents[r] = h
+                    self.G_r[h]["quota"] -= 1
+
+        for r in bound_residents:
+            self._remove_from_G_r(r)
+
+        for r in self.residents:
+            if len(self.M[r]["assigned"]) == 0:
+                self._remove_from_G_r(r)
+
+        return found_double_bound_resident, bound_residents
+
     def _while_loop(self) -> bool:
         Z = {None}
         while Z:

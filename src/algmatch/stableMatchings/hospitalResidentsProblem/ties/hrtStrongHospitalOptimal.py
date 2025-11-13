@@ -68,6 +68,27 @@ class HRTStrongHospitalOptimal(HRTStrongAbstract):
             idx += 1
         return None
 
+    def _form_G_r(self):
+        self._reset_G_r()
+        bound_residents = dict()
+
+        for h in self.hospitals:
+            bound_assignees = self.M[h]["assigned"] - self.unbound[h]
+            for r in bound_assignees:
+                bound_residents[r] = h
+            self.G_r[h]["quota"] -= len(bound_assignees)
+
+        for r in bound_residents:
+            self._remove_from_G_r(r)
+
+        for r in self.residents:
+            if len(self.M[r]["assigned"]) == 0:
+                self._remove_from_G_r(r)
+
+        # As opposed to the resident-oriented algorithm,
+        # we know that there are no double-bound residents.
+        return False, bound_residents
+
     def _double_bound_deletions(self):
         made_deletion = True
         while made_deletion:
